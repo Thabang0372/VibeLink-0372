@@ -1,13 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VibeLink 0372® – Where the World Vibe Starts</title>
-<link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeLink 0372®</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Welcome to VibeLink 0372®</h1>
+    <!-- AUTH CONTAINER (Visible first) -->
+    <div id="auth-container">
+        <!-- Login Form -->
+        <div id="login-form">
+            <h1>VibeLink 0372</h1>
+            <p>Where the World Vibe Starts</p>
+            <input type="text" id="login-username" placeholder="Username">
+            <input type="password" id="login-password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <p>-- OR --</p>
+            <p>No account? <a href="#" onclick="showRegisterForm(); return false;">Register here</a></p>
+        </div>
+
+        <!-- Register Form (Hidden initially) -->
+        <div id="register-form" style="display:none;">
+            <h1>Create Your Account</h1>
+            <p>Join the world's vibe.</p>
+            <input type="text" id="register-username" placeholder="Choose a Username">
+            <input type="email" id="register-email" placeholder="Your Email Address">
+            <input type="password" id="register-password" placeholder="Create a Password">
+            <button onclick="register()">Register</button>
+            <p>-- OR --</p>
+            <p>Already have an account? <a href="#" onclick="showLoginForm(); return false;">Login here</a></p>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER (Hidden until logged in) -->
+    <div id="app-container" style="display:none;">
+        <h2>VibeBoard</h2>
+        <p>You are logged in! This is your feed. Next, we will build the post creation feature here.</p>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Load Parse SDK -->
+    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+    <!-- Load our custom JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>
