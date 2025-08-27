@@ -313,3 +313,236 @@ function checkCurrentUser() {
 
 // Initialize the app
 checkCurrentUser();
+// ===== NEW FEATURES FUNCTIONALITY =====
+
+// Initialize new features
+function initNewFeatures() {
+    setupModal();
+    setupAudioPlayer();
+    setupNotifications();
+    setupStories();
+    setupDarkMode();
+}
+
+// Modal functionality
+function setupModal() {
+    const modal = document.getElementById('features-modal');
+    const closeBtn = document.querySelector('.modal-close');
+    
+    // Close modal when clicking close button
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+    }
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+}
+
+// Show features modal
+function showFeaturesModal() {
+    const modal = document.getElementById('features-modal');
+    modal.classList.remove('hidden');
+}
+
+// Audio player functionality
+function setupAudioPlayer() {
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const volumeSlider = document.getElementById('volume-slider');
+    
+    if (playPauseBtn) {
+        playPauseBtn.addEventListener('click', togglePlayPause);
+    }
+    
+    if (volumeSlider) {
+        volumeSlider.addEventListener('input', adjustVolume);
+    }
+}
+
+let isPlaying = false;
+
+function togglePlayPause() {
+    const icon = document.querySelector('#play-pause-btn i');
+    isPlaying = !isPlaying;
+    
+    if (isPlaying) {
+        icon.className = 'fas fa-pause';
+        showNotification('VibeLink Radio started', 'success');
+    } else {
+        icon.className = 'fas fa-play';
+        showNotification('VibeLink Radio paused', 'info');
+    }
+}
+
+function adjustVolume() {
+    const volume = document.getElementById('volume-slider').value;
+    // Volume adjustment logic would go here
+}
+
+// Notifications functionality
+function setupNotifications() {
+    const notificationsBtn = document.getElementById('notifications-btn');
+    const panelClose = document.querySelector('.panel-close');
+    const panel = document.getElementById('notifications-panel');
+    
+    if (notificationsBtn) {
+        notificationsBtn.addEventListener('click', toggleNotifications);
+    }
+    
+    if (panelClose) {
+        panelClose.addEventListener('click', () => {
+            panel.classList.remove('show');
+        });
+    }
+}
+
+function toggleNotifications() {
+    const panel = document.getElementById('notifications-panel');
+    panel.classList.toggle('show');
+    loadNotifications();
+}
+
+function loadNotifications() {
+    const notificationsList = document.querySelector('.notifications-list');
+    
+    // Sample notifications
+    const notifications = [
+        {
+            avatar: 'https://ui-avatars.com/api/?name=Sarah+K&background=667eea',
+            text: 'Sarah K liked your post',
+            time: '2 minutes ago',
+            unread: true
+        },
+        {
+            avatar: 'https://ui-avatars.com/api/?name=Mike+T&background=764ba2',
+            text: 'Mike T started following you',
+            time: '15 minutes ago',
+            unread: true
+        },
+        {
+            avatar: 'https://ui-avatars.com/api/?name=VibeLink&background=ff6b6b',
+            text: 'Welcome to VibeLink 0372! Your account is now active.',
+            time: '1 hour ago',
+            unread: false
+        }
+    ];
+    
+    notificationsList.innerHTML = '';
+    
+    notifications.forEach(notif => {
+        const notifElement = document.createElement('div');
+        notifElement.className = `notification-item ${notif.unread ? 'unread' : ''}`;
+        notifElement.innerHTML = `
+            <img src="${notif.avatar}" alt="Avatar" class="notification-avatar">
+            <div class="notification-content">
+                <p class="notification-text">${notif.text}</p>
+                <span class="notification-time">${notif.time}</span>
+            </div>
+        `;
+        notificationsList.appendChild(notifElement);
+    });
+}
+
+// Stories functionality
+function setupStories() {
+    // This would handle the stories feature
+    console.log('Stories feature initialized');
+}
+
+// Dark mode functionality
+function setupDarkMode() {
+    // Check for system preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark-mode');
+    }
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (e.matches) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+    });
+}
+
+// Enhanced post interactions
+function enhancePostInteractions() {
+    // Add like functionality
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.post-action')) {
+            const action = e.target.closest('.post-action');
+            const icon = action.querySelector('i');
+            
+            if (icon.classList.contains('fa-heart')) {
+                // Like functionality
+                if (icon.classList.contains('far')) {
+                    icon.classList.replace('far', 'fas');
+                    icon.style.color = '#ff6b6b';
+                    showNotification('Post liked!', 'success');
+                } else {
+                    icon.classList.replace('fas', 'far');
+                    icon.style.color = '';
+                    showNotification('Post unliked', 'info');
+                }
+            }
+        }
+    });
+}
+
+// Initialize all new features when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initNewFeatures();
+    enhancePostInteractions();
+    
+    // Add feature discovery button to header
+    const featureBtn = document.createElement('button');
+    featureBtn.className = 'icon-btn';
+    featureBtn.innerHTML = '<i class="fas fa-rocket"></i>';
+    featureBtn.title = 'Discover Features';
+    featureBtn.addEventListener('click', showFeaturesModal);
+    
+    const headerActions = document.querySelector('.header-actions');
+    if (headerActions) {
+        headerActions.insertBefore(featureBtn, headerActions.firstChild);
+    }
+});
+
+// New utility functions
+function formatNumber(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    }
+    return num;
+}
+
+function getTimeAgo(date) {
+    const now = new Date();
+    const diff = now - new Date(date);
+    
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    if (days < 7) return `${days}d ago`;
+    
+    return new Date(date).toLocaleDateString();
+}
+
+// Export functions for global access (if needed)
+window.VibeLink = {
+    showFeaturesModal,
+    togglePlayPause,
+    toggleNotifications,
+    formatNumber,
+    getTimeAgo
+};
