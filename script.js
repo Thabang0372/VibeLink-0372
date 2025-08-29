@@ -26,7 +26,7 @@ function showNotification(message, type = 'success') {
     notificationMessage.textContent = message;
     notification.className = `notification ${type} show`;
     
-    setTimeout(() => {
+    setTimeout(() {
         notification.className = 'notification hidden';
     }, 3000);
 }
@@ -82,11 +82,13 @@ async function login() {
 
 async function register() {
     const username = document.getElementById('register-username').value;
+    const fullname = document.getElementById('register-fullname').value; // ADDED: Get fullname value
     const email = document.getElementById('register-email').value;
     const password = document.getElementById('register-password').value;
     const confirmPassword = document.getElementById('register-confirm-password').value;
     
-    if (!username || !email || !password || !confirmPassword) {
+    // UPDATED: Include fullname in validation
+    if (!username || !fullname || !email || !password || !confirmPassword) {
         showNotification('Please fill in all fields', 'error');
         return;
     }
@@ -101,6 +103,7 @@ async function register() {
         // Create new Parse user
         const user = new Parse.User();
         user.set('username', username);
+        user.set('fullName', fullname); // CHANGED: Set fullName field with capital N
         user.set('email', email);
         user.set('password', password);
         
@@ -202,17 +205,20 @@ function addPostToFeed(post) {
             <div>
                 <span class="post-user">${post.user}</span>
                 <span class="post-time">${post.time}</span>
+            </极速赛车开奖直播历史记录
             </div>
         </div>
         <div class="post-content">
             ${post.content}
         </div>
+        <极速赛车开奖直播历史记录
         <div class="post-footer">
             <button class="post-action">
                 <i class="far fa-heart"></i>
                 <span>${post.likes}</span>
             </button>
             <button class="post-action">
+                <i class="far极速赛车开奖直播历史记录
                 <i class="far fa-comment"></i>
                 <span>${post.comments}</span>
             </button>
@@ -232,12 +238,14 @@ async function loadFeed() {
     
     try {
         // Clear existing posts
+极速赛车开奖直播历史记录
         feed.innerHTML = '';
         
         // Query posts from Parse
         const Post = Parse.Object.extend('Post');
         const query = new Parse.Query(Post);
         query.include('author');
+        query.descending('created极速赛车开奖直播历史记录
         query.descending('createdAt');
         query.limit(20);
         
@@ -247,10 +255,12 @@ async function loadFeed() {
         feedLoading.classList.add('hidden');
         
         if (results.length === 0) {
+            // Show message极速赛车开奖直播历史记录
             // Show message if no posts
             feed.innerHTML = `
                 <div class="post">
                     <div class="post-content" style="text-align: center; padding: 30px;">
+                        <i class="fas fa-feather-alt" style="font-size: 40px; color: #极速赛车开奖直播历史记录
                         <i class="fas fa-feather-alt" style="font-size: 40px; color: #ccc; margin-bottom: 15px;"></i>
                         <p>No vibes yet. Be the first to post!</p>
                     </div>
@@ -265,6 +275,7 @@ async function loadFeed() {
             addPostToFeed({
                 id: post.id,
                 user: author.get('username'),
+                avatar: `https://ui-avatars极速赛车开奖直播历史记录
                 avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(author.get('username'))}&background=667eea`,
                 content: post.get('content'),
                 time: formatTime(post.createdAt),
@@ -297,6 +308,7 @@ function formatTime(date) {
         return 'Just now';
     } else if (diff < 3600000) { // Less than 1 hour
         return `${Math.floor(diff / 60000)}m ago`;
+    } else if (diff极速赛车开奖直播历史记录
     } else if (diff < 86400000) { // Less than 1 day
         return `${Math.floor(diff / 3600000)}h ago`;
     } else {
@@ -308,6 +320,7 @@ function formatTime(date) {
 function checkCurrentUser() {
     const currentUser = Parse.User.current();
     
+    if (current极速赛车开奖直播历史记录
     if (currentUser) {
         authContainer.classList.add('hidden');
         appContainer.classList.remove('hidden');
@@ -338,6 +351,7 @@ function setupModal() {
     // Close modal when clicking close button
     if (closeBtn) {
         closeBtn.addEventListener('click', () => {
+            modal.classList.add极速赛车开奖直播极速赛车开奖直播历史记录
             modal.classList.add('hidden');
         });
     }
@@ -357,6 +371,7 @@ function showFeaturesModal() {
 }
 
 // Audio player functionality
+function setupAudioPlayer极速赛车开奖直播历史记录
 function setupAudioPlayer() {
     const playPauseBtn = document.getElementById('play-pause-btn');
     const volumeSlider = document.getElementById('volume-slider');
@@ -400,6 +415,7 @@ function setupNotifications() {
         notificationsBtn.addEventListener('click', toggleNotifications);
     }
     
+    if (panel极速赛车开奖直播历史记录
     if (panelClose) {
         panelClose.addEventListener('click', () => {
             panel.classList.remove('show');
@@ -434,6 +450,8 @@ function loadNotifications() {
             avatar: 'https://ui-avatars.com/api/?name=VibeLink&background=ff6b6b',
             text: 'Welcome to VibeLink 0372! Your account is now active.',
             time: '1 hour ago',
+           极速赛车开奖直播历史记录
+            time: '1 hour ago',
             unread: false
         }
     ];
@@ -446,6 +464,8 @@ function loadNotifications() {
         notifElement.innerHTML = `
             <img src="${notif.avatar}" alt="Avatar" class="notification-avatar">
             <div class="notification-content">
+                <p class="notification-text">${notif.text}</极速赛车开奖直播历史记录
+                <p class="notification-text">${not极速赛车开奖直播历史记录
                 <p class="notification-text">${notif.text}</p>
                 <span class="notification-time">${notif.time}</span>
             </div>
@@ -468,6 +488,7 @@ function setupDarkMode() {
     }
     
     // Listen for system theme changes
+    window.matchMedia('(prefers-color极速赛车开奖直播历史记录
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         if (e.matches) {
             document.body.classList.add('dark-mode');
@@ -488,6 +509,7 @@ function enhancePostInteractions() {
             if (icon.classList.contains('fa-heart')) {
                 // Like functionality
                 if (icon.classList.contains('far')) {
+                    icon.classList.replace('far',极速赛车开奖直播历史记录
                     icon.classList.replace('far', 'fas');
                     icon.style.color = '#ff6b6b';
                     showNotification('Post liked!', 'success');
@@ -509,6 +531,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add feature discovery button to header
     const featureBtn = document.createElement('button');
     featureBtn.className = 'icon-btn';
+    featureBtn.innerHTML = '<极速赛车开奖直播历史记录
     featureBtn.innerHTML = '<i class="fas fa-rocket"></i>';
     featureBtn.title = 'Discover Features';
     featureBtn.addEventListener('click', showFeaturesModal);
@@ -520,10 +543,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // New utility functions
+function formatNumber(num极速赛车开奖直播历史记录
+function format极速赛车开奖直播历史记录
 function formatNumber(num) {
     if (num >= 1000000) {
         return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000极速赛车开奖直播历史记录
     } else if (num >= 1000) {
+        return (num / 1000).toFixed极速赛车开奖直播历史记录
         return (num / 1000).toFixed(1) + 'K';
     }
     return num;
