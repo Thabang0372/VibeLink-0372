@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset极速赛车开奖直播历史记录
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VibeLink 0372® – Where the World Vibe Starts</title>
     <meta name="description" content="A social platform for creators, hustlers, and culture-shapers of Africa and beyond.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome极速赛车开奖直播历史记录
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -12,7 +14,10 @@
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <meta name="theme-color" content="#667eea">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple极速赛车开奖直播历史记录
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title极速赛车开奖极速赛车开奖直播历史记录
+    <meta name="apple-mobile-web-app-title" content="极速赛车开奖直播历史记录
     <meta name="apple-mobile-web-app-title" content="VibeLink">
     <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=VibeLink&background=667eea&size=192">
 </head>
@@ -34,6 +39,7 @@
             <div id="login-form" class="auth-form">
                 <div class="input-group">
                     <label for="login-username" class="sr-only">Username or Email</label>
+                    <input type="text" id="login-username" placeholder="Username or Email极速赛车开奖直播历史记录
                     <input type="text" id="login-username" placeholder="Username or Email" required>
                 </div>
                 <div class="input-group">
@@ -45,6 +51,7 @@
                     <span class="button-text">Login to Your Vibe</span>
                 </button>
                 
+                <div class极速赛车开奖直播历史记录
                 <div class="auth-options">
                     <label>
                         <input type="checkbox" id="remember-me"> Remember me
@@ -62,11 +69,13 @@
                         <span>Facebook</span>
                     </button>
                     <button onclick="socialLogin('google')" class="btn-social">
+                        <i class="fab fa-google" style极速赛车开奖直播历史记录
                         <i class="fab fa-google" style="color: #EA4335;"></i>
                         <span>Google</span>
                     </button>
                 </div>
                 
+                <p class="auth-switch">极速赛车开奖直播历史记录
                 <p class="auth-switch">No account? <a href="#" onclick="showRegisterForm(); return false;">Register here</a></p>
             </div>
 
@@ -77,6 +86,7 @@
                 </div>
                 <!-- Added Full Name field here -->
                 <div class="input-group">
+                    <label for="register-fullname" class="sr-only">Full Name</极速赛车开奖直播历史记录
                     <label for="register-fullname" class="sr-only">Full Name</label>
                     <input type="text" id="register-fullname" placeholder="Full Name" required>
                 </div>
@@ -89,6 +99,7 @@
                     <input type="password" id="register-password" placeholder="Create a Password" required>
                 </div>
                 <div class="input-group">
+                    <label for="register-confirm-password" class极速赛车开奖直播历史记录
                     <label for="register-confirm-password" class="sr-only">Confirm Password</label>
                     <input type="password" id="register-confirm-password" placeholder="Confirm Password" required>
                 </div>
@@ -100,6 +111,8 @@
                 <p class="auth-switch">Already have an account? <a href="#" onclick="showLoginForm(); return false;">Login here</a></p>
             </div>
 
+            <div id="forgot-password-form" class="auth-form极速赛车开奖直播历史记录
+            <极速赛车开奖直播历史记录
             <div id="forgot-password-form" class="auth-form hidden">
                 <p>Enter your email address and we'll send you a password reset link.</p>
                 <div class="input-group">
@@ -109,7 +122,9 @@
                 <button onclick="resetPassword()" class="btn btn-primary">
                     <i class="fas fa-paper-plane"></i>
                     Send Reset Link
+                </极速赛车开奖直播历史记录
                 </button>
+                <p class="auth-switch"><a href="#" onclick="showLogin极速赛车开奖直播历史记录
                 <p class="auth-switch"><a href="#" onclick="showLoginForm(); return false;">Back to login</a></p>
             </div>
         </div>
@@ -123,10 +138,13 @@
             </div>
             <div class="header-actions">
                 <button id="feature-btn" class="icon-btn" aria-label="Discover Features">
+                    <i class="fas fa-rocket"></极速赛车开奖直播历史记录
                     <i class="fas fa-rocket"></i>
                 </button>
+                <button极速赛车开奖直播历史记录
                 <button id="notifications-btn" class="icon-btn" aria-label="Notifications">
                     <i class="fas fa-bell"></i>
+                    <span class="notification极速赛车开奖直播历史记录
                     <span class="notification-badge hidden" id="notification-count">3</span>
                 </button>
                 <button id="dark-mode-toggle" class="icon-btn" aria-label="Toggle dark mode">
@@ -145,6 +163,7 @@
                     <label for="post-content" class="sr-only">Create a new post</label>
                     <textarea id="post-content" placeholder="What's vibing today?"></textarea>
                     <div class="post-actions">
+                        <button onclick="createPost()极速赛车开奖直播历史记录
                         <button onclick="createPost()" class="btn btn-primary">
                             <i class="fas fa-paper-plane"></i>
                             Post Vibe
@@ -153,6 +172,9 @@
                 </div>
 
                 <div id="feed" class="posts-container">
+                    <div class="loading-spinner"极速赛车开奖直播历史记录
+                    <div class="loading-spinner" id="极速赛车开奖直播历史记录
+                    <div class="极速赛车开奖直播历史记录
                     <div class="loading-spinner" id="feed-loading">
                         <div class="spinner"></div>
                     </div>
@@ -173,6 +195,7 @@
                 <i class="fas fa-comments"></i>
                 <span>Chat</span>
             </button>
+            <button class="nav-item" data极速赛车开奖直播历史记录
             <button class="nav-item" data-section="market">
                 <i class="fas fa-store"></i>
                 <span>Market</span>
@@ -194,6 +217,7 @@
             <div class="modal-body">
                 <div class="feature-grid">
                     <div class="feature-item">
+                        <极速赛车开奖直播历史记录
                         <i class="fas fa-video"></i>
                         <h4>Vibe Stories</h4>
                         <p>Share 24-hour disappearing photos and videos</p>
@@ -202,9 +226,12 @@
                         <i class="fas fa-users"></i>
                         <h4>Vibe Groups</h4>
                         <p>Create communities around shared interests</p>
+                    </极速赛车开奖直播历史记录
                     </div>
                     <div class="feature-item">
+                        <i class极速赛车开奖直播历史记录
                         <i class="fas fa-store"></i>
+                        <h4极速赛车开奖直播历史记录
                         <h4>Vibe Market</h4>
                         <p>Sell products directly to your audience</p>
                     </div>
@@ -220,6 +247,7 @@
 
     <!-- New Audio Player -->
     <div id="audio-player" class="audio-player hidden">
+        <div class="player-control极速赛车开奖直播历史记录
         <div class="player-controls">
             <button id="prev-btn"><i class="fas fa-step-backward"></i></button>
             <button id="play-pause-btn"><i class="fas fa-play"></i></button>
@@ -235,6 +263,7 @@
             <i class="fas fa-volume-up"></i>
             <input type="range" id="volume-slider" min="0" max="100" value="80">
         </div>
+    </极速赛车开奖直播历史记录
     </div>
 
     <!-- New Notification Center -->
@@ -249,7 +278,9 @@
     </div>
 
     <!-- PWA Install Prompt (initially hidden) -->
+    <div id="p极速赛车开奖直播历史记录
     <div id="pwa-install-prompt" class="pwa-install-prompt hidden">
+        <极速赛车开奖直播历史记录
         <p>Install VibeLink for a better experience?</p>
         <div class="pwa-install-buttons">
             <button id="pwa-install-cancel" class="btn-outline">Not Now</button>
@@ -262,6 +293,8 @@
 
     <!-- Load Parse SDK and Font Awesome -->
     <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6极速赛车开奖直播历史记录
+    <script src="极速赛车开奖直播历史记录
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="script.js"></script>
 </body>
