@@ -60,9 +60,11 @@ async function login() {
         return;
     }
     
+    alert("Login attempt started"); // Added for debugging
     try {
         // Try to log in with Parse
         const user = await Parse.User.logIn(username, password);
+        alert("Login successful"); // Added for debugging
         showNotification(`Welcome back, ${user.get('username')}!`, 'success');
         
         // Switch to app view
@@ -72,6 +74,7 @@ async function login() {
             loadFeed();
         }, 1000);
     } catch (error) {
+        alert("Login error: " + error.message); // Added for debugging
         showNotification('Login failed. Please check your credentials.', 'error');
         console.error('Login error:', error);
     }
@@ -93,6 +96,7 @@ async function register() {
         return;
     }
     
+    alert("Registration attempt started"); // Added for debugging
     try {
         // Create new Parse user
         const user = new Parse.User();
@@ -101,6 +105,7 @@ async function register() {
         user.set('password', password);
         
         await user.signUp();
+        alert("Registration successful"); // Added for debugging
         showNotification('Account created successfully!', 'success');
         
         // Switch to login form
@@ -108,6 +113,7 @@ async function register() {
             showLoginForm();
         }, 1000);
     } catch (error) {
+        alert("Registration error: " + error.message); // Added for debugging
         showNotification('Registration failed. Please try again.', 'error');
         console.error('Registration error:', error);
     }
