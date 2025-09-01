@@ -25,25 +25,6 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// Form toggle functions
-function showLoginForm() {
-    document.getElementById('login-form').classList.remove('hidden');
-    document.getElementById('register-form').classList.add('hidden');
-    document.getElementById('forgot-password-form').classList.add('hidden');
-}
-
-function showRegisterForm() {
-    document.getElementById('login-form').classList.add('hidden');
-    document.getElementById('register-form').classList.remove('hidden');
-    document.getElementById('forgot-password-form').classList.add('hidden');
-}
-
-function showForgotPassword() {
-    document.getElementById('login-form').classList.add('hidden');
-    document.getElementById('register-form').classList.add('hidden');
-    document.getElementById('forgot-password-form').classList.remove('hidden');
-}
-
 // Auth functions
 async function login(email, password, rememberMe) {
     try {
@@ -61,7 +42,7 @@ async function login(email, password, rememberMe) {
         // Hide login screen and show app    
         loginScreen.style.display = 'none';    
         appContainer.style.display = 'block';    
-
+        
     } catch (error) {
         showNotification(error.message, 'error');
     }
@@ -77,9 +58,10 @@ async function register(username, fullname, email, password) {
     try {
         await user.signUp();
         showNotification('Registration successful! Please log in.', 'success');
-        showLoginForm();
+        return true;
     } catch (error) {
         showNotification(error.message, 'error');
+        return false;
     }
 }
 
@@ -87,7 +69,6 @@ async function resetPassword(email) {
     try {
         await Parse.User.requestPasswordReset(email);
         showNotification('Password reset email sent!', 'success');
-        showLoginForm();
     } catch (error) {
         showNotification(error.message, 'error');
     }
@@ -156,8 +137,10 @@ function showSignupForm() {
             return;
         }
         
-        register(username, fullname, email, password).then(() => {
-            document.querySelector('.login-container').removeChild(tempDiv);
+        register(username, fullname, email, password).then(success => {
+            if (success) {
+                document.querySelector('.login-container').removeChild(tempDiv);
+            }
         });
     });
     
