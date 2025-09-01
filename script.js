@@ -3,579 +3,215 @@ Parse.initialize("8fYdKoHo6nrYd3gZw2acyPlb9mWKQbb8BBOQRCse", "xSatMs4hrQbw0PcGzX
 Parse.serverURL = 'https://parseapi.back4app.com/';
 
 // DOM elements
-const authContainer = document.getElementById('auth-container');
-const appContainer = document.getElementById('app-container');
-const loginForm = document.getElementById('login-form');
-const registerForm = document.getElementById('register-form');
-const forgotPasswordForm = document.getElementById('forgot-password-form');
+const loginScreen = document.getElementById('loginScreen');
+const appContainer = document.getElementById('appContainer');
+const loginForm = document.getElementById('loginForm');
+const showSignup = document.getElementById('showSignup');
 const notification = document.getElementById('notification');
 const notificationMessage = document.getElementById('notification-message');
-const feed = document.getElementById('feed');
-const feedLoading = document.getElementById('feed-loading');
 
 // Show notification function
 function showNotification(message, type = 'success') {
-    const icon = notification.querySelector('i');
-    
-    if (type === 'success') {
-        icon.className = 'fas fa-check-circle';
-    } else {
-        icon.className = 'fas fa-exclamation-circle';
-    }
-    
     notificationMessage.textContent = message;
-    notification.className = `notification ${type} show`;
-    
-    setTimeout(() {
-        notification.className = 'notification hidden';
+    notification.className = 'notification ' + type;
+    notification.classList.add('show');
+
+    // Update icon based on type
+    const icon = notification.querySelector('i');
+    icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+
+    setTimeout(() => {
+        notification.classList.remove('show');
     }, 3000);
 }
 
 // Form toggle functions
 function showLoginForm() {
-    loginForm.classList.remove('hidden');
-    registerForm.classList.add('hidden');
-    forgotPasswordForm.classList.add('hidden');
+    document.getElementById('login-form').classList.remove('hidden');
+    document.getElementById('register-form').classList.add('hidden');
+    document.getElementById('forgot-password-form').classList.add('hidden');
 }
 
 function showRegisterForm() {
-    loginForm.classList.add('hidden');
-    registerForm.classList.remove('hidden');
-    forgotPasswordForm.classList.add('hidden');
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('register-form').classList.remove('hidden');
+    document.getElementById('forgot-password-form').classList.add('hidden');
 }
 
 function showForgotPassword() {
-    loginForm.classList.add('hidden');
-    registerForm.classList.add('hidden');
-    forgotPasswordForm.classList.remove('hidden');
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('register-form').classList.add('hidden');
+    document.getElementById('forgot-password-form').classList.remove('hidden');
 }
 
 // Auth functions
-async function login() {
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
-    
-    if (!username || !password) {
-        showNotification('Please fill in all fields', 'error');
-        return;
-    }
-    
-    alert("Login attempt started"); // Added for debugging
+async function login(email, password, rememberMe) {
     try {
-        // Try to log in with Parse
-        const user = await Parse.User.logIn(username, password);
-        alert("Login successful"); // Added for debugging
-        showNotification(`Welcome back, ${user.get('username')}!`, 'success');
+        const user = await Parse.User.logIn(email, password);
+        showNotification('Login successful!', 'success');
+
+        // Store login session if remember me is checked    
+        if (rememberMe) {    
+            localStorage.setItem('rememberedUser', JSON.stringify({    
+                username: user.getUsername(),    
+                sessionToken: user.getSessionToken()    
+            }));    
+        }    
         
-        // Switch to app view
-        setTimeout(() => {
-            authContainer.classList.add('hidden');
-            appContainer.classList.remove('hidden');
-            loadFeed();
-        }, 1000);
+        // Hide login screen and show app    
+        loginScreen.style.display = 'none';    
+        appContainer.style.display = 'block';    
+
     } catch (error) {
-        alert("Login error: " + error.message); // Added for debugging
-        showNotification('Login failed. Please check your credentials.', 'error');
-        console.error('Login error:', error);
+        showNotification(error.message, 'error');
     }
 }
 
-async function register() {
-    const username = document.getElementById('register-username').value;
-    const fullname = document.getElementById('register-fullname').value; // ADDED: Get fullname value
-    const email = document.getElementById('register-email').value;
-    const password = document.getElementById('register-password').value;
-    const confirmPassword = document.getElementById('register-confirm-password').value;
-    
-    // UPDATED: Include fullname in validation
-    if (!username || !fullname || !email || !password || !confirmPassword) {
-        showNotification('Please fill in all fields', 'error');
-        return;
-    }
-    
-    if (password !== confirmPassword) {
-        showNotification('Passwords do not match', 'error');
-        return;
-    }
-    
-    alert("Registration attempt started"); // Added for debugging
+async function register(username, fullname, email, password) {
+    const user = new Parse.User();
+    user.set('username', username);
+    user.set('password', password);
+    user.set('email', email);
+    user.set('fullNam', fullname); // Using 'fullNam' to match Back4App schema
+
     try {
-        // Create new Parse user
-        const user = new Parse.User();
-        user.set('username', username);
-        user.set('fullName', fullname); // CHANGED: Set fullName field with capital N
-        user.set('email', email);
-        user.set('password', password);
-        
         await user.signUp();
-        alert("Registration successful"); // Added for debugging
-        showNotification('Account created successfully!', 'success');
-        
-        // Switch to login form
-        setTimeout(() => {
-            showLoginForm();
-        }, 1000);
+        showNotification('Registration successful! Please log in.', 'success');
+        showLoginForm();
     } catch (error) {
-        alert("Registration error: " + error.message); // Added for debugging
-        showNotification('Registration failed. Please try again.', 'error');
-        console.error('Registration error:', error);
+        showNotification(error.message, 'error');
     }
 }
 
-async function resetPassword() {
-    const email = document.getElementById('reset-email').value;
-    
-    if (!email) {
-        showNotification('Please enter your email address', 'error');
-        return;
-    }
-    
+async function resetPassword(email) {
     try {
-        // Request password reset
         await Parse.User.requestPasswordReset(email);
-        showNotification('Password reset link sent to your email', 'success');
-        
-        // Switch to login form
-        setTimeout(() => {
-            showLoginForm();
-        }, 1000);
+        showNotification('Password reset email sent!', 'success');
+        showLoginForm();
     } catch (error) {
-        showNotification('Password reset failed. Please check your email.', 'error');
-        console.error('Password reset error:', error);
+        showNotification(error.message, 'error');
     }
 }
 
-function socialLogin(provider) {
-    showNotification(`Logging in with ${provider}...`);
-    
-    // In a real app, you would implement OAuth flow for the selected provider
-    setTimeout(() => {
-        showNotification(`${provider} login is not implemented in this demo`, 'error');
-    }, 1000);
-}
-
-// Post functions
-async function createPost() {
-    const content = document.getElementById('post-content').value;
-    
-    if (!content) {
-        showNotification('Please write something first', 'error');
-        return;
-    }
-    
-    try {
-        // Create a new Post object
-        const Post = Parse.Object.extend('Post');
-        const post = new Post();
-        
-        // Set the content and author
-        post.set('content', content);
-        post.set('author', Parse.User.current());
-        
-        // Save the post
-        await post.save();
-        
-        // Add to feed
-        addPostToFeed({
-            id: post.id,
-            user: Parse.User.current().get('username'),
-            avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(Parse.User.current().get('username'))}&background=667eea`,
-            content: content,
-            time: 'Just now',
-            likes: 0,
-            comments: 0
-        });
-        
-        // Clear textarea
-        document.getElementById('post-content').value = '';
-        
-        showNotification('Posted successfully!');
-    } catch (error) {
-        showNotification('Failed to create post. Please try again.', 'error');
-        console.error('Post creation error:', error);
-    }
-}
-
-function addPostToFeed(post) {
-    const postElement = document.createElement('div');
-    postElement.className = 'post';
-    postElement.innerHTML = `
-        <div class="post-header">
-            <img src="${post.avatar}" alt="${post.user}" class="post-avatar">
-            <div>
-                <span class="post-user">${post.user}</span>
-                <span class="post-time">${post.time}</span>
-            </极速赛车开奖直播历史记录
+// Show signup form
+function showSignupForm() {
+    const signupHTML = `
+        <div class="login-card" style="margin-top: 20px;">
+            <div class="login-logo">
+                <div>
+                    <i class="fas fa-globe-americas"></i>
+                    Create Account
+                </div>
             </div>
-        </div>
-        <div class="post-content">
-            ${post.content}
-        </div>
-        <极速赛车开奖直播历史记录
-        <div class="post-footer">
-            <button class="post-action">
-                <i class="far fa-heart"></i>
-                <span>${post.likes}</span>
-            </button>
-            <button class="post-action">
-                <i class="far极速赛车开奖直播历史记录
-                <i class="far fa-comment"></i>
-                <span>${post.comments}</span>
-            </button>
-            <button class="post-action">
-                <i class="far fa-share-square"></i>
-                <span>Share</span>
-            </button>
+            
+            <form class="login-form" id="signupForm">
+                <div class="input-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" placeholder="Choose a username" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="register-fullname">Full Name</label>
+                    <input type="text" id="register-fullname" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" placeholder="Create a password" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="register-confirm-password">Confirm Password</label>
+                    <input type="password" id="register-confirm-password" placeholder="Confirm your password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">Create Account</button>
+                
+                <div class="signup-link">
+                    Already have an account? <a href="#" id="showLogin">Log In</a>
+                </div>
+            </form>
         </div>
     `;
     
-    feed.insertBefore(postElement, feed.firstChild);
-}
-
-async function loadFeed() {
-    // Show loading spinner
-    feedLoading.classList.remove('hidden');
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = signupHTML;
+    document.querySelector('.login-container').appendChild(tempDiv);
     
-    try {
-        // Clear existing posts
-极速赛车开奖直播历史记录
-        feed.innerHTML = '';
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('register-username').value;
+        const fullname = document.getElementById('register-fullname').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('register-confirm-password').value;
         
-        // Query posts from Parse
-        const Post = Parse.Object.extend('Post');
-        const query = new Parse.Query(Post);
-        query.include('author');
-        query.descending('created极速赛车开奖直播历史记录
-        query.descending('createdAt');
-        query.limit(20);
-        
-        const results = await query.find();
-        
-        // Hide loading spinner
-        feedLoading.classList.add('hidden');
-        
-        if (results.length === 0) {
-            // Show message极速赛车开奖直播历史记录
-            // Show message if no posts
-            feed.innerHTML = `
-                <div class="post">
-                    <div class="post-content" style="text-align: center; padding: 30px;">
-                        <i class="fas fa-feather-alt" style="font-size: 40px; color: #极速赛车开奖直播历史记录
-                        <i class="fas fa-feather-alt" style="font-size: 40px; color: #ccc; margin-bottom: 15px;"></i>
-                        <p>No vibes yet. Be the first to post!</p>
-                    </div>
-                </div>
-            `;
+        if (password !== confirmPassword) {
+            showNotification('Passwords do not match', 'error');
             return;
         }
         
-        // Add posts to feed
-        results.forEach(post => {
-            const author = post.get('author');
-            addPostToFeed({
-                id: post.id,
-                user: author.get('username'),
-                avatar: `https://ui-avatars极速赛车开奖直播历史记录
-                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(author.get('username'))}&background=667eea`,
-                content: post.get('content'),
-                time: formatTime(post.createdAt),
-                likes: post.get('likes') || 0,
-                comments: post.get('comments') || 0
-            });
+        register(username, fullname, email, password).then(() => {
+            document.querySelector('.login-container').removeChild(tempDiv);
         });
-    } catch (error) {
-        // Hide loading spinner
-        feedLoading.classList.add('hidden');
-        
-        // Show error message
-        feed.innerHTML = `
-            <div class="post">
-                <div class="post-content" style="text-align: center; padding: 30px;">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: #ff6b6b; margin-bottom: 15px;"></i>
-                    <p>Failed to load vibes. Please try again later.</p>
-                </div>
-            </div>
-        `;
-        console.error('Feed loading error:', error);
-    }
-}
-
-function formatTime(date) {
-    const now = new Date();
-    const diff = now - date;
+    });
     
-    if (diff < 60000) { // Less than 1 minute
-        return 'Just now';
-    } else if (diff < 3600000) { // Less than 1 hour
-        return `${Math.floor(diff / 60000)}m ago`;
-    } else if (diff极速赛车开奖直播历史记录
-    } else if (diff < 86400000) { // Less than 1 day
-        return `${Math.floor(diff / 3600000)}h ago`;
-    } else {
-        return date.toLocaleDateString();
-    }
+    document.getElementById('showLogin').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('.login-container').removeChild(tempDiv);
+    });
 }
 
 // Check if user is already logged in
 function checkCurrentUser() {
     const currentUser = Parse.User.current();
-    
-    if (current极速赛车开奖直播历史记录
+
     if (currentUser) {
-        authContainer.classList.add('hidden');
-        appContainer.classList.remove('hidden');
-        loadFeed();
+        loginScreen.style.display = 'none';
+        appContainer.style.display = 'block';
     } else {
-        showLoginForm();
+        // Check if we have a remembered user
+        const rememberedUser = localStorage.getItem('rememberedUser');
+        if (rememberedUser) {
+            const userData = JSON.parse(rememberedUser);
+            Parse.User.become(userData.sessionToken)
+                .then(() => {
+                    loginScreen.style.display = 'none';
+                    appContainer.style.display = 'block';
+                })
+                .catch(() => {
+                    localStorage.removeItem('rememberedUser');
+                });
+        }
     }
 }
 
 // Initialize the app
-checkCurrentUser();
-// ===== NEW FEATURES FUNCTIONALITY =====
-
-// Initialize new features
-function initNewFeatures() {
-    setupModal();
-    setupAudioPlayer();
-    setupNotifications();
-    setupStories();
-    setupDarkMode();
-}
-
-// Modal functionality
-function setupModal() {
-    const modal = document.getElementById('features-modal');
-    const closeBtn = document.querySelector('.modal-close');
-    
-    // Close modal when clicking close button
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            modal.classList.add极速赛车开奖直播极速赛车开奖直播历史记录
-            modal.classList.add('hidden');
-        });
-    }
-    
-    // Close modal when clicking outside
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.add('hidden');
-        }
+function init() {
+    // Login form submission
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const rememberMe = document.getElementById('remember').checked;
+        
+        login(email, password, rememberMe);
     });
-}
-
-// Show features modal
-function showFeaturesModal() {
-    const modal = document.getElementById('features-modal');
-    modal.classList.remove('hidden');
-}
-
-// Audio player functionality
-function setupAudioPlayer极速赛车开奖直播历史记录
-function setupAudioPlayer() {
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    const volumeSlider = document.getElementById('volume-slider');
     
-    if (playPauseBtn) {
-        playPauseBtn.addEventListener('click', togglePlayPause);
-    }
-    
-    if (volumeSlider) {
-        volumeSlider.addEventListener('input', adjustVolume);
-    }
-}
-
-let isPlaying = false;
-
-function togglePlayPause() {
-    const icon = document.querySelector('#play-pause-btn i');
-    isPlaying = !isPlaying;
-    
-    if (isPlaying) {
-        icon.className = 'fas fa-pause';
-        showNotification('VibeLink Radio started', 'success');
-    } else {
-        icon.className = 'fas fa-play';
-        showNotification('VibeLink Radio paused', 'info');
-    }
-}
-
-function adjustVolume() {
-    const volume = document.getElementById('volume-slider').value;
-    // Volume adjustment logic would go here
-}
-
-// Notifications functionality
-function setupNotifications() {
-    const notificationsBtn = document.getElementById('notifications-btn');
-    const panelClose = document.querySelector('.panel-close');
-    const panel = document.getElementById('notifications-panel');
-    
-    if (notificationsBtn) {
-        notificationsBtn.addEventListener('click', toggleNotifications);
-    }
-    
-    if (panel极速赛车开奖直播历史记录
-    if (panelClose) {
-        panelClose.addEventListener('click', () => {
-            panel.classList.remove('show');
-        });
-    }
-}
-
-function toggleNotifications() {
-    const panel = document.getElementById('notifications-panel');
-    panel.classList.toggle('show');
-    loadNotifications();
-}
-
-function loadNotifications() {
-    const notificationsList = document.querySelector('.notifications-list');
-    
-    // Sample notifications
-    const notifications = [
-        {
-            avatar: 'https://ui-avatars.com/api/?name=Sarah+K&background=667eea',
-            text: 'Sarah K liked your post',
-            time: '2 minutes ago',
-            unread: true
-        },
-        {
-            avatar: 'https://ui-avatars.com/api/?name=Mike+T&background=764ba2',
-            text: 'Mike T started following you',
-            time: '15 minutes ago',
-            unread: true
-        },
-        {
-            avatar: 'https://ui-avatars.com/api/?name=VibeLink&background=ff6b6b',
-            text: 'Welcome to VibeLink 0372! Your account is now active.',
-            time: '1 hour ago',
-           极速赛车开奖直播历史记录
-            time: '1 hour ago',
-            unread: false
-        }
-    ];
-    
-    notificationsList.innerHTML = '';
-    
-    notifications.forEach(notif => {
-        const notifElement = document.createElement('div');
-        notifElement.className = `notification-item ${notif.unread ? 'unread' : ''}`;
-        notifElement.innerHTML = `
-            <img src="${notif.avatar}" alt="Avatar" class="notification-avatar">
-            <div class="notification-content">
-                <p class="notification-text">${notif.text}</极速赛车开奖直播历史记录
-                <p class="notification-text">${not极速赛车开奖直播历史记录
-                <p class="notification-text">${notif.text}</p>
-                <span class="notification-time">${notif.time}</span>
-            </div>
-        `;
-        notificationsList.appendChild(notifElement);
+    // Show signup form
+    showSignup.addEventListener('click', function(e) {
+        e.preventDefault();
+        showSignupForm();
     });
+    
+    // Check if user is already logged in
+    checkCurrentUser();
 }
 
-// Stories functionality
-function setupStories() {
-    // This would handle the stories feature
-    console.log('Stories feature initialized');
-}
-
-// Dark mode functionality
-function setupDarkMode() {
-    // Check for system preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark-mode');
-    }
-    
-    // Listen for system theme changes
-    window.matchMedia('(prefers-color极速赛车开奖直播历史记录
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (e.matches) {
-            document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode');
-        }
-    });
-}
-
-// Enhanced post interactions
-function enhancePostInteractions() {
-    // Add like functionality
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.post-action')) {
-            const action = e.target.closest('.post-action');
-            const icon = action.querySelector('i');
-            
-            if (icon.classList.contains('fa-heart')) {
-                // Like functionality
-                if (icon.classList.contains('far')) {
-                    icon.classList.replace('far',极速赛车开奖直播历史记录
-                    icon.classList.replace('far', 'fas');
-                    icon.style.color = '#ff6b6b';
-                    showNotification('Post liked!', 'success');
-                } else {
-                    icon.classList.replace('fas', 'far');
-                    icon.style.color = '';
-                    showNotification('Post unliked', 'info');
-                }
-            }
-        }
-    });
-}
-
-// Initialize all new features when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    initNewFeatures();
-    enhancePostInteractions();
-    
-    // Add feature discovery button to header
-    const featureBtn = document.createElement('button');
-    featureBtn.className = 'icon-btn';
-    featureBtn.innerHTML = '<极速赛车开奖直播历史记录
-    featureBtn.innerHTML = '<i class="fas fa-rocket"></i>';
-    featureBtn.title = 'Discover Features';
-    featureBtn.addEventListener('click', showFeaturesModal);
-    
-    const headerActions = document.querySelector('.header-actions');
-    if (headerActions) {
-        headerActions.insertBefore(featureBtn, headerActions.firstChild);
-    }
-});
-
-// New utility functions
-function formatNumber(num极速赛车开奖直播历史记录
-function format极速赛车开奖直播历史记录
-function formatNumber(num) {
-    if (num >= 1000000) {
-        return (num / 1000000).toFixed(1) + 'M';
-    } else if (num >= 1000极速赛车开奖直播历史记录
-    } else if (num >= 1000) {
-        return (num / 1000).toFixed极速赛车开奖直播历史记录
-        return (num / 1000).toFixed(1) + 'K';
-    }
-    return num;
-}
-
-function getTimeAgo(date) {
-    const now = new Date();
-    const diff = now - new Date(date);
-    
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-    
-    if (minutes < 60) return `${minutes}m ago`;
-    if (hours < 24) return `${hours}h ago`;
-    if (days < 7) return `${days}d ago`;
-    
-    return new Date(date).toLocaleDateString();
-}
-
-// Export functions for global access (if needed)
-window.VibeLink = {
-    showFeaturesModal,
-    togglePlayPause,
-    toggleNotifications,
-    formatNumber,
-    getTimeAgo
-};
+// Initialize the app when the DOM is loaded
+document.addEventListener('DOMContentLoaded', init);
