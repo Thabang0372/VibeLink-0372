@@ -1,301 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset极速赛车开奖直播历史记录
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VibeLink 0372® – Where the World Vibe Starts</title>
-    <meta name="description" content="A social platform for creators, hustlers, and culture-shapers of Africa and beyond.">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome极速赛车开奖直播历史记录
+    <title>VibeLink 0372 - Social Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="assets/favicon.png">
-    <meta name="theme-color" content="#667eea">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple极速赛车开奖直播历史记录
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title极速赛车开奖极速赛车开奖直播历史记录
-    <meta name="apple-mobile-web-app-title" content="极速赛车开奖直播历史记录
-    <meta name="apple-mobile-web-app-title" content="VibeLink">
-    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=VibeLink&background=667eea&size=192">
+    <link rel="icon" href="icon-192.png">
 </head>
 <body>
-    <!-- Notification Toast -->
-    <div id="notification" class="notification hidden">
-        <i class="fas fa-check-circle"></i>
-        <span id="notification-message"></span>
-    </div>
-
-    <!-- Auth Container -->
-    <div id="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h1>VibeLink 0372 <span class="vibe-pulse"></span></h1>
-                <p>Where the World Vibe Starts 🌍🔥</p>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fas fa-globe-americas"></i>
+                Vibe<span>Link</span> 0372®
+                <div class="tagline">Where the World Vibe Starts 🌍🔥</div>
             </div>
             
-            <div id="login-form" class="auth-form">
+            <form class="login-form" id="loginForm">
                 <div class="input-group">
-                    <label for="login-username" class="sr-only">Username or Email</label>
-                    <input type="text" id="login-username" placeholder="Username or Email极速赛车开奖直播历史记录
-                    <input type="text" id="login-username" placeholder="Username or Email" required>
-                </div>
-                <div class="input-group">
-                    <label for="login-password" class="sr-only">Password</label>
-                    <input type="password" id="login-password" placeholder="Password" required>
-                </div>
-                <button onclick="login()" class="btn btn-primary" id="login-button">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span class="button-text">Login to Your Vibe</span>
-                </button>
-                
-                <div class极速赛车开奖直播历史记录
-                <div class="auth-options">
-                    <label>
-                        <input type="checkbox" id="remember-me"> Remember me
-                    </label>
-                    <a href="#" onclick="showForgotPassword(); return false;">Forgot password?</a>
+                    <label for="email">Email or Phone</label>
+                    <input type="text" id="email" placeholder="Enter your email or phone" required>
                 </div>
                 
-                <div class="auth-divider">
-                    <span>Or continue with</span>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
                 </div>
                 
-                <div class="social-auth">
-                    <button onclick="socialLogin('facebook')" class="btn-social">
-                        <i class="fab fa-facebook" style="color: #1877F2;"></i>
-                        <span>Facebook</span>
-                    </button>
-                    <button onclick="socialLogin('google')" class="btn-social">
-                        <i class="fab fa-google" style极速赛车开奖直播历史记录
-                        <i class="fab fa-google" style="color: #EA4335;"></i>
-                        <span>Google</span>
-                    </button>
+                <div class="login-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    
+                    <a href="#" class="forgot-password">Forgot Password?</a>
                 </div>
                 
-                <p class="auth-switch">极速赛车开奖直播历史记录
-                <p class="auth-switch">No account? <a href="#" onclick="showRegisterForm(); return false;">Register here</a></p>
-            </div>
-
-            <div id="register-form" class="auth-form hidden">
-                <div class="input-group">
-                    <label for="register-username" class="sr-only">Choose a Username</label>
-                    <input type="text" id="register-username" placeholder="Choose a Username" required>
-                </div>
-                <!-- Added Full Name field here -->
-                <div class="input-group">
-                    <label for="register-fullname" class="sr-only">Full Name</极速赛车开奖直播历史记录
-                    <label for="register-fullname" class="sr-only">Full Name</label>
-                    <input type="text" id="register-fullname" placeholder="Full Name" required>
-                </div>
-                <div class="input-group">
-                    <label for="register-email" class="sr-only">Your Email Address</label>
-                    <input type="email" id="register-email" placeholder="Your Email Address" required>
-                </div>
-                <div class="input-group">
-                    <label for="register-password" class="sr-only">Create a Password</label>
-                    <input type="password" id="register-password" placeholder="Create a Password" required>
-                </div>
-                <div class="input-group">
-                    <label for="register-confirm-password" class极速赛车开奖直播历史记录
-                    <label for="register-confirm-password" class="sr-only">Confirm Password</label>
-                    <input type="password" id="register-confirm-password" placeholder="Confirm Password" required>
-                </div>
-                <button onclick="register()" class="btn btn-primary" id="register-button">
-                    <i class="fas fa-user-plus"></i>
-                    <span class="button-text">Create Your Vibe</span>
-                </button>
+                <button type="submit" class="login-btn">Log In</button>
                 
-                <p class="auth-switch">Already have an account? <a href="#" onclick="showLoginForm(); return false;">Login here</a></p>
-            </div>
-
-            <div id="forgot-password-form" class="auth-form极速赛车开奖直播历史记录
-            <极速赛车开奖直播历史记录
-            <div id="forgot-password-form" class="auth-form hidden">
-                <p>Enter your email address and we'll send you a password reset link.</p>
-                <div class="input-group">
-                    <label for="reset-email" class="sr-only">Your Email Address</label>
-                    <input type="email" id="reset-email" placeholder="Your Email Address" required>
+                <div class="signup-link">
+                    Don't have an account? <a href="#" id="showSignup">Sign Up</a>
                 </div>
-                <button onclick="resetPassword()" class="btn btn-primary">
-                    <i class="fas fa-paper-plane"></i>
-                    Send Reset Link
-                </极速赛车开奖直播历史记录
-                </button>
-                <p class="auth-switch"><a href="#" onclick="showLogin极速赛车开奖直播历史记录
-                <p class="auth-switch"><a href="#" onclick="showLoginForm(); return false;">Back to login</a></p>
-            </div>
+            </form>
+        </div>
+        
+        <div class="copyright">
+            © 2025 VibeLink 0372® – Built by Thabang Agondo | Kasi Vibe Foundation & Projects NPC<br>
+            🧠 Powered by Unity. ✊ Driven by You.
         </div>
     </div>
-
-    <!-- Main App Container -->
-    <div id="app-container" class="hidden">
-        <header class="app-header">
-            <div class="header-brand">
-                <h2>VibeLink <span class="vibe-badge">0372</span></h2>
+    
+    <!-- App Container (Initially Hidden) -->
+    <div class="app-container" id="appContainer">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+                Vibe<span>Link</span>
             </div>
-            <div class="header-actions">
-                <button id="feature-btn" class="icon-btn" aria-label="Discover Features">
-                    <i class="fas fa-rocket"></极速赛车开奖直播历史记录
-                    <i class="fas fa-rocket"></i>
-                </button>
-                <button极速赛车开奖直播历史记录
-                <button id="notifications-btn" class="icon-btn" aria-label="Notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification极速赛车开奖直播历史记录
-                    <span class="notification-badge hidden" id="notification-count">3</span>
-                </button>
-                <button id="dark-mode-toggle" class="icon-btn" aria-label="Toggle dark mode">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button id="profile-btn" class="icon-btn" aria-label="Your profile">
-                    <img id="user-avatar" src="https://ui-avatars.com/api/?name=Vibe+User&background=667eea" alt="User profile picture">
-                </button>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        <span class="nav-text">Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-compass"></i>
+                        <span class="nav-text">Discover</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-video"></i>
+                        <span class="nav-text">Videos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-store"></i>
+                        <span class="nav-text">Marketplace</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-briefcase"></i>
+                        <span class="nav-text">Gigs</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span class="nav-text">Groups</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-calendar"></i>
+                        <span class="nav-text">Events</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span class="nav-text">Learn</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-shield-alt"></i>
+                        <span class="nav-text">VibeSecure</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search VibeLink">
+                </div>
+                
+                <div class="user-actions">
+                    <div class="action-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="action-icon">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <div class="user-profile">
+                        <div class="avatar">TA</div>
+                        <span>Thabang</span>
+                    </div>
+                </div>
             </div>
-        </header>
-
-        <main class="app-main">
-            <section class="feed-section" aria-labelledby="feed-heading">
-                <h2 id="feed-heading" class="sr-only">Your Feed</h2>
+            
+            <!-- Feed -->
+            <div class="feed">
+                <!-- Create Post -->
                 <div class="create-post">
-                    <label for="post-content" class="sr-only">Create a new post</label>
-                    <textarea id="post-content" placeholder="What's vibing today?"></textarea>
+                    <div class="post-input">
+                        <div class="avatar">TA</div>
+                        <input type="text" placeholder="What's vibing today?">
+                    </div>
                     <div class="post-actions">
-                        <button onclick="createPost()极速赛车开奖直播历史记录
-                        <button onclick="createPost()" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i>
-                            Post Vibe
-                        </button>
+                        <div class="post-action">
+                            <i class="fas fa-video" style="color: var(--danger);"></i>
+                            <span>Live Video</span>
+                        </div>
+                        <div class="post-action">
+                            <i class="fas fa-photo-video" style="color: var(--success);"></i>
+                            <span>Photo/Video</span>
+                        </div>
+                        <div class="post-action">
+                            <i class="fas fa-smile" style="color: var(--warning);"></i>
+                            <span>Feeling/Activity</span>
+                        </div>
                     </div>
                 </div>
-
-                <div id="feed" class="posts-container">
-                    <div class="loading-spinner"极速赛车开奖直播历史记录
-                    <div class="loading-spinner" id="极速赛车开奖直播历史记录
-                    <div class="极速赛车开奖直播历史记录
-                    <div class="loading-spinner" id="feed-loading">
-                        <div class="spinner"></div>
+                
+                <!-- Post Card 1 -->
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="avatar">SA</div>
+                        <div class="post-user">
+                            <h3>Sarah Adebayo</h3>
+                            <span>2 hours ago · <i class="fas fa-globe-americas"></i></span>
+                        </div>
+                        <div class="post-more">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>Just launched my new fashion line on VibeMarket! Check it out and support African fashion 🌍👗 #VibeLink #AfricanFashion</p>
+                    </div>
+                    <div class="post-image">
+                        <i class="fas fa-image"></i> Fashion Collection
+                    </div>
+                    <div class="post-stats">
+                        <span>245 likes · 36 comments</span>
+                        <span>12 shares</span>
+                    </div>
+                    <div class="post-buttons">
+                        <div class="post-button">
+                            <i class="far fa-heart"></i>
+                            <span>Like</span>
+                        </div>
+                        <div class="post-button">
+                            <i class="far fa-comment"></i>
+                            <span>Comment</span>
+                        </div>
+                        <div class="post-button">
+                            <i class="far fa-share-square"></i>
+                            <span>Share</span>
+                        </div>
                     </div>
                 </div>
-            </section>
-        </main>
-
-        <nav class="bottom-nav" aria-label="Main navigation">
-            <button class="nav-item active" data-section="feed" aria-current="page">
+                
+                <!-- Post Card 2 -->
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="avatar">CJ</div>
+                        <div class="post-user">
+                            <h3>Chijioke Okonkwo</h3>
+                            <span>5 hours ago · <i class="fas fa-users"></i></span>
+                        </div>
+                        <div class="post-more">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>Just dropped a new episode of my VibeCast on entrepreneurship in Africa. Link in bio! 🎙️ #VibeLearn #AfricanEntrepreneurs</p>
+                    </div>
+                    <div class="post-stats">
+                        <span>189 likes · 24 comments</span>
+                        <span>8 shares</span>
+                    </div>
+                    <div class="post-buttons">
+                        <div class="post-button">
+                            <i class="far fa-heart"></i>
+                            <span>Like</span>
+                        </div>
+                        <div class="post-button">
+                            <i class="far fa-comment"></i>
+                            <span>Comment</span>
+                        </div>
+                        <div class="post-button">
+                            <i class="far fa-share-square"></i>
+                            <span>Share</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav">
+            <a href="#" class="mobile-nav-item active">
                 <i class="fas fa-home"></i>
-                <span>Feed</span>
-            </button>
-            <button class="nav-item" data-section="vibes">
-                <i class="fas fa-film"></i>
-                <span>Vibes</span>
-            </button>
-            <button class="nav-item" data-section="chat">
-                <i class="fas fa-comments"></i>
-                <span>Chat</span>
-            </button>
-            <button class="nav-item" data极速赛车开奖直播历史记录
-            <button class="nav-item" data-section="market">
+                <span>Home</span>
+            </a>
+            <a href="#" class="mobile-nav-item">
+                <i class="fas fa-compass"></i>
+                <span>Discover</span>
+            </a>
+            <a href="#" class="mobile-nav-item">
+                <i class="fas fa-video"></i>
+                <span>Videos</span>
+            </a>
+            <a href="#" class="mobile-nav-item">
                 <i class="fas fa-store"></i>
                 <span>Market</span>
-            </button>
-            <button class="nav-item" data-section="profile">
+            </a>
+            <a href="#" class="mobile-nav-item">
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
-            </button>
-        </nav>
-    </div>
-
-    <!-- New Features Modal -->
-    <div id="features-modal" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>VibeLink Features</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="feature-grid">
-                    <div class="feature-item">
-                        <极速赛车开奖直播历史记录
-                        <i class="fas fa-video"></i>
-                        <h4>Vibe Stories</h4>
-                        <p>Share 24-hour disappearing photos and videos</p>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-users"></i>
-                        <h4>Vibe Groups</h4>
-                        <p>Create communities around shared interests</p>
-                    </极速赛车开奖直播历史记录
-                    </div>
-                    <div class="feature-item">
-                        <i class极速赛车开奖直播历史记录
-                        <i class="fas fa-store"></i>
-                        <h4极速赛车开奖直播历史记录
-                        <h4>Vibe Market</h4>
-                        <p>Sell products directly to your audience</p>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-broadcast-tower"></i>
-                        <h4>Go Live</h4>
-                        <p>Broadcast live video to your followers</p>
-                    </div>
-                </div>
-            </div>
+            </a>
         </div>
     </div>
 
-    <!-- New Audio Player -->
-    <div id="audio-player" class="audio-player hidden">
-        <div class="player-control极速赛车开奖直播历史记录
-        <div class="player-controls">
-            <button id="prev-btn"><i class="fas fa-step-backward"></i></button>
-            <button id="play-pause-btn"><i class="fas fa-play"></i></button>
-            <button id="next-btn"><i class="fas fa-step-forward"></i></button>
-        </div>
-        <div class="player-info">
-            <span id="now-playing">Now Playing: VibeLink Radio</span>
-            <div class="progress-bar">
-                <div class="progress"></div>
-            </div>
-        </div>
-        <div class="player-volume">
-            <i class="fas fa-volume-up"></i>
-            <input type="range" id="volume-slider" min="0" max="100" value="80">
-        </div>
-    </极速赛车开奖直播历史记录
-    </div>
-
-    <!-- New Notification Center -->
-    <div id="notifications-panel" class="notifications-panel hidden">
-        <div class="panel-header">
-            <h3>Notifications</h3>
-            <button class="panel-close">&times;</button>
-        </div>
-        <div class="notifications-list">
-            <!-- Notifications will be added here dynamically -->
-        </div>
-    </div>
-
-    <!-- PWA Install Prompt (initially hidden) -->
-    <div id="p极速赛车开奖直播历史记录
-    <div id="pwa-install-prompt" class="pwa-install-prompt hidden">
-        <极速赛车开奖直播历史记录
-        <p>Install VibeLink for a better experience?</p>
-        <div class="pwa-install-buttons">
-            <button id="pwa-install-cancel" class="btn-outline">Not Now</button>
-            <button id="pwa-install-confirm" class="btn-gradient">Install</button>
-        </div>
-    </div>
-
-    <!-- Install Button (hidden) -->
-    <button id="install-button" class="install-button hidden">Install App</button>
-
-    <!-- Load Parse SDK and Font Awesome -->
-    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6极速赛车开奖直播历史记录
-    <script src="极速赛车开奖直播历史记录
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://npmcdn.com/parse/dist/parse.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
