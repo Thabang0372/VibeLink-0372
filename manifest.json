@@ -1,11 +1,11 @@
 {
   "name": "VibeLink 0372®",
   "short_name": "VibeLink",
-  "description": "Where the World Vibe Starts - A next-generation social multimedia ecosystem",
+  "description": "Where the World Vibe Starts - Digital universe for creators, hustlers, and culture-shapers",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1A1A2E",
-  "theme_color": "#6A35EE",
+  "background_color": "#0f2027",
+  "theme_color": "#ffdd59",
   "orientation": "portrait",
   "icons": [
     {
@@ -19,7 +19,6 @@
       "type": "image/png"
     }
   ],
-  "categories": ["social", "entertainment", "business"],
-  "lang": "en",
-  "scope": "/"
+  "categories": ["social", "entertainment", "productivity"],
+  "lang": "en"
 }
