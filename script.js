@@ -1,1 +1,1 @@
-// VibeLink script.js
+// vibelink/script.js placeholder content
