@@ -1,1 +1,1 @@
-# VibeLink 0372
+// vibelink/README.md placeholder content
