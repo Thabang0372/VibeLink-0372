@@ -1,1 +1,1 @@
-// service-worker.js placeholder
+// vibelink/service-worker.js placeholder content
