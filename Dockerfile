@@ -1,1 +1,1 @@
-# Dockerfile placeholder
+// vibelink/Dockerfile placeholder content
