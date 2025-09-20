@@ -1,1 +1,300 @@
-// vibelink/offline.html placeholder content
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeLink 0372® - Offline</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #000;
+            --accent-color: #ffdd59;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --text-color: #fff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255, 221, 89, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 75% 75%, rgba(255, 221, 89, 0.1) 0%, transparent 20%);
+        }
+        
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .logo {
+            margin-bottom: 20px;
+        }
+        
+        .logo img {
+            width: 80px;
+            height: 80px;
+            filter: drop-shadow(0 0 10px rgba(255, 221, 89, 0.5));
+        }
+        
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--accent-color), #ff8c00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        
+        p {
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            font-size: 0.9em;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #f44336;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .offline-features {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .offline-features h3 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+        }
+        
+        .offline-features h3 i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .offline-features ul {
+            list-style-type: none;
+        }
+        
+        .offline-features li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .offline-features li i {
+            margin-right: 10px;
+            color: var(--accent-color);
+            font-size: 0.8em;
+            margin-top: 4px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--accent-color);
+            color: #000;
+        }
+        
+        .btn-primary:hover {
+            background: #ffc107;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .connection-status {
+            margin-top: 25px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            p {
+                font-size: 1.1em;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="icon-192.png" alt="VibeLink 0372® Logo">
+        </div>
+        
+        <h1>🌐 Connection Lost</h1>
+        
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>You're currently offline</span>
+        </div>
+        
+        <p>Don't worry, your vibe is still safe with us. We'll automatically restore your connection when possible.</p>
+        
+        <div class="offline-features">
+            <h3><i class="fas fa-lightbulb"></i> While you're offline, you can:</h3>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> View previously loaded content</li>
+                <li><i class="fas fa-check-circle"></i> Draft new posts or messages</li>
+                <li><i class="fas fa-check-circle"></i> Edit your profile information</li>
+                <li><i class="fas fa-check-circle"></i> Browse cached marketplace items</li>
+                <li><i class="fas fa-check-circle"></i> Play offline mini-games</li>
+            </ul>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="window.location.reload()">
+                <i class="fas fa-sync-alt"></i> Retry Connection
+            </button>
+            <button class="btn btn-secondary" onclick="showOfflineContent()">
+                <i class="fas fa-desktop"></i> Browse Offline Content
+            </button>
+        </div>
+        
+        <div class="connection-status">
+            <p>Attempting to reconnect... <span id="retry-count">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Retry counter
+        let retryCount = 0;
+        const retryElement = document.getElementById('retry-count');
+        
+        // Function to check connection status
+        function checkConnection() {
+            if (navigator.onLine) {
+                window.location.reload();
+            } else {
+                retryCount++;
+                retryElement.textContent = retryCount;
+                
+                // Retry every 5 seconds
+                setTimeout(checkConnection, 5000);
+            }
+        }
+        
+        // Function to show offline content
+        function showOfflineContent() {
+            alert('Opening your cached content...\n\nWhile offline, you can view previously loaded posts, edit drafts, and play mini-games.');
+            // In a real implementation, this would navigate to cached content
+        }
+        
+        // Start checking for connection
+        checkConnection();
+        
+        // Listen for online event
+        window.addEventListener('online', function() {
+            // Show notification that connection is restored
+            const statusIndicator = document.querySelector('.status-indicator span');
+            const statusDot = document.querySelector('.status-dot');
+            
+            statusIndicator.textContent = 'Connection restored!';
+            statusDot.style.backgroundColor = '#4CAF50';
+            
+            // Wait a moment before reloading to show the feedback
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
