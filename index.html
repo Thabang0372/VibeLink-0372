@@ -1,1 +1,199 @@
-// vibelink/index.html placeholder content
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeLink 0372® - Where the World Vibe Starts</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta name="theme-color" content="#000000">
+</head>
+<body>
+    <!-- Watermark -->
+    <div class="watermark" aria-hidden="true"></div>
+
+    <!-- Toast notifications -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Install PWA Button -->
+    <button class="install-btn" id="installBtn" style="display: none;">
+        <i class="fas fa-download"></i>
+    </button>
+
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-logo">
+                <!-- Professional vector logo -->
+                <img src="icon-512.png" alt="VibeLink 0372 Logo" class="logo-vector">
+            </div>
+            <h1 class="login-title">VibeLink 0372®</h1>
+            <p class="login-subtitle">Where the World Vibe Starts 🌍🔥</p>
+            <div class="form-group">
+                <button class="btn btn-primary" style="width:100%" id="startLoginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Sign In to Continue
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal" role="dialog" aria-labelledby="loginModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="loginModalTitle">Sign In to VibeLink</h2>
+                <button class="close-modal" aria-label="Close login modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="login-email" class="form-label">Email or Phone</label>
+                    <input type="text" id="login-email" class="form-input" placeholder="Enter your email or phone" aria-required="true">
+                </div>
+                <div class="form-group">
+                    <label for="login-password" class="form-label">Password</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="Enter your password" aria-required="true">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" style="width:100%" id="loginBtn">
+                        <span class="spinner" id="loginSpinner" style="display:none;"></span>
+                        Sign In
+                    </button>
+                </div>
+                <p style="text-align:center; margin-top:15px;">
+                    <a href="#" style="color:var(--primary);">Forgot password?</a>
+                </p>
+                <div style="text-align:center; margin:15px 0;">
+                    <span style="color:var(--text-secondary);">Or continue with</span>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-secondary" style="width:100%">
+                        <i class="fas fa-sms" aria-hidden="true"></i> SMS Verification
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p>Don't have an account? <a href="#" style="color:var(--primary);">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secure Chat Modal -->
+    <div class="modal" id="secureChatModal" role="dialog" aria-labelledby="secureChatModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="secureChatModalTitle">VibeSecureChat™</h2>
+                <button class="close-modal" aria-label="Close secure chat modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="secure-chat-indicator">
+                    <i class="fas fa-lock"></i>
+                    <span>End-to-end encrypted</span>
+                </div>
+                <div class="form-group">
+                    <label for="secure-chat-recipient" class="form-label">Recipient</label>
+                    <input type="text" id="secure-chat-recipient" class="form-input" placeholder="Enter username" aria-required="true">
+                </div>
+                <div class="form-group">
+                    <label for="secure-chat-message" class="form-label">Message</label>
+                    <textarea id="secure-chat-message" class="form-input" placeholder="Type your secure message" rows="4" aria-required="true"></textarea>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" style="width:100%" id="sendSecureMessageBtn">
+                        <i class="fas fa-lock"></i> Send Secure Message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div class="app-container" id="appContainer">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <img src="icon-192.png" alt="VibeLink 0372 Logo" class="header-logo">
+                <div class="logo-text">VibeLink 0372®</div>
+            </div>
+
+            <div class="search-bar">
+                <i class="search-icon fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Search vibes, people, and tags..." aria-label="Search">
+            </div>
+
+            <div class="header-actions" id="headerActions">
+                <button class="action-btn" aria-label="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <button class="action-btn" id="secureChatBtn" aria-label="Secure chat">
+                    <i class="fas fa-lock"></i>
+                </button>
+                <button class="action-btn" id="createPostBtn" aria-label="Create new post">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <img src="default-avatar.png" alt="User profile picture" class="user-avatar" id="userMenuBtn">
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="app-nav" id="appNav">
+            <h2 class="nav-title"><i class="fas fa-compass"></i> Vibe Navigation</h2>
+            <ul class="nav-list">
+                <li class="nav-item active" data-section="smartFeed"><i class="fas fa-home nav-icon"></i> Smart Feed</li>
+                <li class="nav-item" data-section="quickVibes"><i class="fas fa-film nav-icon"></i> QuickVibes <span class="nav-badge">NEW</span></li>
+                <li class="nav-item" data-section="vibeChat"><i class="fas fa-comment nav-icon"></i> VibeChat <span class="nav-badge">5</span></li>
+                <li class="nav-item" data-section="goLive"><i class="fas fa-broadcast-tower nav-icon"></i> Go Live</li>
+                <li class="nav-item" data-section="marketplace"><i class="fas fa-shopping-bag nav-icon"></i> Marketplace</li>
+                <li class="nav-item" data-section="jobsGigs"><i class="fas fa-briefcase nav-icon"></i> Jobs & Gigs</li>
+                <li class="nav-item" data-section="communityEvents"><i class="fas fa-calendar-alt nav-icon"></i> Community & Events</li>
+                <li class="nav-item" data-section="growthLearning"><i class="fas fa-graduation-cap nav-icon"></i> Growth & Learning</li>
+                <li class="nav-item" data-section="vibeSecureChat"><i class="fas fa-lock nav-icon"></i> VibeSecureChat™</li>
+                <li class="nav-item" data-section="vibeAssistant"><i class="fas fa-eye nav-icon"></i> VibeAssistant AI</li>
+                <li class="nav-item" data-section="analytics"><i class="fas fa-chart-bar nav-icon"></i> Analytics</li>
+                <li class="nav-item" data-section="settings"><i class="fas fa-cog nav-icon"></i> Settings</li>
+                <li class="nav-item" id="logoutBtn"><i class="fas fa-door-open nav-icon"></i> Logout</li>
+                <!-- Wallet Section -->
+                <div class="vibe-wallet" id="vibeWallet">
+                    <div class="wallet-header">
+                        <div class="wallet-title">VibeWallet</div>
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="wallet-balance" id="walletBalance">R 1,245.00</div>
+                    <div class="wallet-actions">
+                        <button class="wallet-btn" id="addMoneyBtn">Add Money</button>
+                        <button class="wallet-btn" id="sendMoneyBtn">Send</button>
+                    </div>
+                </div>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-main" id="appMain">
+            <div class="welcome-card">
+                <h1 class="welcome-title">Where the World Vibe Starts 🌍🔥</h1>
+                <p class="welcome-subtitle">Connect, create, and thrive in our digital universe for creators, hustlers, and culture-shapers.</p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary" id="startVibeingBtn"><i class="fas fa-rocket"></i> Start Vibeing</button>
+                    <button class="btn btn-secondary" id="learnMoreBtn"><i class="fas fa-book"></i> Learn More</button>
+                </div>
+            </div>
+            <div id="feed">
+                <!-- Dynamic content for all features -->
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer" id="appFooter">
+            <p class="footer-text">© 2025 VibeLink 0372® — Built by Thabang Agondo</p>
+            <p class="footer-text">Created by: Kasi Vibe Foundation & Projects NPC</p>
+            <p class="footer-text">🧠 Powered by Unity. ✊ Driven by You.</p>
+        </footer>
+    </div>
+
+    <!-- Parse SDK & App Script -->
+    <script src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
