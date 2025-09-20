@@ -1,1 +1,197 @@
-// vibelink/manifest.json placeholder content
+{
+  "name": "VibeLink 0372®",
+  "short_name": "VibeLink",
+  "description": "Where the World Vibe Starts - Connect, create, and thrive in our digital universe for creators, hustlers, and culture-shapers",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f2027",
+  "theme_color": "#ffdd59",
+  "orientation": "portrait-primary",
+  "categories": ["social", "entertainment", "productivity", "business", "education", "lifestyle"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "id": "/",
+  "prefer_related_applications": false,
+  
+  "icons": [
+    {
+      "src": "icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  
+  "screenshots": [
+    {
+      "src": "screenshot-mobile-1.png",
+      "sizes": "375x667",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "VibeLink Home Screen"
+    },
+    {
+      "src": "screenshot-mobile-2.png",
+      "sizes": "375x667",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "VibeLink Feed"
+    },
+    {
+      "src": "screenshot-desktop-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "VibeLink Desktop Experience"
+    },
+    {
+      "src": "screenshot-desktop-2.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "VibeLink Profile Management"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "New Post",
+      "short_name": "Post",
+      "description": "Create a new vibe post",
+      "url": "/?create-post",
+      "icons": [
+        {
+          "src": "shortcut-post.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Explore Vibes",
+      "short_name": "Explore",
+      "description": "Discover new content and creators",
+      "url": "/?explore",
+      "icons": [
+        {
+          "src": "shortcut-explore.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "short_name": "Chat",
+      "description": "Connect with your vibe community",
+      "url": "/?messages",
+      "icons": [
+        {
+          "src": "shortcut-chat.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Live Stream",
+      "short_name": "Go Live",
+      "description": "Start a live streaming session",
+      "url": "/?go-live",
+      "icons": [
+        {
+          "src": "shortcut-live.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  
+  "protocol_handlers": [
+    {
+      "protocol": "web+vibelink",
+      "url": "/?handle-protocol=%s"
+    }
+  ],
+  
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.vibelink.app",
+      "id": "com.vibelink.app"
+    },
+    {
+      "platform": "itunes",
+      "url": "https://itunes.apple.com/app/vibelink/id123456789"
+    },
+    {
+      "platform": "webapp",
+      "url": "https://vibelink0372.com/manifest.json"
+    }
+  ],
+  
+  "features": [
+    "Cross-platform",
+    "Social Networking",
+    "Live Streaming",
+    "Encrypted Messaging",
+    "Marketplace",
+    "Event Management",
+    "Content Creation",
+    "Community Building",
+    "Real-time Updates",
+    "Offline Functionality"
+  ],
+  
+  "iarc_rating_id": "e58a12b3-71a7-4db3-b66a-12d2a98e58f1"
+}
