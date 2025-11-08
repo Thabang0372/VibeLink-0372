@@ -17,22 +17,23 @@
         <section id="auth-section" class="auth-section active">
             <div class="auth-container">
                 <div class="brand-hero">
-                    <img src="assets/logo.svg" alt="VibeLink 0372" class="hero-logo">
+                    <img src="assets/logo.svg" alt="VibeLink 0372" class="hero-logo" onerror="this.style.display='none'">
                     <h1 class="brand-title">VibeLink 0372®</h1>
-                    <p class="slogan">Where the World Vibe Starts</p>
+                    <p class="slogan">Where the World Vibe Starts 🌍🔥</p>
                 </div>
                 <div class="auth-forms-container">
                     <div class="form-tabs">
-                        <button class="tab-btn active" data-tab="login">Login 🔐</button>
-                        <button class="tab-btn" data-tab="signup">Sign Up 🎉</button>
+                        <button class="tab-btn active" data-tab="login">Sign In 🔐</button>
+                        <button class="tab-btn" data-tab="signup">Create Account 🎉</button>
                     </div>
                     <div class="form-content">
                         <form id="loginForm" class="auth-form active">
                             <div class="input-group">
                                 <input type="text" id="loginUsername" placeholder="👤 Username or Email" required>
                             </div>
-                            <div class="input-group">
+                            <div class="input-group password-group">
                                 <input type="password" id="loginPassword" placeholder="🔒 Password" required>
+                                <button type="button" class="password-toggle" data-target="loginPassword">👁️</button>
                             </div>
                             <button type="submit" class="btn btn-primary vibegradient">🚀 Sign In</button>
                         </form>
@@ -43,25 +44,29 @@
                             <div class="input-group">
                                 <input type="email" id="signupEmail" placeholder="📧 Email" required>
                             </div>
-                            <div class="input-group">
+                            <div class="input-group password-group">
                                 <input type="password" id="signupPassword" placeholder="🔒 Password" required>
+                                <button type="button" class="password-toggle" data-target="signupPassword">👁️</button>
                             </div>
                             <button type="submit" class="btn btn-primary vibegradient">🎉 Create Account</button>
                         </form>
                     </div>
                 </div>
+                <footer class="auth-footer">
+                    <p>© 2025 VibeLink 0372® — Built by Thabang Agondo | Created by: Kasi Vibe Foundation & Projects NPC 🧠 Powered by Unity ✊ Driven by You.</p>
+                </footer>
             </div>
         </section>
 
         <section id="app-section" class="app-section">
             <nav class="main-nav">
                 <div class="nav-brand">
-                    <img src="assets/logo.svg" alt="VibeLink" class="nav-logo">
+                    <img src="assets/logo.svg" alt="VibeLink" class="nav-logo" onerror="this.style.display='none'">
                     <span class="nav-title">VibeLink 0372®</span>
                 </div>
                 <div class="nav-center">
                     <a href="#home" class="nav-item active" data-page="home">
-                        <span class="nav-icon">🏠</span>
+                        <span class="nav-icon">📱</span>
                         <span class="nav-text">Home</span>
                     </a>
                     <a href="#feed" class="nav-item" data-page="feed">
@@ -220,7 +225,7 @@
                 <div id="profile-page" class="page">
                     <div class="profile-header">
                         <div class="profile-avatar-container">
-                            <img src="assets/default-avatar.png" alt="Profile" class="profile-avatar" id="profile-avatar">
+                            <img src="assets/default-avatar.png" alt="Profile" class="profile-avatar" id="profile-avatar" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+👤</dGV4dD4KPC9zdmc+'">
                             <div class="online-status"></div>
                         </div>
                         <div class="profile-info">
@@ -329,7 +334,7 @@
     </div>
 
     <div class="watermark">
-        <img src="assets/logo.svg" alt="VibeLink 0372">
+        <img src="assets/logo.svg" alt="VibeLink 0372" onerror="this.style.display='none'">
     </div>
 
     <div id="offline-indicator" class="offline-indicator hidden">
@@ -338,9 +343,33 @@
 
     <script src="script.js"></script>
     <script>
-        Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA","u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
-        Parse.serverURL='https://parseapi.back4app.com/';
-        if('serviceWorker'in navigator){navigator.serviceWorker.register('/service-worker.js').then(()=>console.log('SW registered')).catch(e=>console.log('SW failed:',e));}
+        // Initialize Parse with error handling
+        try {
+            Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA","u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
+            Parse.serverURL='https://parseapi.back4app.com/';
+        } catch (error) {
+            console.warn('Parse initialization failed, using fallback storage');
+        }
+
+        // Service Worker Registration with offline fallback
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(() => console.log('SW registered'))
+                .catch(e => {
+                    console.log('SW failed:', e);
+                    // Fallback: Show offline capabilities even if SW fails
+                    localStorage.setItem('offlineMode', 'true');
+                });
+        }
+
+        // Offline detection
+        window.addEventListener('online', () => {
+            document.getElementById('offline-indicator').classList.add('hidden');
+        });
+        
+        window.addEventListener('offline', () => {
+            document.getElementById('offline-indicator').classList.remove('hidden');
+        });
     </script>
 </body>
 </html>
