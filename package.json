@@ -1,0 +1,311 @@
+{
+  "name": "vibelink-0372",
+  "version": "1.0.0",
+  "description": "VibeLink 0372® - Complete Social Platform PWA - Where the World Vibe Starts",
+  "type": "module",
+  "main": "script.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "concurrently \"npm run server\" \"npm run watch\"",
+    "server": "node server.js",
+    "build": "npm run build:css && npm run build:js && npm run build:html && npm run build:assets && npm run build:sw",
+    "build:css": "postcss style.css -o dist/style.min.css --map --env production",
+    "build:js": "rollup -c rollup.config.js",
+    "build:html": "node build-html.js",
+    "build:assets": "node build-assets.js",
+    "build:sw": "workbox injectManifest workbox-config.js",
+    "watch": "chokidar '**/*.css' '**/*.js' '**/*.html' -c 'npm run build'",
+    "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:unit": "jest --config jest.config.js",
+    "test:integration": "node tests/integration.js",
+    "test:e2e": "playwright test",
+    "lint": "eslint . --ext .js,.html --fix",
+    "lint:css": "stylelint '**/*.css' --fix",
+    "audit": "npm audit --audit-level=critical && npm run audit:ci",
+    "audit:ci": "audit-ci --config ./audit-ci.json",
+    "security": "npm run security:scan && npm run security:audit",
+    "security:scan": "snyk test && snyk monitor",
+    "security:audit": "node security-audit.js",
+    "docker:build": "docker build -t vibelink-0372 .",
+    "docker:run": "docker run -d -p 80:80 -p 443:443 --name vibelink-app vibelink-0372",
+    "docker:compose": "docker-compose up -d",
+    "docker:production": "docker-compose -f docker-compose.prod.yml up -d",
+    "deploy": "npm run build && npm run deploy:gh-pages",
+    "deploy:gh-pages": "gh-pages -d dist",
+    "deploy:netlify": "netlify deploy --prod --dir=dist",
+    "deploy:vercel": "vercel --prod",
+    "deploy:aws": "node deploy-aws.js",
+    "analyze": "npm run analyze:bundle && npm run analyze:performance",
+    "analyze:bundle": "webpack-bundle-analyzer dist/stats.json",
+    "analyze:performance": "lighthouse https://thabang0372.github.io/VibeLink-0372/ --output json --output html --output-path ./lighthouse",
+    "monitor": "npm run monitor:performance && npm run monitor:security",
+    "monitor:performance": "node monitor-performance.js",
+    "monitor:security": "node monitor-security.js",
+    "backup": "node backup-database.js",
+    "restore": "node restore-database.js",
+    "migrate": "node database-migrations.js",
+    "seed": "node database-seeder.js",
+    "clean": "rimraf dist build coverage .cache",
+    "preinstall": "node preinstall-check.js",
+    "postinstall": "node postinstall-setup.js",
+    "prebuild": "npm run clean && npm run lint && npm run test",
+    "postbuild": "npm run analyze && npm run security",
+    "prerelease": "npm run build && npm run test && npm run audit",
+    "release": "standard-version",
+    "postrelease": "git push --follow-tags origin main && npm run deploy"
+  },
+  "keywords": [
+    "pwa",
+    "social-media",
+    "real-time",
+    "encryption",
+    "marketplace",
+    "streaming",
+    "wallet",
+    "ai",
+    "analytics",
+    "offline",
+    "progressive-web-app",
+    "vibelink",
+    "enterprise",
+    "secure",
+    "parse-server",
+    "mongodb",
+    "redis",
+    "docker",
+    "nginx",
+    "websockets"
+  ],
+  "author": {
+    "name": "VibeLink 0372 Team",
+    "email": "developers@vibelink0372.com",
+    "url": "https://vibelink0372.com"
+  },
+  "contributors": [
+    {
+      "name": "Thabang 0372",
+      "email": "thabang0372@vibelink0372.com",
+      "url": "https://github.com/thabang0372"
+    }
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thabang0372/VibeLink-0372.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thabang0372/VibeLink-0372/issues"
+  },
+  "homepage": "https://thabang0372.github.io/VibeLink-0372/",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "not dead",
+    "not ie < 11",
+    "not op_mini all"
+  ],
+  "dependencies": {
+    "parse": "^4.2.0",
+    "workbox-build": "^7.0.0",
+    "crypto-js": "^4.1.1",
+    "jsencrypt": "^3.3.2",
+    "idb": "^7.1.1",
+    "compression": "^1.7.4",
+    "helmet": "^7.1.0",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "cors": "^2.8.5",
+    "express-validator": "^7.0.1",
+    "compression": "^1.7.4",
+    "morgan": "^1.10.0",
+    "uuid": "^9.0.1",
+    "axios": "^1.6.2",
+    "ws": "^8.14.2",
+    "redis": "^4.6.10",
+    "mongodb": "^6.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "otplib": "^12.0.1",
+    "qrcode": "^1.5.3",
+    "stripe": "^14.5.0",
+    "sharp": "^0.32.6",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "audit-ci": "^6.6.1",
+    "chokidar": "^3.5.3",
+    "concurrently": "^8.2.2",
+    "cssnano": "^6.0.1",
+    "eslint": "^8.56.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "gh-pages": "^6.1.1",
+    "html-minifier": "^4.0.0",
+    "http-server": "^14.1.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-puppeteer": "^9.0.0",
+    "lighthouse": "^11.3.0",
+    "netlify-cli": "^17.0.0",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0",
+    "postcss-preset-env": "^9.3.0",
+    "playwright": "^1.40.1",
+    "prettier": "^3.1.1",
+    "puppeteer": "^21.6.1",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.9.2",
+    "snyk": "^1.1198.0",
+    "standard-version": "^9.5.0",
+    "stylelint": "^16.0.2",
+    "stylelint-config-standard": "^36.0.0",
+    "terser": "^5.24.0",
+    "vercel": "^33.0.1",
+    "webpack-bundle-analyzer": "^4.10.1",
+    "workbox-cli": "^7.0.0"
+  },
+  "peerDependencies": {
+    "node": ">=18.0.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8",
+    "utf-8-validate": "^6.0.3"
+  },
+  "bundledDependencies": [
+    "parse",
+    "workbox-build",
+    "crypto-js"
+  ],
+  "files": [
+    "dist/",
+    "src/",
+    "assets/",
+    "*.js",
+    "*.html",
+    "*.css",
+    "*.json",
+    "Dockerfile",
+    "nginx.conf",
+    "docker-compose.yml",
+    "deploy.sh",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "config": {
+    "port": 3000,
+    "api_port": 1337,
+    "parse_mount": "/parse",
+    "database_uri": "mongodb://localhost:27017/vibelink",
+    "redis_uri": "redis://localhost:6379",
+    "session_secret": "vibelink-0372-session-secret-2024",
+    "encryption_key": "vibelink-0372-encryption-key-2024"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "restricted"
+  },
+  "funding": {
+    "type": "patreon",
+    "url": "https://patreon.com/vibelink0372"
+  },
+  "private": true,
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "volta": {
+    "node": "18.18.2",
+    "npm": "9.8.1"
+  },
+  "release": {
+    "branches": [
+      "main",
+      "develop"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
+  },
+  "stylelint": {
+    "extends": "stylelint-config-standard",
+    "rules": {
+      "color-hex-case": "lower",
+      "color-hex-length": "short",
+      "comment-empty-line-before": "always",
+      "declaration-block-trailing-semicolon": "always",
+      "indentation": 2,
+      "max-nesting-depth": 4
+    }
+  },
+  "eslintConfig": {
+    "extends": "standard",
+    "env": {
+      "browser": true,
+      "es2022": true,
+      "node": true,
+      "jest": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-unused-vars": "warn",
+      "no-console": "warn"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "printWidth": 100
+  },
+  "snyk": true,
+  "workbox": {
+    "globDirectory": "dist/",
+    "globPatterns": [
+      "**/*.{html,js,css,json,png,jpg,svg,woff,woff2,ttf,eot}"
+    ],
+    "swDest": "dist/service-worker.js",
+    "clientsClaim": true,
+    "skipWaiting": true
+  }
+}
