@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>VibeLink 0372® - Where the World Vibe Starts</title>
     <meta name="theme-color" content="#0D0D0D">
-    <meta name="description" content="Complete social platform with AI, marketplace, streaming, and more">
+    <meta name="description" content="Complete social platform with AI,marketplace,streaming,and more">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/icon-192.png">
@@ -14,7 +14,6 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Authentication Section -->
         <section id="auth-section" class="auth-section active">
             <div class="auth-container">
                 <div class="brand-hero">
@@ -22,13 +21,11 @@
                     <h1 class="brand-title">VibeLink 0372®</h1>
                     <p class="slogan">Where the World Vibe Starts</p>
                 </div>
-                
                 <div class="auth-forms-container">
                     <div class="form-tabs">
-                        <button class="tab-btn active" data-tab="login">Login</button>
-                        <button class="tab-btn" data-tab="signup">Sign Up</button>
+                        <button class="tab-btn active" data-tab="login">Login 🔐</button>
+                        <button class="tab-btn" data-tab="signup">Sign Up 🎉</button>
                     </div>
-                    
                     <div class="form-content">
                         <form id="loginForm" class="auth-form active">
                             <div class="input-group">
@@ -39,7 +36,6 @@
                             </div>
                             <button type="submit" class="btn btn-primary vibegradient">🚀 Sign In</button>
                         </form>
-                        
                         <form id="signupForm" class="auth-form">
                             <div class="input-group">
                                 <input type="text" id="signupUsername" placeholder="👤 Username" required>
@@ -57,15 +53,12 @@
             </div>
         </section>
 
-        <!-- Main App Section -->
         <section id="app-section" class="app-section">
-            <!-- Top Navigation -->
             <nav class="main-nav">
                 <div class="nav-brand">
                     <img src="assets/logo.svg" alt="VibeLink" class="nav-logo">
                     <span class="nav-title">VibeLink 0372®</span>
                 </div>
-                
                 <div class="nav-center">
                     <a href="#home" class="nav-item active" data-page="home">
                         <span class="nav-icon">🏠</span>
@@ -80,22 +73,18 @@
                         <span class="nav-text">Profile</span>
                     </a>
                 </div>
-                
                 <div class="nav-actions">
                     <button class="btn-notification">🔔</button>
                     <button id="logout-btn" class="btn-logout">🚪</button>
                 </div>
             </nav>
 
-            <!-- Main Content Area -->
             <main class="main-content">
-                <!-- Home Page -->
                 <div id="home-page" class="page active">
                     <div class="page-header">
                         <h1>Welcome to VibeLink 0372®</h1>
                         <p>Your complete social ecosystem</p>
                     </div>
-                    
                     <div class="quick-actions">
                         <button class="quick-btn" data-page="feed">
                             <span class="quick-icon">📝</span>
@@ -110,9 +99,7 @@
                             <span>Go Live</span>
                         </button>
                     </div>
-
                     <div class="features-grid">
-                        <!-- VibeWall -->
                         <div class="feature-card" data-page="feed">
                             <div class="feature-icon">📱</div>
                             <h3>VibeWall</h3>
@@ -121,8 +108,6 @@
                                 <span>🎯 3 sample posts</span>
                             </div>
                         </div>
-
-                        <!-- Secure Chat -->
                         <div class="feature-card" data-page="chat">
                             <div class="feature-icon">💬</div>
                             <h3>Secure Chat</h3>
@@ -131,18 +116,14 @@
                                 <span>🔒 Kill switch enabled</span>
                             </div>
                         </div>
-
-                        <!-- Marketplace -->
                         <div class="feature-card" data-page="marketplace">
                             <div class="feature-icon">🛒</div>
                             <h3>Marketplace</h3>
-                            <p>Buy, sell, trade with barter</p>
+                            <p>Buy,sell,trade with barter</p>
                             <div class="feature-stats">
                                 <span>🔄 3 sample items</span>
                             </div>
                         </div>
-
-                        <!-- Live Stream -->
                         <div class="feature-card" data-page="stream">
                             <div class="feature-icon">🎥</div>
                             <h3>Live Stream</h3>
@@ -151,8 +132,6 @@
                                 <span>📡 3 sample streams</span>
                             </div>
                         </div>
-
-                        <!-- VibeWallet -->
                         <div class="feature-card" data-page="wallet">
                             <div class="feature-icon">💰</div>
                             <h3>VibeWallet</h3>
@@ -161,8 +140,6 @@
                                 <span>💳 3 sample transactions</span>
                             </div>
                         </div>
-
-                        <!-- Events -->
                         <div class="feature-card" data-page="events">
                             <div class="feature-icon">🎪</div>
                             <h3>Events</h3>
@@ -171,8 +148,6 @@
                                 <span>📅 3 sample events</span>
                             </div>
                         </div>
-
-                        <!-- AI Analytics -->
                         <div class="feature-card" data-page="analytics">
                             <div class="feature-icon">🤖</div>
                             <h3>AI Analytics</h3>
@@ -181,8 +156,6 @@
                                 <span>📊 Real-time data</span>
                             </div>
                         </div>
-
-                        <!-- Learning Hub -->
                         <div class="feature-card" data-page="learn">
                             <div class="feature-icon">🎓</div>
                             <h3>Learning Hub</h3>
@@ -191,17 +164,47 @@
                                 <span>📚 3 sample courses</span>
                             </div>
                         </div>
+                        <div class="feature-card" data-page="gaming">
+                            <div class="feature-icon">🎮</div>
+                            <h3>Gaming</h3>
+                            <p>Leaderboards & rewards</p>
+                            <div class="feature-stats">
+                                <span>🏆 3 sample games</span>
+                            </div>
+                        </div>
+                        <div class="feature-card" data-page="communities">
+                            <div class="feature-icon">👥</div>
+                            <h3>Communities</h3>
+                            <p>Circles & premium groups</p>
+                            <div class="feature-stats">
+                                <span>🌐 3 sample circles</span>
+                            </div>
+                        </div>
+                        <div class="feature-card" data-page="stories">
+                            <div class="feature-icon">📖</div>
+                            <h3>Stories</h3>
+                            <p>24-hour ephemeral content</p>
+                            <div class="feature-stats">
+                                <span>✨ 3 sample stories</span>
+                            </div>
+                        </div>
+                        <div class="feature-card" data-page="discovery">
+                            <div class="feature-icon">🔍</div>
+                            <h3>Discovery</h3>
+                            <p>AI-powered recommendations</p>
+                            <div class="feature-stats">
+                                <span>🎯 Trend analysis</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Feed/Posts Page -->
                 <div id="feed-page" class="page">
                     <div class="page-header">
                         <h1>📱 VibeWall Feed</h1>
                         <button class="btn btn-primary" id="create-post-btn">+ New Post</button>
                     </div>
-                    
-                    <div class="post-creator">
+                    <div class="post-creator" id="post-creator" style="display:none">
                         <textarea id="post-content" placeholder="What's vibing today? 🎵" rows="3"></textarea>
                         <div class="post-actions">
                             <button class="action-btn">📷</button>
@@ -211,13 +214,9 @@
                             <button class="btn btn-primary" id="submit-post">Post</button>
                         </div>
                     </div>
-
-                    <div class="feed-container" id="post-feed">
-                        <!-- Posts will be loaded here -->
-                    </div>
+                    <div class="feed-container" id="post-feed"></div>
                 </div>
 
-                <!-- Profile Page -->
                 <div id="profile-page" class="page">
                     <div class="profile-header">
                         <div class="profile-avatar-container">
@@ -243,16 +242,12 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="profile-content">
                         <h3>My Posts</h3>
-                        <div id="user-posts" class="posts-grid">
-                            <!-- User posts will be loaded here -->
-                        </div>
+                        <div id="user-posts" class="posts-grid"></div>
                     </div>
                 </div>
 
-                <!-- Additional Pages Placeholder -->
                 <div id="chat-page" class="page">
                     <div class="page-header">
                         <h1>💬 Secure Chat</h1>
@@ -301,27 +296,51 @@
                     </div>
                     <div id="learn-container"></div>
                 </div>
+
+                <div id="gaming-page" class="page">
+                    <div class="page-header">
+                        <h1>🎮 Gaming</h1>
+                    </div>
+                    <div id="gaming-container"></div>
+                </div>
+
+                <div id="communities-page" class="page">
+                    <div class="page-header">
+                        <h1>👥 Communities</h1>
+                    </div>
+                    <div id="communities-container"></div>
+                </div>
+
+                <div id="stories-page" class="page">
+                    <div class="page-header">
+                        <h1>📖 Stories</h1>
+                    </div>
+                    <div id="stories-container"></div>
+                </div>
+
+                <div id="discovery-page" class="page">
+                    <div class="page-header">
+                        <h1>🔍 Discovery</h1>
+                    </div>
+                    <div id="discovery-container"></div>
+                </div>
             </main>
         </section>
     </div>
 
-    <!-- Watermark -->
     <div class="watermark">
         <img src="assets/logo.svg" alt="VibeLink 0372">
     </div>
 
-    <!-- Offline Notification -->
     <div id="offline-indicator" class="offline-indicator hidden">
         <span>🔌 You are currently offline</span>
     </div>
 
-    <!-- Scripts -->
     <script src="script.js"></script>
-    
-    <!-- Initialize Parse -->
     <script>
-        Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
-        Parse.serverURL = 'https://parseapi.back4app.com/';
+        Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA","u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
+        Parse.serverURL='https://parseapi.back4app.com/';
+        if('serviceWorker'in navigator){navigator.serviceWorker.register('/service-worker.js').then(()=>console.log('SW registered')).catch(e=>console.log('SW failed:',e));}
     </script>
 </body>
 </html>
