@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VibeLink 0372® - Offline Mode</title>
-    <meta name="theme-color" content="#0D0D0D">
+    <title>Offline - VibeLink 0372®</title>
     <style>
         :root {
             --vibe-black: #0D0D0D;
@@ -14,7 +13,7 @@
             --sunrise-yellow: #FFD733;
             --royal-purple: #8E3AFF;
             --cloud-white: #F9F9F9;
-            --solar-vibe-gradient: linear-gradient(135deg, #FF5A1F, #FFD733, #FF6B6B);
+            --solar-gradient: linear-gradient(135deg, #FF5A1F, #FFD733, #FF3333);
             --afro-tech-gradient: linear-gradient(135deg, #00E6E6, #8E3AFF, #0D0D0D);
         }
 
@@ -26,7 +25,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: var(--afro-tech-gradient);
+            background: var(--vibe-black);
             color: var(--cloud-white);
             min-height: 100vh;
             display: flex;
@@ -36,90 +35,68 @@
         }
 
         .offline-container {
-            background: rgba(13, 13, 13, 0.95);
-            border-radius: 20px;
-            padding: 3rem;
+            text-align: center;
+            padding: 2rem;
             max-width: 600px;
             width: 90%;
-            text-align: center;
-            border: 2px solid var(--solar-flame-orange);
-            box-shadow: 0 0 50px rgba(255, 90, 31, 0.3);
-            backdrop-filter: blur(10px);
         }
 
-        .logo {
+        .offline-logo {
             width: 120px;
             height: 120px;
-            margin: 0 auto 1.5rem;
-            filter: drop-shadow(0 0 20px var(--electric-cyan));
-            animation: pulse 2s infinite;
+            margin: 0 auto 2rem;
+            filter: drop-shadow(0 0 30px var(--electric-cyan));
+            animation: pulse 2s ease-in-out infinite alternate;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
+            0% { transform: scale(1); filter: drop-shadow(0 0 20px var(--electric-cyan)); }
+            100% { transform: scale(1.05); filter: drop-shadow(0 0 40px var(--solar-flame-orange)); }
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: var(--solar-vibe-gradient);
+        .offline-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--solar-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 1rem;
         }
 
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 90, 31, 0.2);
-            border: 1px solid var(--solar-flame-orange);
-            border-radius: 50px;
+        .offline-subtitle {
+            font-size: 1.5rem;
+            color: var(--sunrise-yellow);
+            margin-bottom: 1.5rem;
+        }
+
+        .offline-message {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--royal-purple);
+            border-radius: 15px;
+            padding: 2rem;
             margin-bottom: 2rem;
-            font-weight: bold;
+            backdrop-filter: blur(10px);
         }
 
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            background: var(--solar-flame-orange);
-            border-radius: 50%;
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
-        }
-
-        .message {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .features-grid {
+        .offline-features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1rem;
-            margin: 2rem 0;
+            margin-bottom: 2rem;
         }
 
         .feature-card {
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            border: 1px solid var(--electric-cyan);
+            border-radius: 10px;
             padding: 1.5rem;
             text-align: center;
             transition: all 0.3s ease;
         }
 
         .feature-card:hover {
-            border-color: var(--electric-cyan);
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 230, 230, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 230, 230, 0.3);
         }
 
         .feature-icon {
@@ -128,31 +105,27 @@
         }
 
         .feature-title {
-            font-size: 1.1rem;
-            font-weight: bold;
+            color: var(--electric-cyan);
             margin-bottom: 0.5rem;
-            color: var(--cloud-white);
+            font-weight: 700;
         }
 
-        .feature-desc {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .action-buttons {
+        .offline-actions {
             display: flex;
             gap: 1rem;
             justify-content: center;
-            margin: 2rem 0;
             flex-wrap: wrap;
+            margin-bottom: 2rem;
         }
 
-        .btn {
-            padding: 1rem 2rem;
+        .action-button {
+            background: var(--solar-gradient);
+            color: var(--vibe-black);
             border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: bold;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -161,616 +134,418 @@
             gap: 0.5rem;
         }
 
-        .btn-primary {
-            background: var(--solar-vibe-gradient);
-            color: var(--vibe-black);
-        }
-
-        .btn-primary:hover {
+        .action-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 90, 31, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 90, 31, 0.4);
         }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
+        .action-button.secondary {
+            background: transparent;
+            border: 2px solid var(--royal-purple);
             color: var(--cloud-white);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: var(--electric-cyan);
+        .action-button.secondary:hover {
+            background: var(--royal-purple);
         }
 
         .connection-status {
-            margin-top: 2rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            border-left: 4px solid var(--solar-flame-orange);
-        }
-
-        .status-info {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(255, 90, 31, 0.1);
+            border: 1px solid var(--solar-flame-orange);
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--solar-flame-orange);
+            animation: blink 1.5s infinite;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: var(--solar-vibe-gradient);
-            width: 0%;
-            transition: width 2s ease;
-            animation: progressAnimation 3s infinite;
-        }
-
-        @keyframes progressAnimation {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
         }
 
         .cached-content {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--earth-green);
+            border-radius: 15px;
+            padding: 2rem;
             margin-top: 2rem;
+        }
+
+        .cached-content h3 {
+            color: var(--earth-green);
+            margin-bottom: 1rem;
+        }
+
+        .content-list {
+            list-style: none;
             text-align: left;
         }
 
-        .cached-list {
-            list-style: none;
-            margin-top: 1rem;
-        }
-
-        .cached-item {
-            padding: 0.75rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
+        .content-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            border-left: 3px solid var(--earth-green);
+            gap: 0.5rem;
         }
 
-        .cached-icon {
-            font-size: 1.2rem;
+        .content-list li:last-child {
+            border-bottom: none;
         }
 
         .watermark {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            opacity: 0.1;
-        }
-
-        .watermark img {
-            width: 60px;
-            height: 60px;
-            filter: brightness(0) invert(1);
-        }
-
-        .emergency-info {
-            margin-top: 2rem;
-            padding: 1rem;
-            background: rgba(255, 71, 71, 0.1);
-            border: 1px solid rgba(255, 71, 71, 0.3);
-            border-radius: 12px;
-            text-align: left;
-        }
-
-        .emergency-title {
-            color: #FF4747;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: var(--cloud-white);
+            opacity: 0.7;
+            font-size: 0.8rem;
+        }
+
+        .watermark img {
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+        }
+
+        .retry-animation {
+            display: none;
+        }
+
+        .retry-animation.active {
+            display: block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
-            .offline-container {
-                padding: 2rem 1.5rem;
-                margin: 1rem;
-            }
-
-            h1 {
+            .offline-title {
                 font-size: 2rem;
             }
-
-            .action-buttons {
+            
+            .offline-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .offline-actions {
                 flex-direction: column;
             }
-
-            .btn {
+            
+            .action-button {
                 width: 100%;
                 justify-content: center;
             }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .offline-container {
-                padding: 1.5rem 1rem;
-            }
-
-            h1 {
-                font-size: 1.75rem;
-            }
-
-            .logo {
-                width: 80px;
-                height: 80px;
-            }
-        }
-
-        /* Enhanced animations */
-        .floating {
-            animation: floating 3s ease-in-out infinite;
-        }
-
-        @keyframes floating {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .typewriter {
-            overflow: hidden;
-            border-right: 2px solid var(--electric-cyan);
-            white-space: nowrap;
-            margin: 0 auto;
-            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
-        }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50% { border-color: var(--electric-cyan); }
-        }
-
-        /* Network status indicators */
-        .network-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--electric-cyan);
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
         }
     </style>
 </head>
 <body>
     <div class="offline-container">
-        <!-- Logo and Header -->
-        <div class="logo floating">
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#gradient)" stroke-width="3"/>
-                <path d="M50 10 A40 40 0 0 1 50 90 A40 40 0 0 1 50 10" fill="none" stroke="url(#gradient2)" stroke-width="2"/>
-                <circle cx="50" cy="50" r="15" fill="none" stroke="#FF5A1F" stroke-width="2"/>
-                <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#FF5A1F"/>
-                        <stop offset="100%" stop-color="#00E6E6"/>
-                    </linearGradient>
-                    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#8E3AFF"/>
-                        <stop offset="100%" stop-color="#FFD733"/>
-                    </linearGradient>
-                </defs>
-            </svg>
+        <svg class="offline-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <radialGradient id="globeGradient" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#00E6E6"/>
+                    <stop offset="50%" stop-color="#8E3AFF"/>
+                    <stop offset="100%" stop-color="#0D0D0D"/>
+                </radialGradient>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <circle cx="50" cy="50" r="45" fill="url(#globeGradient)" filter="url(#glow)"/>
+            <path d="M 30,50 Q 50,30 70,50 Q 50,70 30,50 Z" fill="#FF5A1F" opacity="0.8"/>
+            <circle cx="50" cy="50" r="15" fill="#FFD733" opacity="0.9"/>
+            <path d="M 45,20 C 60,15 65,25 55,35" fill="none" stroke="#009966" stroke-width="2"/>
+            <path d="M 55,20 C 40,15 35,25 45,35" fill="none" stroke="#009966" stroke-width="2"/>
+        </svg>
+
+        <h1 class="offline-title">VibeLink 0372®</h1>
+        <h2 class="offline-subtitle">🌐 Connection Lost</h2>
+
+        <div class="connection-status">
+            <div class="status-indicator"></div>
+            <span>Attempting to reconnect...</span>
         </div>
 
-        <h1>VibeLink 0372®</h1>
-        
-        <div class="status-indicator">
-            <div class="status-dot"></div>
-            <span>OFFLINE MODE</span>
+        <div class="offline-message">
+            <p>🚫 You're currently offline, but the vibe continues!</p>
+            <p>VibeLink 0372 is designed to work seamlessly without an internet connection.</p>
         </div>
 
-        <div class="message">
-            <p class="typewriter">You're currently offline, but the vibe continues! 🎵</p>
-        </div>
-
-        <!-- Network Status -->
-        <div class="network-stats">
-            <div class="stat-card">
-                <div class="stat-value" id="cached-posts">0</div>
-                <div class="stat-label">Cached Posts</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="offline-content">15+</div>
-                <div class="stat-label">Features Available</div>
-            </div>
-        </div>
-
-        <!-- Available Features -->
-        <div class="features-grid">
+        <div class="offline-features">
             <div class="feature-card">
                 <div class="feature-icon">📱</div>
-                <div class="feature-title">VibeWall Posts</div>
-                <div class="feature-desc">Browse cached posts and create new ones</div>
+                <h3 class="feature-title">Browse Posts</h3>
+                <p>Access your cached feed and read recent posts</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✍️</div>
+                <h3 class="feature-title">Compose Content</h3>
+                <p>Write posts and messages that will sync when online</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">💬</div>
-                <div class="feature-title">Messages</div>
-                <div class="feature-desc">Read and compose messages (will send when online)</div>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🛒</div>
-                <div class="feature-title">Marketplace</div>
-                <div class="feature-desc">Browse cached listings</div>
+                <h3 class="feature-title">Read Messages</h3>
+                <p>Access your recent chat conversations</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">💰</div>
-                <div class="feature-title">VibeWallet</div>
-                <div class="feature-desc">View your balance and recent transactions</div>
+                <h3 class="feature-title">View Wallet</h3>
+                <p>Check your balance and transaction history</p>
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="btn btn-primary" onclick="retryConnection()">
-                🔄 Retry Connection
+        <div class="offline-actions">
+            <button class="action-button" onclick="retryConnection()">
+                <span class="retry-icon">🔄</span>
+                <span class="retry-text">Retry Connection</span>
+                <span class="retry-animation">⏳</span>
             </button>
-            <button class="btn btn-secondary" onclick="continueOffline()">
-                🚀 Continue Offline
+            <button class="action-button secondary" onclick="goToCachedHome()">
+                🏠 Continue Offline
             </button>
-            <button class="btn btn-secondary" onclick="clearCache()">
-                🧹 Clear Cache
+            <button class="action-button secondary" onclick="clearCacheAndRetry()">
+                🗑️ Clear Cache & Retry
             </button>
         </div>
 
-        <!-- Connection Status -->
-        <div class="connection-status">
-            <div class="status-info">
-                <span>Reconnection Progress</span>
-                <span id="retry-count">Attempt 1/5</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="reconnection-progress"></div>
-            </div>
-        </div>
-
-        <!-- Cached Content Preview -->
         <div class="cached-content">
-            <h3 style="margin-bottom: 1rem; color: var(--electric-cyan);">📦 Available Offline Content</h3>
-            <ul class="cached-list">
-                <li class="cached-item">
-                    <span class="cached-icon">📝</span>
-                    <span>Recent VibeWall posts and comments</span>
-                </li>
-                <li class="cached-item">
-                    <span class="cached-icon">👥</span>
-                    <span>Your profile and contact information</span>
-                </li>
-                <li class="cached-item">
-                    <span class="cached-icon">🛒</span>
-                    <span>Marketplace items and gig listings</span>
-                </li>
-                <li class="cached-item">
-                    <span class="cached-icon">💰</span>
-                    <span>VibeWallet balance and transaction history</span>
-                </li>
-                <li class="cached-item">
-                    <span class="cached-icon">🎓</span>
-                    <span>Learning Hub course materials</span>
-                </li>
+            <h3>📋 Available Offline Content</h3>
+            <ul class="content-list">
+                <li>✅ Home Dashboard</li>
+                <li>✅ Recent Posts (Cached)</li>
+                <li>✅ User Profiles</li>
+                <li>✅ Chat Messages</li>
+                <li>✅ Wallet Information</li>
+                <li>✅ Marketplace Items</li>
+                <li>✅ Learning Content</li>
+                <li>✅ Analytics Data</li>
             </ul>
         </div>
 
-        <!-- Emergency Information -->
-        <div class="emergency-info">
-            <div class="emergency-title">
-                ⚠️ Emergency Access
-            </div>
-            <p style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.8);">
-                Critical security features remain active. Your data is encrypted and secure. 
-                All actions will sync automatically when connection is restored.
-            </p>
-        </div>
-
-        <!-- Last Sync Info -->
-        <div style="margin-top: 1.5rem; font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">
-            🔒 Last sync: <span id="last-sync-time">Just now</span> | 
-            📡 Connection: <span id="connection-type">Checking...</span>
+        <div class="network-info">
+            <p><small>🔧 <strong>Troubleshooting tips:</strong> Check your WiFi/mobile data, airplane mode, and try refreshing.</small></p>
         </div>
     </div>
 
-    <!-- Watermark -->
     <div class="watermark">
-        <svg viewBox="0 0 100 100" width="60" height="60">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="2"/>
-            <path d="M30 50 A20 20 0 1 1 70 50 A20 20 0 1 1 30 50" fill="none" stroke="currentColor" stroke-width="1"/>
+        <svg width="20" height="20" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="#00E6E6" opacity="0.7"/>
+            <path d="M 30,50 Q 50,30 70,50 Q 50,70 30,50 Z" fill="#FF5A1F"/>
         </svg>
+        <span>VibeLink 0372®</span>
     </div>
 
     <script>
-        // Offline functionality and connection management
-        class OfflineManager {
-            constructor() {
-                this.retryCount = 0;
-                this.maxRetries = 5;
-                this.lastSync = new Date();
-                this.init();
-            }
+        let retryCount = 0;
+        const maxRetries = 5;
 
-            init() {
-                this.updateUI();
-                this.startConnectionMonitoring();
-                this.loadCachedContentInfo();
-                this.setupServiceWorker();
-            }
-
-            updateUI() {
-                // Update last sync time
-                const lastSyncElement = document.getElementById('last-sync-time');
-                const now = new Date();
-                const diff = now - this.lastSync;
-                const minutes = Math.floor(diff / 60000);
-                
-                if (minutes < 1) {
-                    lastSyncElement.textContent = 'Just now';
-                } else if (minutes < 60) {
-                    lastSyncElement.textContent = `${minutes}m ago`;
-                } else {
-                    lastSyncElement.textContent = this.lastSync.toLocaleTimeString();
-                }
-
-                // Update connection type
-                const connectionElement = document.getElementById('connection-type');
-                if (navigator.connection) {
-                    const conn = navigator.connection;
-                    connectionElement.textContent = `${conn.effectiveType || 'Unknown'} | ${this.getSignalStrength()}`;
-                } else {
-                    connectionElement.textContent = 'Unknown';
-                }
-            }
-
-            getSignalStrength() {
-                // Simulate signal strength for demo
-                const strengths = ['📶', '📶', '📶📶', '📶📶📶', '📶📶📶📶'];
-                return strengths[Math.floor(Math.random() * strengths.length)];
-            }
-
-            startConnectionMonitoring() {
-                // Monitor online/offline status
-                window.addEventListener('online', () => {
-                    this.handleConnectionRestored();
-                });
-
-                window.addEventListener('offline', () => {
-                    this.handleConnectionLost();
-                });
-
-                // Periodic connection check
-                setInterval(() => {
-                    this.checkConnection();
-                }, 5000);
-            }
-
-            async checkConnection() {
-                try {
-                    const response = await fetch('https://parseapi.back4app.com/health', {
-                        method: 'HEAD',
-                        mode: 'no-cors'
-                    });
-                    return true;
-                } catch (error) {
-                    return false;
-                }
-            }
-
-            handleConnectionRestored() {
-                console.log('✅ Connection restored!');
-                this.showNotification('Connection Restored', 'You are back online! Syncing data...', 'success');
-                
-                // Sync offline data
-                this.syncOfflineData();
-                
-                // Redirect to main app after short delay
-                setTimeout(() => {
-                    window.location.href = '/VibeLink-0372/';
-                }, 2000);
-            }
-
-            handleConnectionLost() {
-                console.log('❌ Connection lost');
-                this.showNotification('Offline Mode', 'You are currently offline', 'warning');
-            }
-
-            async syncOfflineData() {
-                try {
-                    // Get service worker registration
-                    const registration = await navigator.serviceWorker.ready;
-                    
-                    // Sync posts
-                    if (registration.sync) {
-                        await registration.sync.register('vibelink-posts');
-                    }
-                    
-                    // Sync messages
-                    if (registration.sync) {
-                        await registration.sync.register('vibelink-messages');
-                    }
-                    
-                    console.log('🔄 Offline data sync initiated');
-                } catch (error) {
-                    console.error('❌ Sync registration failed:', error);
-                }
-            }
-
-            async loadCachedContentInfo() {
-                try {
-                    // Get cached posts count
-                    const cache = await caches.open('vibelink-0372-v1.0.0');
-                    const keys = await cache.keys();
-                    const postKeys = keys.filter(key => key.url.includes('/classes/Post'));
-                    
-                    document.getElementById('cached-posts').textContent = postKeys.length;
-                } catch (error) {
-                    console.log('Could not load cache info:', error);
-                }
-            }
-
-            setupServiceWorker() {
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('/VibeLink-0372/service-worker.js')
-                        .then(registration => {
-                            console.log('✅ Service Worker registered for offline page');
-                        })
-                        .catch(error => {
-                            console.log('❌ Service Worker registration failed:', error);
-                        });
-                }
-            }
-
-            showNotification(title, message, type = 'info') {
-                // Create notification element
-                const notification = document.createElement('div');
-                notification.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: ${type === 'success' ? 'rgba(0, 150, 102, 0.9)' : 'rgba(255, 90, 31, 0.9)'};
-                    color: white;
-                    padding: 1rem 1.5rem;
-                    border-radius: 10px;
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                    z-index: 10000;
-                    animation: slideIn 0.3s ease;
-                `;
-                
-                notification.innerHTML = `
-                    <strong>${title}</strong>
-                    <div style="font-size: 0.9rem; margin-top: 0.25rem;">${message}</div>
-                `;
-
-                document.body.appendChild(notification);
-
-                // Remove after 3 seconds
-                setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.3s ease';
-                    setTimeout(() => {
-                        document.body.removeChild(notification);
-                    }, 300);
-                }, 3000);
-            }
-
-            async retryConnection() {
-                this.retryCount++;
-                const progress = document.getElementById('reconnection-progress');
-                const retryCountElement = document.getElementById('retry-count');
-                
-                retryCountElement.textContent = `Attempt ${this.retryCount}/${this.maxRetries}`;
-                
-                // Animate progress bar
-                progress.style.width = '0%';
-                setTimeout(() => {
-                    progress.style.width = '100%';
-                }, 100);
-
-                // Check connection
-                const isOnline = await this.checkConnection();
-                
-                if (isOnline) {
-                    this.handleConnectionRestored();
-                } else if (this.retryCount >= this.maxRetries) {
-                    this.showNotification('Connection Failed', 'Maximum retry attempts reached', 'warning');
-                    progress.style.background = '#FF4747';
-                }
-            }
-        }
-
-        // Global functions for button clicks
-        function retryConnection() {
-            window.offlineManager.retryConnection();
-        }
-
-        function continueOffline() {
-            // Try to load the main app from cache
-            caches.match('/VibeLink-0372/index.html')
-                .then(response => {
-                    if (response) {
-                        window.location.href = '/VibeLink-0372/';
-                    } else {
-                        window.offlineManager.showNotification('Cache Unavailable', 'Main app not cached', 'warning');
-                    }
-                })
-                .catch(error => {
-                    window.offlineManager.showNotification('Error', 'Could not load cached version', 'warning');
-                });
-        }
-
-        function clearCache() {
-            if (confirm('Clear all cached data? This will remove offline content.')) {
-                caches.keys().then(cacheNames => {
-                    cacheNames.forEach(cacheName => {
-                        caches.delete(cacheName);
-                    });
-                    window.offlineManager.showNotification('Cache Cleared', 'All cached data has been removed', 'success');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-                });
-            }
-        }
-
-        // Initialize offline manager when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            window.offlineManager = new OfflineManager();
-            
-            // Add CSS for notifications
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideIn {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-                @keyframes slideOut {
-                    from { transform: translateX(0); opacity: 1; }
-                    to { transform: translateX(100%); opacity: 0; }
-                }
-            `;
-            document.head.appendChild(style);
+        // Check connection status on load
+        window.addEventListener('load', function() {
+            checkConnection();
+            startConnectionMonitor();
         });
 
-        // Enhanced connection detection
-        if (navigator.connection) {
-            navigator.connection.addEventListener('change', () => {
-                window.offlineManager.updateUI();
-            });
+        function checkConnection() {
+            if (navigator.onLine) {
+                redirectToApp();
+            } else {
+                updateRetryCount();
+            }
         }
+
+        function startConnectionMonitor() {
+            // Listen for online/offline events
+            window.addEventListener('online', function() {
+                console.log('🌐 Connection restored - redirecting to app...');
+                showConnectionRestored();
+                setTimeout(redirectToApp, 2000);
+            });
+
+            window.addEventListener('offline', function() {
+                console.log('🚫 Connection lost');
+                showConnectionLost();
+            });
+
+            // Periodic connection check
+            setInterval(() => {
+                if (navigator.onLine && retryCount > 0) {
+                    redirectToApp();
+                }
+            }, 5000);
+        }
+
+        function retryConnection() {
+            retryCount++;
+            const button = document.querySelector('.action-button');
+            const retryText = button.querySelector('.retry-text');
+            const retryIcon = button.querySelector('.retry-icon');
+            const retryAnimation = button.querySelector('.retry-animation');
+
+            // Show loading state
+            retryText.textContent = `Retrying (${retryCount}/${maxRetries})`;
+            retryIcon.style.display = 'none';
+            retryAnimation.classList.add('active');
+            button.disabled = true;
+
+            // Simulate connection check
+            setTimeout(() => {
+                if (navigator.onLine) {
+                    redirectToApp();
+                } else {
+                    // Reset button state
+                    retryIcon.style.display = 'inline';
+                    retryAnimation.classList.remove('active');
+                    button.disabled = false;
+                    
+                    if (retryCount >= maxRetries) {
+                        retryText.textContent = 'Max retries reached';
+                        button.disabled = true;
+                    } else {
+                        retryText.textContent = 'Retry Connection';
+                    }
+                    
+                    showRetryFailed();
+                }
+            }, 2000);
+        }
+
+        function redirectToApp() {
+            // Try to redirect to the main app
+            const mainAppUrl = window.location.pathname.replace('offline.html', 'index.html');
+            
+            // Add cache busting parameter to ensure fresh load
+            const timestamp = new Date().getTime();
+            window.location.href = `${mainAppUrl}?cachebust=${timestamp}`;
+        }
+
+        function goToCachedHome() {
+            // Navigate to cached version of the app
+            window.location.href = 'index.html';
+        }
+
+        function clearCacheAndRetry() {
+            if ('caches' in window) {
+                caches.keys().then(function(cacheNames) {
+                    cacheNames.forEach(function(cacheName) {
+                        caches.delete(cacheName);
+                    });
+                    
+                    // Show confirmation
+                    alert('🗑️ Cache cleared! The app will reload.');
+                    window.location.reload();
+                });
+            } else {
+                alert('❌ Cache API not supported in this browser.');
+            }
+        }
+
+        function updateRetryCount() {
+            const statusElement = document.querySelector('.connection-status span');
+            statusElement.textContent = `Attempting to reconnect... (Retry ${retryCount}/${maxRetries})`;
+        }
+
+        function showConnectionRestored() {
+            const statusElement = document.querySelector('.connection-status');
+            statusElement.innerHTML = `
+                <div class="status-indicator" style="background: #009966; animation: none;"></div>
+                <span style="color: #009966;">✅ Connection restored! Redirecting...</span>
+            `;
+        }
+
+        function showConnectionLost() {
+            const statusElement = document.querySelector('.connection-status');
+            statusElement.innerHTML = `
+                <div class="status-indicator"></div>
+                <span>Connection lost. Retrying...</span>
+            `;
+        }
+
+        function showRetryFailed() {
+            const statusElement = document.querySelector('.connection-status');
+            statusElement.innerHTML = `
+                <div class="status-indicator" style="background: #FF5A1F; animation: none;"></div>
+                <span style="color: #FF5A1F;">❌ Connection failed. Please check your network.</span>
+            `;
+        }
+
+        // Service Worker registration for offline functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(function(registration) {
+                    console.log('✅ Service Worker registered:', registration);
+                })
+                .catch(function(error) {
+                    console.log('❌ Service Worker registration failed:', error);
+                });
+        }
+
+        // Display cached resources information
+        function displayCachedResources() {
+            if ('caches' in window) {
+                caches.open('vibelink-0372-v1.0.0').then(function(cache) {
+                    cache.keys().then(function(requests) {
+                        const cachedCount = requests.length;
+                        const statusElement = document.querySelector('.connection-status');
+                        statusElement.innerHTML += ` <small>(${cachedCount} resources cached)</small>`;
+                    });
+                });
+            }
+        }
+
+        // Initialize
+        displayCachedResources();
+
+        // Add vibration feedback if available
+        function vibrate() {
+            if (navigator.vibrate) {
+                navigator.vibrate(200);
+            }
+        }
+
+        // Add click handlers for tactile feedback
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', vibrate);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'r' || event.key === 'R') {
+                if (event.ctrlKey || event.metaKey) {
+                    event.preventDefault();
+                    retryConnection();
+                }
+            }
+            
+            if (event.key === 'Enter' && event.target.tagName !== 'BUTTON') {
+                retryConnection();
+            }
+        });
+
+        console.log('🌐 VibeLink 0372 Offline Page loaded');
+        console.log('🔧 Connection status:', navigator.onLine ? 'Online' : 'Offline');
+        console.log('📱 User agent:', navigator.userAgent);
     </script>
 </body>
 </html>
