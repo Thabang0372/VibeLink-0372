@@ -1,0 +1,30 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="solarVibe" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5A1F"/>
+      <stop offset="50%" stop-color="#FFD733"/>
+      <stop offset="100%" stop-color="#FF3333"/>
+    </linearGradient>
+    <linearGradient id="afroTech" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E6E6"/>
+      <stop offset="50%" stop-color="#8E3AFF"/>
+      <stop offset="100%" stop-color="#0D0D0D"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Ring -->
+  <circle cx="60" cy="60" r="55" fill="url(#afroTech)" opacity="0.8"/>
+
+  <!-- Main Globe -->
+  <circle cx="60" cy="60" r="45" fill="url(#afroTech)" stroke="url(#solarVibe)" stroke-width="2"/>
+
+  <!-- Africa Shape -->
+  <path d="M 45,50 C 50,45 55,42 60,45 C 65,48 68,52 65,58 C 62,64 55,65 50,62 C 45,59 42,55 45,50 Z" fill="#FF5A1F"/>
+  
+  <!-- Central Core -->
+  <circle cx="60" cy="60" r="8" fill="url(#solarVibe)" opacity="0.9"/>
+
+  <!-- Brand Text -->
+  <text x="60" y="85" font-family="Arial, sans-serif" font-weight="bold" font-size="8" text-anchor="middle" fill="#FFFFFF">VibeLink</text>
+  <text x="60" y="95" font-family="Arial, sans-serif" font-size="6" text-anchor="middle" fill="#FFD733">0372®</text>
+</svg>
