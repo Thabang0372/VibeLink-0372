@@ -1,15 +1,17 @@
 {
   "name": "VibeLink 0372®",
-  "short_name": "VibeLink",
-  "description": "Where the World Vibe Starts - Complete social platform with AI, marketplace, streaming, and more",
+  "short_name": "VibeLink0372",
+  "description": "Where the World Vibe Starts - Complete Social Media Platform",
   "start_url": "/VibeLink-0372/",
   "scope": "/VibeLink-0372/",
   "display": "standalone",
-  "orientation": "portrait",
-  "theme_color": "#0D0D0D",
   "background_color": "#0D0D0D",
-  "categories": ["social", "entertainment", "business", "productivity"],
+  "theme_color": "#FF5A1F",
+  "orientation": "portrait-primary",
+  "categories": ["social", "entertainment", "business", "productivity", "utilities"],
   "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "assets/icon-192.png",
@@ -22,20 +24,42 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
     {
-      "src": "assets/screenshot-wide.png",
-      "sizes": "1280x720",
+      "src": "assets/screenshots/screenshot1.png",
+      "sizes": "1080x1920",
       "type": "image/png",
-      "form_factor": "wide"
+      "form_factor": "narrow",
+      "label": "VibeLink 0372 Home Dashboard"
     },
     {
-      "src": "assets/screenshot-narrow.png",
-      "sizes": "375x812",
+      "src": "assets/screenshots/screenshot2.png",
+      "sizes": "1080x1920",
       "type": "image/png",
-      "form_factor": "narrow"
+      "form_factor": "narrow",
+      "label": "VibeWall Feed with Real-time Posts"
+    },
+    {
+      "src": "assets/screenshots/screenshot3.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "VibeChat Messaging Interface"
+    },
+    {
+      "src": "assets/screenshots/screenshot4.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "VibeLink Desktop Experience"
     }
   ],
   "shortcuts": [
@@ -46,20 +70,46 @@
       "url": "/VibeLink-0372/#feed",
       "icons": [
         {
-          "src": "assets/icon-192.png",
+          "src": "assets/shortcuts/post.png",
           "sizes": "96x96",
           "type": "image/png"
         }
       ]
     },
     {
-      "name": "Messages",
+      "name": "VibeChat",
       "short_name": "Chat",
-      "description": "Check your messages",
+      "description": "Open messaging interface",
       "url": "/VibeLink-0372/#chat",
       "icons": [
         {
-          "src": "assets/icon-192.png",
+          "src": "assets/shortcuts/chat.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "VibeWallet",
+      "short_name": "Wallet",
+      "description": "Check balance and transactions",
+      "url": "/VibeLink-0372/#wallet",
+      "icons": [
+        {
+          "src": "assets/shortcuts/wallet.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Live Stream",
+      "short_name": "Stream",
+      "description": "Start a live broadcast",
+      "url": "/VibeLink-0372/#streams",
+      "icons": [
+        {
+          "src": "assets/shortcuts/stream.png",
           "sizes": "96x96",
           "type": "image/png"
         }
@@ -72,7 +122,7 @@
       "url": "/VibeLink-0372/#marketplace",
       "icons": [
         {
-          "src": "assets/icon-192.png",
+          "src": "assets/shortcuts/marketplace.png",
           "sizes": "96x96",
           "type": "image/png"
         }
@@ -80,15 +130,18 @@
     }
   ],
   "related_applications": [],
-  "prefer_related_applications": false,
-  "features": [
-    "Cross Platform",
-    "fast",
-    "simple",
-    "secure",
-    "offline",
-    "real-time",
-    "encrypted"
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "handle_links": "preferred",
+  "protocol_handlers": [
+    {
+      "protocol": "web+vibelink",
+      "url": "/VibeLink-0372/?uri=%s"
+    }
   ],
   "share_target": {
     "action": "/VibeLink-0372/share",
@@ -100,18 +153,20 @@
       "url": "url",
       "files": [
         {
-          "name": "media",
-          "accept": ["image/*", "video/*", "audio/*"]
+          "name": "images",
+          "accept": ["image/*"]
+        },
+        {
+          "name": "videos",
+          "accept": ["video/*"]
+        },
+        {
+          "name": "audio",
+          "accept": ["audio/*"]
         }
       ]
     }
   },
-  "permissions": [
-    "notifications",
-    "camera",
-    "microphone"
-  ],
-  "id": "/VibeLink-0372/",
   "file_handlers": [
     {
       "action": "/VibeLink-0372/upload",
@@ -121,5 +176,9 @@
         "audio/*": [".mp3", ".wav", ".ogg", ".m4a"]
       }
     }
-  ]
+  ],
+  "display_override": ["window-controls-overlay", "minimal-ui"],
+  "window-controls-overlay": {
+    "title": "VibeLink 0372®"
+  }
 }
