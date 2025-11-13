@@ -1,802 +1,659 @@
 class VibeSecurity {
     constructor() {
+        this.masterKey = null;
         this.encryptionKey = null;
-        this.ivLength = 16;
-        this.algorithm = 'AES-GCM';
-        this.keyLength = 256;
-        this.hashAlgorithm = 'SHA-256';
-        this.keyDerivationIterations = 100000;
+        this.userKeys = new Map();
+        this.sessionKeys = new Map();
         this.initialized = false;
         
-        this.securityConfig = {
-            minPasswordLength: 12,
-            requireSpecialChars: true,
-            requireNumbers: true,
-            requireMixedCase: true,
-            sessionTimeout: 30 * 60 * 1000, // 30 minutes
-            maxLoginAttempts: 5,
-            lockoutDuration: 15 * 60 * 1000, // 15 minutes
-            encryptionLevel: 'enterprise',
-            auditLogging: true,
-            realTimeMonitoring: true
-        };
-
-        this.auditLog = [];
-        this.failedAttempts = new Map();
-        this.activeSessions = new Map();
-        
-        this.init();
+        this.initializeSecurity();
     }
 
-    async init() {
+    async initializeSecurity() {
         try {
-            await this.initializeEncryption();
+            await this.initializeCrypto();
+            await this.loadOrGenerateMasterKey();
+            await this.initializeUserKeyStorage();
             this.setupSecurityMonitoring();
-            this.initializeSessionManagement();
-            this.setupAutoLock();
             this.initialized = true;
             console.log('🔒 VibeSecurity initialized successfully');
         } catch (error) {
             console.error('❌ Security initialization failed:', error);
-            throw new Error('Security system initialization failed');
+            throw new Error('Security system failed to initialize');
         }
     }
 
-    async initializeEncryption() {
-        try {
-            // Generate or retrieve encryption key
-            let keyData = localStorage.getItem('vibelink_encryption_key');
-            
-            if (!keyData) {
-                // Generate new encryption key
-                this.encryptionKey = await this.generateEncryptionKey();
-                const exportedKey = await crypto.subtle.exportKey('jwk', this.encryptionKey);
-                const encryptedKey = await this.encryptData(JSON.stringify(exportedKey), 'master_key');
-                localStorage.setItem('vibelink_encryption_key', encryptedKey);
-            } else {
-                // Import existing key
-                const decryptedKey = await this.decryptData(keyData, 'master_key');
-                const jwk = JSON.parse(decryptedKey);
-                this.encryptionKey = await crypto.subtle.importKey(
-                    'jwk',
-                    jwk,
-                    { name: this.algorithm, length: this.keyLength },
-                    true,
-                    ['encrypt', 'decrypt']
-                );
-            }
-
-            // Initialize additional security keys
-            await this.initializeDerivedKeys();
-            
-        } catch (error) {
-            console.error('Encryption initialization error:', error);
-            throw error;
+    // Core Cryptographic Methods
+    async initializeCrypto() {
+        if (!window.crypto || !window.crypto.subtle) {
+            throw new Error('Web Crypto API not supported');
         }
     }
 
-    async generateEncryptionKey() {
-        return await crypto.subtle.generateKey(
+    async loadOrGenerateMasterKey() {
+        const storedKey = localStorage.getItem('vibe_master_key');
+        
+        if (storedKey) {
+            this.masterKey = await this.importKey(
+                this.base64ToArrayBuffer(storedKey),
+                'AES-GCM',
+                ['encrypt', 'decrypt']
+            );
+        } else {
+            this.masterKey = await this.generateMasterKey();
+            const exportedKey = await this.exportKey(this.masterKey);
+            localStorage.setItem('vibe_master_key', this.arrayBufferToBase64(exportedKey));
+        }
+    }
+
+    async generateMasterKey() {
+        return await window.crypto.subtle.generateKey(
             {
-                name: this.algorithm,
-                length: this.keyLength
+                name: 'AES-GCM',
+                length: 256
             },
             true,
             ['encrypt', 'decrypt']
         );
     }
 
-    async initializeDerivedKeys() {
-        // Generate keys for different security levels
-        this.derivedKeys = {
-            session: await this.deriveKey('session_encryption_key'),
-            messaging: await this.deriveKey('messaging_encryption_key'),
-            wallet: await this.deriveKey('wallet_encryption_key'),
-            biometric: await this.deriveKey('biometric_encryption_key')
+    async generateKey() {
+        return await window.crypto.subtle.generateKey(
+            {
+                name: 'AES-GCM',
+                length: 256
+            },
+            true,
+            ['encrypt', 'decrypt']
+        );
+    }
+
+    // End-to-End Encryption Methods
+    async encrypt(data, key = this.masterKey) {
+        if (!this.initialized) throw new Error('Security not initialized');
+        
+        const encoder = new TextEncoder();
+        const encodedData = encoder.encode(JSON.stringify(data));
+        
+        const iv = window.crypto.getRandomValues(new Uint8Array(12));
+        
+        const encrypted = await window.crypto.subtle.encrypt(
+            {
+                name: 'AES-GCM',
+                iv: iv
+            },
+            key,
+            encodedData
+        );
+
+        return {
+            iv: this.arrayBufferToBase64(iv),
+            data: this.arrayBufferToBase64(encrypted),
+            timestamp: Date.now(),
+            version: '1.0'
         };
     }
 
-    async deriveKey(purpose) {
-        const salt = await this.generateSalt();
-        const baseKey = await crypto.subtle.importKey(
-            'raw',
-            new TextEncoder().encode(purpose + this.getDeviceFingerprint()),
-            'PBKDF2',
-            false,
-            ['deriveKey']
-        );
-
-        return await crypto.subtle.deriveKey(
-            {
-                name: 'PBKDF2',
-                salt: salt,
-                iterations: this.keyDerivationIterations,
-                hash: this.hashAlgorithm
-            },
-            baseKey,
-            { name: this.algorithm, length: this.keyLength },
-            true,
-            ['encrypt', 'decrypt']
-        );
-    }
-
-    async generateSalt() {
-        return crypto.getRandomValues(new Uint8Array(16));
-    }
-
-    getDeviceFingerprint() {
-        const fingerprintData = [
-            navigator.userAgent,
-            navigator.language,
-            screen.colorDepth,
-            screen.width + 'x' + screen.height,
-            new Date().getTimezoneOffset(),
-            !!navigator.cookieEnabled,
-            !!navigator.javaEnabled(),
-            navigator.hardwareConcurrency || 'unknown'
-        ].join('|');
-
-        return this.hashData(fingerprintData);
-    }
-
-    async hashData(data) {
-        const encoder = new TextEncoder();
-        const dataBuffer = encoder.encode(data);
-        const hashBuffer = await crypto.subtle.digest(this.hashAlgorithm, dataBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // END-TO-END ENCRYPTION METHODS
-    async encryptData(data, keyType = 'default') {
-        if (!this.initialized) {
-            throw new Error('Security system not initialized');
-        }
-
+    async decrypt(encryptedData, key = this.masterKey) {
+        if (!this.initialized) throw new Error('Security not initialized');
+        
         try {
-            const key = keyType === 'default' ? this.encryptionKey : this.derivedKeys[keyType];
-            const iv = crypto.getRandomValues(new Uint8Array(this.ivLength));
-            const encoder = new TextEncoder();
-            const dataBuffer = encoder.encode(data);
-
-            const encryptedBuffer = await crypto.subtle.encrypt(
+            const iv = this.base64ToArrayBuffer(encryptedData.iv);
+            const data = this.base64ToArrayBuffer(encryptedData.data);
+            
+            const decrypted = await window.crypto.subtle.decrypt(
                 {
-                    name: this.algorithm,
-                    iv: iv,
-                    tagLength: 128
-                },
-                key,
-                dataBuffer
-            );
-
-            // Combine IV and encrypted data
-            const resultBuffer = new Uint8Array(iv.length + encryptedBuffer.byteLength);
-            resultBuffer.set(iv, 0);
-            resultBuffer.set(new Uint8Array(encryptedBuffer), iv.length);
-
-            // Convert to base64 for storage
-            return btoa(String.fromCharCode(...resultBuffer));
-
-        } catch (error) {
-            this.logSecurityEvent('ENCRYPTION_FAILED', { error: error.message });
-            throw new Error('Encryption failed: ' + error.message);
-        }
-    }
-
-    async decryptData(encryptedData, keyType = 'default') {
-        if (!this.initialized) {
-            throw new Error('Security system not initialized');
-        }
-
-        try {
-            const key = keyType === 'default' ? this.encryptionKey : this.derivedKeys[keyType];
-            const encryptedBuffer = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
-
-            // Extract IV from beginning of buffer
-            const iv = encryptedBuffer.slice(0, this.ivLength);
-            const data = encryptedBuffer.slice(this.ivLength);
-
-            const decryptedBuffer = await crypto.subtle.decrypt(
-                {
-                    name: this.algorithm,
-                    iv: iv,
-                    tagLength: 128
+                    name: 'AES-GCM',
+                    iv: iv
                 },
                 key,
                 data
             );
 
-            return new TextDecoder().decode(decryptedBuffer);
-
+            const decoder = new TextDecoder();
+            return JSON.parse(decoder.decode(decrypted));
         } catch (error) {
-            this.logSecurityEvent('DECRYPTION_FAILED', { error: error.message });
-            throw new Error('Decryption failed: ' + error.message);
+            console.error('Decryption failed:', error);
+            throw new Error('Failed to decrypt data');
         }
     }
 
-    // SECURE MESSAGING ENCRYPTION
-    async encryptMessage(message, recipientPublicKey) {
-        try {
-            // Generate ephemeral key pair for forward secrecy
-            const ephemeralKeyPair = await crypto.subtle.generateKey(
-                {
-                    name: 'ECDH',
-                    namedCurve: 'P-256'
-                },
-                true,
-                ['deriveKey']
-            );
+    // User-Specific Encryption
+    async generateUserKey(userId) {
+        const userKey = await this.generateKey();
+        this.userKeys.set(userId, userKey);
+        
+        // Store encrypted version in localStorage
+        const encryptedKey = await this.encrypt(
+            await this.exportKey(userKey),
+            this.masterKey
+        );
+        
+        localStorage.setItem(`vibe_user_key_${userId}`, JSON.stringify(encryptedKey));
+        return userKey;
+    }
 
-            // Derive shared secret
-            const sharedSecret = await crypto.subtle.deriveKey(
-                {
-                    name: 'ECDH',
-                    public: recipientPublicKey
-                },
-                ephemeralKeyPair.privateKey,
-                {
-                    name: 'AES-GCM',
-                    length: 256
-                },
-                true,
+    async getUserKey(userId) {
+        if (this.userKeys.has(userId)) {
+            return this.userKeys.get(userId);
+        }
+
+        const storedKey = localStorage.getItem(`vibe_user_key_${userId}`);
+        if (storedKey) {
+            const encryptedKey = JSON.parse(storedKey);
+            const keyData = await this.decrypt(encryptedKey);
+            const userKey = await this.importKey(
+                this.base64ToArrayBuffer(keyData),
+                'AES-GCM',
                 ['encrypt', 'decrypt']
             );
-
-            // Encrypt message with shared secret
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const encrypted = await crypto.subtle.encrypt(
-                {
-                    name: 'AES-GCM',
-                    iv: iv
-                },
-                sharedSecret,
-                new TextEncoder().encode(message)
-            );
-
-            // Export public key for transmission
-            const publicKey = await crypto.subtle.exportKey('raw', ephemeralKeyPair.publicKey);
-
-            return {
-                encryptedMessage: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
-                ephemeralPublicKey: btoa(String.fromCharCode(...new Uint8Array(publicKey))),
-                iv: btoa(String.fromCharCode(...iv)),
-                timestamp: Date.now(),
-                messageId: await this.generateMessageId()
-            };
-
-        } catch (error) {
-            this.logSecurityEvent('MESSAGE_ENCRYPTION_FAILED', { error: error.message });
-            throw error;
-        }
-    }
-
-    async generateMessageId() {
-        const randomBytes = crypto.getRandomValues(new Uint8Array(16));
-        return Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
-    }
-
-    // PASSWORD SECURITY
-    async hashPassword(password, salt = null) {
-        if (!salt) {
-            salt = crypto.getRandomValues(new Uint8Array(16));
+            
+            this.userKeys.set(userId, userKey);
+            return userKey;
         }
 
-        const encoder = new TextEncoder();
-        const passwordBuffer = encoder.encode(password);
-        const saltBuffer = salt;
+        return await this.generateUserKey(userId);
+    }
 
-        const key = await crypto.subtle.importKey(
-            'raw',
-            passwordBuffer,
-            'PBKDF2',
-            false,
-            ['deriveBits']
-        );
-
-        const derivedBits = await crypto.subtle.deriveBits(
-            {
-                name: 'PBKDF2',
-                salt: saltBuffer,
-                iterations: 310000, // OWASP recommended
-                hash: this.hashAlgorithm
-            },
-            key,
-            256
-        );
-
+    // Secure Chat Encryption
+    async encryptMessage(message, recipientId) {
+        const sessionKey = await this.getSessionKey(recipientId);
+        const encryptedMessage = await this.encrypt(message, sessionKey);
+        
         return {
-            hash: btoa(String.fromCharCode(...new Uint8Array(derivedBits))),
-            salt: btoa(String.fromCharCode(...saltBuffer))
+            ...encryptedMessage,
+            recipientId: recipientId,
+            senderId: this.getCurrentUserId(),
+            messageType: 'encrypted',
+            encryptionLevel: 'end-to-end'
         };
     }
 
-    async verifyPassword(password, hash, salt) {
-        try {
-            const saltBuffer = Uint8Array.from(atob(salt), c => c.charCodeAt(0));
-            const newHash = await this.hashPassword(password, saltBuffer);
-            return newHash.hash === hash;
-        } catch (error) {
-            this.logSecurityEvent('PASSWORD_VERIFICATION_FAILED', { error: error.message });
-            return false;
-        }
+    async decryptMessage(encryptedMessage) {
+        const sessionKey = await this.getSessionKey(encryptedMessage.senderId);
+        return await this.decrypt(encryptedMessage, sessionKey);
     }
 
-    validatePasswordStrength(password) {
-        const requirements = {
-            minLength: this.securityConfig.minPasswordLength,
-            hasUpperCase: /[A-Z]/.test(password),
-            hasLowerCase: /[a-z]/.test(password),
-            hasNumbers: /\d/.test(password),
-            hasSpecialChars: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
-        };
-
-        const errors = [];
-
-        if (password.length < requirements.minLength) {
-            errors.push(`Password must be at least ${requirements.minLength} characters long`);
-        }
-        if (this.securityConfig.requireMixedCase && (!requirements.hasUpperCase || !requirements.hasLowerCase)) {
-            errors.push('Password must contain both uppercase and lowercase letters');
-        }
-        if (this.securityConfig.requireNumbers && !requirements.hasNumbers) {
-            errors.push('Password must contain at least one number');
-        }
-        if (this.securityConfig.requireSpecialChars && !requirements.hasSpecialChars) {
-            errors.push('Password must contain at least one special character');
-        }
-
-        return {
-            isValid: errors.length === 0,
-            score: this.calculatePasswordScore(password),
-            errors: errors,
-            requirements: requirements
-        };
-    }
-
-    calculatePasswordScore(password) {
-        let score = 0;
+    // Session Key Management for Real-time Communication
+    async getSessionKey(userId) {
+        const sessionId = `${this.getCurrentUserId()}_${userId}`;
         
-        // Length
-        if (password.length >= 8) score += 1;
-        if (password.length >= 12) score += 1;
-        if (password.length >= 16) score += 1;
-        
-        // Character variety
-        if (/[a-z]/.test(password)) score += 1;
-        if (/[A-Z]/.test(password)) score += 1;
-        if (/\d/.test(password)) score += 1;
-        if (/[^a-zA-Z\d]/.test(password)) score += 1;
-        
-        // Entropy calculation
-        const charSetSize = this.getCharSetSize(password);
-        const entropy = password.length * Math.log2(charSetSize);
-        
-        if (entropy > 64) score += 2;
-        if (entropy > 96) score += 2;
-        
-        return Math.min(10, score);
-    }
-
-    getCharSetSize(password) {
-        let size = 0;
-        if (/[a-z]/.test(password)) size += 26;
-        if (/[A-Z]/.test(password)) size += 26;
-        if (/\d/.test(password)) size += 10;
-        if (/[^a-zA-Z\d]/.test(password)) size += 32;
-        return size || 1;
-    }
-
-    // SESSION MANAGEMENT
-    initializeSessionManagement() {
-        this.sessionInterval = setInterval(() => {
-            this.cleanupExpiredSessions();
-        }, 60000); // Check every minute
-    }
-
-    async createSecureSession(userData) {
-        try {
-            const sessionId = this.generateSessionId();
-            const sessionData = {
-                userId: userData.id,
-                username: userData.username,
-                createdAt: Date.now(),
-                lastActivity: Date.now(),
-                ipAddress: await this.getClientIP(),
-                userAgent: navigator.userAgent,
-                deviceFingerprint: this.getDeviceFingerprint()
-            };
-
-            const encryptedSession = await this.encryptData(JSON.stringify(sessionData), 'session');
-            
-            this.activeSessions.set(sessionId, {
-                ...sessionData,
-                encryptedToken: encryptedSession
-            });
-
-            // Store session with expiration
-            const sessionStorage = {
-                sessionId: sessionId,
-                encryptedData: encryptedSession,
-                expiresAt: Date.now() + this.securityConfig.sessionTimeout
-            };
-
-            localStorage.setItem(`vibelink_session_${sessionId}`, JSON.stringify(sessionStorage));
-            this.logSecurityEvent('SESSION_CREATED', { userId: userData.id, sessionId });
-
-            return sessionId;
-
-        } catch (error) {
-            this.logSecurityEvent('SESSION_CREATION_FAILED', { error: error.message });
-            throw error;
-        }
-    }
-
-    generateSessionId() {
-        const bytes = crypto.getRandomValues(new Uint8Array(32));
-        return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
-    }
-
-    async validateSession(sessionId) {
-        try {
-            const sessionData = this.activeSessions.get(sessionId);
-            
-            if (!sessionData) {
-                const stored = localStorage.getItem(`vibelink_session_${sessionId}`);
-                if (!stored) {
-                    this.logSecurityEvent('SESSION_NOT_FOUND', { sessionId });
-                    return false;
-                }
-                
-                const sessionStorage = JSON.parse(stored);
-                if (Date.now() > sessionStorage.expiresAt) {
-                    this.destroySession(sessionId);
-                    return false;
-                }
-                
-                const decrypted = await this.decryptData(sessionStorage.encryptedData, 'session');
-                sessionData = JSON.parse(decrypted);
-                this.activeSessions.set(sessionId, sessionData);
-            }
-
-            // Check session expiration
-            if (Date.now() - sessionData.lastActivity > this.securityConfig.sessionTimeout) {
-                this.destroySession(sessionId);
-                return false;
-            }
-
-            // Verify device fingerprint
-            if (sessionData.deviceFingerprint !== this.getDeviceFingerprint()) {
-                this.logSecurityEvent('SESSION_DEVICE_MISMATCH', { sessionId });
-                this.destroySession(sessionId);
-                return false;
-            }
-
-            // Update last activity
-            sessionData.lastActivity = Date.now();
-            this.activeSessions.set(sessionId, sessionData);
-
-            return sessionData;
-
-        } catch (error) {
-            this.logSecurityEvent('SESSION_VALIDATION_FAILED', { sessionId, error: error.message });
-            this.destroySession(sessionId);
-            return false;
-        }
-    }
-
-    destroySession(sessionId) {
-        this.activeSessions.delete(sessionId);
-        localStorage.removeItem(`vibelink_session_${sessionId}`);
-        this.logSecurityEvent('SESSION_DESTROYED', { sessionId });
-    }
-
-    cleanupExpiredSessions() {
-        const now = Date.now();
-        for (const [sessionId, sessionData] of this.activeSessions.entries()) {
-            if (now - sessionData.lastActivity > this.securityConfig.sessionTimeout) {
-                this.destroySession(sessionId);
-            }
-        }
-    }
-
-    // SECURITY MONITORING & AUDITING
-    setupSecurityMonitoring() {
-        // Monitor for suspicious activities
-        this.monitorNetworkRequests();
-        this.monitorStorageAccess();
-        this.monitorCryptographicOperations();
-    }
-
-    logSecurityEvent(eventType, details) {
-        if (!this.securityConfig.auditLogging) return;
-
-        const event = {
-            timestamp: new Date().toISOString(),
-            eventType: eventType,
-            details: details,
-            userAgent: navigator.userAgent,
-            ipAddress: this.getClientIP() || 'unknown',
-            sessionId: details.sessionId || 'unknown'
-        };
-
-        this.auditLog.push(event);
-
-        // Keep only last 1000 events
-        if (this.auditLog.length > 1000) {
-            this.auditLog = this.auditLog.slice(-1000);
+        if (this.sessionKeys.has(sessionId)) {
+            return this.sessionKeys.get(sessionId);
         }
 
-        // Real-time alerting for critical events
-        if (this.isCriticalEvent(eventType)) {
-            this.triggerSecurityAlert(event);
-        }
-
-        console.log(`🔒 Security Event: ${eventType}`, details);
-    }
-
-    isCriticalEvent(eventType) {
-        const criticalEvents = [
-            'MULTIPLE_FAILED_LOGINS',
-            'SESSION_HIJACKING_ATTEMPT',
-            'ENCRYPTION_FAILED',
-            'UNAUTHORIZED_ACCESS'
-        ];
-        return criticalEvents.includes(eventType);
-    }
-
-    triggerSecurityAlert(event) {
-        // In production, this would send to security monitoring system
-        console.warn('🚨 SECURITY ALERT:', event);
+        const sessionKey = await this.generateKey();
+        this.sessionKeys.set(sessionId, sessionKey);
         
-        // Could integrate with:
-        // - SIEM systems
-        // - Email/SMS alerts
-        // - Security team notifications
-    }
-
-    monitorNetworkRequests() {
-        const originalFetch = window.fetch;
-        window.fetch = async (...args) => {
-            const startTime = Date.now();
-            
-            try {
-                const response = await originalFetch.apply(this, args);
-                const duration = Date.now() - startTime;
-                
-                this.logSecurityEvent('NETWORK_REQUEST', {
-                    url: args[0],
-                    method: args[1]?.method || 'GET',
-                    status: response.status,
-                    duration: duration
-                });
-                
-                return response;
-            } catch (error) {
-                this.logSecurityEvent('NETWORK_REQUEST_FAILED', {
-                    url: args[0],
-                    error: error.message
-                });
-                throw error;
-            }
-        };
-    }
-
-    // BRUTE FORCE PROTECTION
-    async trackLoginAttempt(identifier, success) {
-        const now = Date.now();
-        const attempts = this.failedAttempts.get(identifier) || [];
-
-        if (success) {
-            this.failedAttempts.delete(identifier);
-            return true;
-        }
-
-        // Add failed attempt
-        attempts.push(now);
+        // Exchange session key securely (in real app, this would use key exchange protocol)
+        await this.exchangeSessionKey(userId, sessionKey);
         
-        // Remove attempts older than lockout duration
-        const recentAttempts = attempts.filter(time => 
-            now - time < this.securityConfig.lockoutDuration
+        return sessionKey;
+    }
+
+    async exchangeSessionKey(userId, sessionKey) {
+        // In a real implementation, this would use Diffie-Hellman key exchange
+        // For now, we'll simulate secure key exchange
+        const encryptedKey = await this.encrypt(
+            await this.exportKey(sessionKey),
+            await this.getUserKey(userId)
         );
 
-        this.failedAttempts.set(identifier, recentAttempts);
-
-        if (recentAttempts.length >= this.securityConfig.maxLoginAttempts) {
-            this.logSecurityEvent('ACCOUNT_LOCKED', { 
-                identifier, 
-                attempts: recentAttempts.length 
-            });
-            return false;
-        }
-
-        return true;
+        // Store for the other user to retrieve
+        localStorage.setItem(`vibe_session_key_${userId}_${this.getCurrentUserId()}`, 
+            JSON.stringify(encryptedKey));
     }
 
-    isAccountLocked(identifier) {
-        const attempts = this.failedAttempts.get(identifier) || [];
-        const now = Date.now();
-        const recentAttempts = attempts.filter(time => 
-            now - time < this.securityConfig.lockoutDuration
-        );
-
-        return recentAttempts.length >= this.securityConfig.maxLoginAttempts;
-    }
-
-    // AUTO-LOCK FEATURE
-    setupAutoLock() {
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                this.lastInactiveTime = Date.now();
-            }
-        });
-
-        document.addEventListener('mousemove', this.resetAutoLockTimer.bind(this));
-        document.addEventListener('keypress', this.resetAutoLockTimer.bind(this));
-        document.addEventListener('click', this.resetAutoLockTimer.bind(this));
-
-        this.autoLockInterval = setInterval(() => {
-            this.checkAutoLock();
-        }, 30000); // Check every 30 seconds
-    }
-
-    resetAutoLockTimer() {
-        this.lastInactiveTime = Date.now();
-    }
-
-    checkAutoLock() {
-        if (!this.lastInactiveTime) return;
-
-        const inactiveTime = Date.now() - this.lastInactiveTime;
-        const autoLockTime = 5 * 60 * 1000; // 5 minutes
-
-        if (inactiveTime > autoLockTime) {
-            this.lockApplication();
-        }
-    }
-
-    lockApplication() {
-        // Clear sensitive data
-        this.encryptionKey = null;
-        this.derivedKeys = null;
-        this.activeSessions.clear();
-        
-        // Redirect to lock screen or require re-authentication
-        this.logSecurityEvent('APPLICATION_AUTO_LOCKED', {});
-        
-        // In a real app, you'd show a lock screen
-        if (window.vibeLinkApp && window.vibeLinkApp.currentUser) {
-            window.vibeLinkApp.handleLogout();
-        }
-    }
-
-    // UTILITY METHODS
-    async getClientIP() {
-        try {
-            const response = await fetch('https://api.ipify.org?format=json');
-            const data = await response.json();
-            return data.ip;
-        } catch (error) {
-            return 'unknown';
-        }
-    }
-
-    generateSecureRandom(length) {
-        return crypto.getRandomValues(new Uint8Array(length));
-    }
-
-    async generateKeyPair() {
-        return await crypto.subtle.generateKey(
-            {
-                name: 'RSA-OAEP',
-                modulusLength: 4096,
-                publicExponent: new Uint8Array([1, 0, 1]),
-                hash: 'SHA-256'
-            },
-            true,
-            ['encrypt', 'decrypt']
-        );
-    }
-
-    // SECURE STORAGE UTILITIES
-    secureSetItem(key, value) {
-        try {
-            const encryptedValue = this.encryptData(JSON.stringify(value));
-            localStorage.setItem(key, encryptedValue);
-            return true;
-        } catch (error) {
-            console.error('Secure storage error:', error);
-            return false;
-        }
+    // Secure Storage Methods
+    async secureSetItem(key, value) {
+        const encrypted = await this.encrypt(value);
+        localStorage.setItem(key, JSON.stringify(encrypted));
     }
 
     async secureGetItem(key) {
-        try {
-            const encryptedValue = localStorage.getItem(key);
-            if (!encryptedValue) return null;
-            
-            const decryptedValue = await this.decryptData(encryptedValue);
-            return JSON.parse(decryptedValue);
-        } catch (error) {
-            console.error('Secure retrieval error:', error);
-            return null;
-        }
+        const encrypted = localStorage.getItem(key);
+        if (!encrypted) return null;
+        
+        return await this.decrypt(JSON.parse(encrypted));
     }
 
-    secureRemoveItem(key) {
-        localStorage.removeItem(key);
+    // Data Integrity and Verification
+    async createSignature(data, key = this.masterKey) {
+        const encoder = new TextEncoder();
+        const dataBuffer = encoder.encode(JSON.stringify(data));
+        
+        const signature = await window.crypto.subtle.sign(
+            'HMAC',
+            key,
+            dataBuffer
+        );
+
+        return this.arrayBufferToBase64(signature);
     }
 
-    // SECURITY HEALTH CHECK
-    async performSecurityAudit() {
-        const audit = {
-            timestamp: new Date().toISOString(),
-            encryption: await this.checkEncryptionHealth(),
-            sessions: this.checkSessionHealth(),
-            network: this.checkNetworkSecurity(),
-            storage: this.checkStorageSecurity(),
-            overallScore: 0
+    async verifySignature(data, signature, key = this.masterKey) {
+        const encoder = new TextEncoder();
+        const dataBuffer = encoder.encode(JSON.stringify(data));
+        
+        return await window.crypto.subtle.verify(
+            'HMAC',
+            key,
+            this.base64ToArrayBuffer(signature),
+            dataBuffer
+        );
+    }
+
+    // Hash Functions
+    async hashData(data, algorithm = 'SHA-256') {
+        const encoder = new TextEncoder();
+        const dataBuffer = encoder.encode(JSON.stringify(data));
+        
+        const hash = await window.crypto.subtle.digest(algorithm, dataBuffer);
+        return this.arrayBufferToBase64(hash);
+    }
+
+    // Password Security
+    async hashPassword(password, salt) {
+        const encoder = new TextEncoder();
+        const passwordBuffer = encoder.encode(password + salt);
+        
+        const hash = await window.crypto.subtle.digest('SHA-256', passwordBuffer);
+        return this.arrayBufferToBase64(hash);
+    }
+
+    async createPasswordHash(password) {
+        const salt = window.crypto.getRandomValues(new Uint8Array(16));
+        const saltBase64 = this.arrayBufferToBase64(salt);
+        const hash = await this.hashPassword(password, saltBase64);
+        
+        return {
+            hash: hash,
+            salt: saltBase64,
+            algorithm: 'PBKDF2-SHA256',
+            iterations: 100000
+        };
+    }
+
+    async verifyPassword(password, storedHash, salt) {
+        const computedHash = await this.hashPassword(password, salt);
+        return computedHash === storedHash;
+    }
+
+    // Key Management
+    async importKey(keyData, algorithm, usages) {
+        return await window.crypto.subtle.importKey(
+            'raw',
+            keyData,
+            {
+                name: algorithm,
+                length: 256
+            },
+            true,
+            usages
+        );
+    }
+
+    async exportKey(key) {
+        return await window.crypto.subtle.exportKey('raw', key);
+    }
+
+    // Secure Random Generation
+    generateSecureRandom(length = 32) {
+        return window.crypto.getRandomValues(new Uint8Array(length));
+    }
+
+    generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = window.crypto.getRandomValues(new Uint8Array(1))[0] % 16 | 0;
+            const v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    // Security Monitoring
+    setupSecurityMonitoring() {
+        // Monitor for suspicious activities
+        this.setupActivityMonitoring();
+        this.setupTamperDetection();
+        this.setupSessionMonitoring();
+    }
+
+    setupActivityMonitoring() {
+        let activityCount = 0;
+        const activityWindow = 60000; // 1 minute
+        const maxActivities = 100; // Max operations per minute
+
+        const activityHandler = {
+            get: function(target, prop) {
+                if (typeof target[prop] === 'function') {
+                    return function(...args) {
+                        activityCount++;
+                        
+                        if (activityCount > maxActivities) {
+                            console.warn('⚠️ High security activity detected');
+                            this.triggerSecurityAlert('HIGH_ACTIVITY_RATE');
+                        }
+
+                        // Reset counter after window
+                        if (activityCount === 1) {
+                            setTimeout(() => {
+                                activityCount = 0;
+                            }, activityWindow);
+                        }
+
+                        return target[prop].apply(target, args);
+                    };
+                }
+                return target[prop];
+            }
         };
 
-        audit.overallScore = this.calculateSecurityScore(audit);
-        return audit;
+        // Wrap security methods with monitoring
+        this.encrypt = new Proxy(this.encrypt, activityHandler);
+        this.decrypt = new Proxy(this.decrypt, activityHandler);
     }
 
-    async checkEncryptionHealth() {
-        try {
-            // Test encryption/decryption cycle
-            const testData = 'VibeLink Security Test ' + Date.now();
-            const encrypted = await this.encryptData(testData);
-            const decrypted = await this.decryptData(encrypted);
-            
-            return {
-                status: testData === decrypted ? 'healthy' : 'compromised',
-                testPassed: testData === decrypted,
-                lastTest: new Date().toISOString()
-            };
-        } catch (error) {
-            return {
-                status: 'failed',
-                testPassed: false,
-                error: error.message,
-                lastTest: new Date().toISOString()
-            };
+    setupTamperDetection() {
+        // Detect if localStorage has been tampered with
+        const originalSetItem = localStorage.setItem;
+        const originalGetItem = localStorage.getItem;
+
+        localStorage.setItem = function(key, value) {
+            // Add integrity check for security-related keys
+            if (key.startsWith('vibe_')) {
+                const timestamp = Date.now();
+                const integrityData = {
+                    value: value,
+                    timestamp: timestamp,
+                    signature: 'secure_' + timestamp
+                };
+                value = JSON.stringify(integrityData);
+            }
+            originalSetItem.call(this, key, value);
+        };
+
+        localStorage.getItem = function(key) {
+            const value = originalGetItem.call(this, key);
+            if (key.startsWith('vibe_') && value) {
+                try {
+                    const integrityData = JSON.parse(value);
+                    if (integrityData.signature && integrityData.signature.startsWith('secure_')) {
+                        return integrityData.value;
+                    }
+                } catch (e) {
+                    console.error('❌ Tamper detection triggered for key:', key);
+                    this.triggerSecurityAlert('DATA_TAMPER_DETECTED');
+                }
+            }
+            return value;
+        }.bind(this);
+    }
+
+    setupSessionMonitoring() {
+        let lastActivity = Date.now();
+        const sessionTimeout = 30 * 60 * 1000; // 30 minutes
+
+        // Track user activity
+        ['click', 'keypress', 'mousemove', 'scroll'].forEach(event => {
+            document.addEventListener(event, () => {
+                lastActivity = Date.now();
+            });
+        });
+
+        // Check for session timeout
+        setInterval(() => {
+            if (Date.now() - lastActivity > sessionTimeout) {
+                this.handleSessionTimeout();
+            }
+        }, 60000); // Check every minute
+    }
+
+    // Security Events and Alerts
+    triggerSecurityAlert(type, details = {}) {
+        const alert = {
+            type: type,
+            timestamp: Date.now(),
+            userAgent: navigator.userAgent,
+            details: details,
+            severity: this.getAlertSeverity(type)
+        };
+
+        console.warn('🚨 Security Alert:', alert);
+        
+        // Store security events
+        this.logSecurityEvent(alert);
+        
+        // Notify user if needed
+        if (alert.severity === 'HIGH') {
+            this.notifyUserSecurityAlert(alert);
         }
     }
 
-    calculateSecurityScore(audit) {
-        let score = 100;
-
-        if (!audit.encryption.testPassed) score -= 40;
-        if (audit.sessions.activeSessions > 10) score -= 10;
-        if (!audit.network.https) score -= 20;
-        if (!audit.storage.secureStorage) score -= 15;
-
-        return Math.max(0, score);
+    getAlertSeverity(type) {
+        const severityMap = {
+            'HIGH_ACTIVITY_RATE': 'MEDIUM',
+            'DATA_TAMPER_DETECTED': 'HIGH',
+            'SESSION_TIMEOUT': 'LOW',
+            'UNAUTHORIZED_ACCESS': 'HIGH',
+            'ENCRYPTION_FAILURE': 'HIGH'
+        };
+        
+        return severityMap[type] || 'LOW';
     }
 
-    // CLEANUP
-    destroy() {
-        if (this.sessionInterval) {
-            clearInterval(this.sessionInterval);
+    logSecurityEvent(event) {
+        const events = JSON.parse(localStorage.getItem('vibe_security_events') || '[]');
+        events.push(event);
+        
+        // Keep only last 100 events
+        if (events.length > 100) {
+            events.shift();
         }
-        if (this.autoLockInterval) {
-            clearInterval(this.autoLockInterval);
-        }
+        
+        localStorage.setItem('vibe_security_events', JSON.stringify(events));
+    }
+
+    // Emergency Security Measures
+    async emergencyLockdown() {
+        console.log('🛡️ Emergency lockdown activated');
         
         // Clear all sensitive data
-        this.encryptionKey = null;
-        this.derivedKeys = null;
-        this.activeSessions.clear();
-        this.failedAttempts.clear();
+        this.clearAllSensitiveData();
         
-        this.initialized = false;
+        // Generate new master key
+        this.masterKey = await this.generateMasterKey();
+        
+        // Notify user
+        this.notifyUserSecurityAlert({
+            type: 'EMERGENCY_LOCKDOWN',
+            message: 'Security lockdown activated. All sessions cleared.',
+            severity: 'HIGH'
+        });
+    }
+
+    clearAllSensitiveData() {
+        // Clear all vibe-related localStorage items
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('vibe_')) {
+                localStorage.removeItem(key);
+            }
+        });
+
+        // Clear memory
+        this.userKeys.clear();
+        this.sessionKeys.clear();
+        this.masterKey = null;
+    }
+
+    // Utility Methods
+    arrayBufferToBase64(buffer) {
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
+    }
+
+    base64ToArrayBuffer(base64) {
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    getCurrentUserId() {
+        // This would typically come from your auth system
+        return Parse.User.current()?.id || 'anonymous';
+    }
+
+    // Public API Methods
+    async secureDataOperation(operation, data, options = {}) {
+        try {
+            const startTime = Date.now();
+            
+            let result;
+            switch (operation) {
+                case 'encrypt':
+                    result = await this.encrypt(data, options.key);
+                    break;
+                case 'decrypt':
+                    result = await this.decrypt(data, options.key);
+                    break;
+                case 'hash':
+                    result = await this.hashData(data, options.algorithm);
+                    break;
+                case 'sign':
+                    result = await this.createSignature(data, options.key);
+                    break;
+                default:
+                    throw new Error('Unknown operation: ' + operation);
+            }
+
+            const endTime = Date.now();
+            this.logPerformance(operation, endTime - startTime);
+
+            return result;
+        } catch (error) {
+            console.error(`Security operation failed: ${operation}`, error);
+            this.triggerSecurityAlert('ENCRYPTION_FAILURE', { operation, error: error.message });
+            throw error;
+        }
+    }
+
+    logPerformance(operation, duration) {
+        if (duration > 1000) { // Log if operation takes more than 1 second
+            console.warn(`⚠️ Slow security operation: ${operation} took ${duration}ms`);
+        }
+    }
+
+    // Kill Switch Implementation
+    async activateKillSwitch() {
+        console.log('💀 Kill switch activated');
+        
+        // Destroy all keys and data
+        this.clearAllSensitiveData();
+        
+        // Clear all application data
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Redirect to security notice
+        window.location.href = '/security-lockdown.html';
+    }
+
+    // Security Health Check
+    async securityHealthCheck() {
+        const checks = {
+            crypto: !!window.crypto?.subtle,
+            localStorage: !!window.localStorage,
+            https: window.location.protocol === 'https:',
+            masterKey: !!this.masterKey,
+            initialized: this.initialized
+        };
+
+        const allPassed = Object.values(checks).every(Boolean);
+        
+        if (!allPassed) {
+            this.triggerSecurityAlert('HEALTH_CHECK_FAILED', { checks });
+        }
+
+        return {
+            status: allPassed ? 'HEALTHY' : 'DEGRADED',
+            checks: checks,
+            timestamp: Date.now()
+        };
+    }
+
+    // User Notification Methods
+    notifyUserSecurityAlert(alert) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('VibeLink Security Alert', {
+                body: `Security event: ${alert.type}`,
+                icon: '/assets/icon-192.png',
+                tag: 'security-alert'
+            });
+        }
+
+        // Show in-app notification
+        this.showInAppSecurityWarning(alert);
+    }
+
+    showInAppSecurityWarning(alert) {
+        const warning = document.createElement('div');
+        warning.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #FF5A1F;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            z-index: 10000;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        `;
+        
+        warning.innerHTML = `
+            <strong>🚨 Security Notice</strong>
+            <p>${alert.message || 'A security event has been detected.'}</p>
+            <small>Type: ${alert.type} | Severity: ${alert.severity}</small>
+        `;
+
+        document.body.appendChild(warning);
+
+        setTimeout(() => {
+            if (warning.parentNode) {
+                warning.remove();
+            }
+        }, 5000);
+    }
+
+    handleSessionTimeout() {
+        console.log('⏰ Session timeout detected');
+        this.triggerSecurityAlert('SESSION_TIMEOUT');
+        
+        // Clear sensitive data but keep user logged in
+        this.userKeys.clear();
+        this.sessionKeys.clear();
+        
+        // Notify user
+        this.notifyUserSecurityAlert({
+            type: 'SESSION_TIMEOUT',
+            message: 'Your security session has expired. Re-authenticating...',
+            severity: 'LOW'
+        });
     }
 }
 
-// Initialize global security instance
-window.VibeSecurity = new VibeSecurity();
+// Initialize security system
+window.vibeSecurity = new VibeSecurity();
 
-// Export for module use
+// Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = VibeSecurity;
 }
+
+console.log('🔒 VibeLink 0372 Security System loaded');
