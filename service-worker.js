@@ -1,9 +1,8 @@
 const CACHE_NAME = 'vibelink-0372-v1.0.0';
-const OFFLINE_CACHE = 'vibelink-offline-v1.0.0';
-const API_CACHE = 'vibelink-api-v1.0.0';
+const API_CACHE_NAME = 'vibelink-api-v1.0.0';
+const DYNAMIC_CACHE_NAME = 'vibelink-dynamic-v1.0.0';
 
-// Core assets for app shell
-const CORE_ASSETS = [
+const APP_SHELL = [
   '/VibeLink-0372/',
   '/VibeLink-0372/index.html',
   '/VibeLink-0372/style.css',
@@ -14,146 +13,161 @@ const CORE_ASSETS = [
   '/VibeLink-0372/assets/logo.svg',
   '/VibeLink-0372/assets/icon-192.png',
   '/VibeLink-0372/assets/icon-512.png',
-  '/VibeLink-0372/assets/default-avatar.png',
-  'https://npmcdn.com/parse/dist/parse.min.js'
+  '/VibeLink-0372/assets/default-avatar.png'
 ];
 
-// API endpoints to cache
 const API_ENDPOINTS = [
-  'https://parseapi.back4app.com/classes/Post',
-  'https://parseapi.back4app.com/classes/User',
-  'https://parseapi.back4app.com/classes/Profile',
-  'https://parseapi.back4app.com/classes/Message',
-  'https://parseapi.back4app.com/classes/VibeWallet',
-  'https://parseapi.back4app.com/classes/MarketplaceItem',
-  'https://parseapi.back4app.com/classes/VibeEvent',
-  'https://parseapi.back4app.com/classes/VibeLiveStream',
-  'https://parseapi.back4app.com/classes/Notification'
+  '/parse/classes/_User',
+  '/parse/classes/Post',
+  '/parse/classes/Comment',
+  '/parse/classes/Like',
+  '/parse/classes/Friendship',
+  '/parse/classes/Notification',
+  '/parse/classes/VibeChatRoom',
+  '/parse/classes/Message',
+  '/parse/classes/VibeSecureChat',
+  '/parse/classes/VibeEvent',
+  '/parse/classes/Stream',
+  '/parse/classes/VibeLiveStream',
+  '/parse/classes/VibeWallet',
+  '/parse/classes/WalletTransaction',
+  '/parse/classes/MarketplaceItem',
+  '/parse/classes/VibeGig',
+  '/parse/classes/VibeLearn',
+  '/parse/classes/Profile',
+  '/parse/classes/VibeStory',
+  '/parse/classes/VibeGallery',
+  '/parse/classes/AI',
+  '/parse/classes/VibeAnalytics'
 ];
 
-// Install event - cache core assets
+// Install Event - Cache App Shell
 self.addEventListener('install', (event) => {
   console.log('🛠️ Service Worker installing...');
+  self.skipWaiting();
   
   event.waitUntil(
-    Promise.all([
-      caches.open(CACHE_NAME)
-        .then(cache => {
-          console.log('📦 Caching core app shell...');
-          return cache.addAll(CORE_ASSETS);
-        }),
-      caches.open(OFFLINE_CACHE)
-        .then(cache => {
-          console.log('📦 Caching offline page...');
-          return cache.add('/VibeLink-0372/offline.html');
-        }),
-      self.skipWaiting()
-    ])
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('📦 Caching app shell');
+        return cache.addAll(APP_SHELL);
+      })
+      .then(() => {
+        console.log('✅ App shell cached');
+        return self.skipWaiting();
+      })
+      .catch((error) => {
+        console.error('❌ Cache installation failed:', error);
+      })
   );
 });
 
-// Activate event - clean up old caches
+// Activate Event - Clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('🚀 Service Worker activating...');
+  console.log('🎯 Service Worker activating...');
   
   event.waitUntil(
-    caches.keys().then(cacheNames => {
+    caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map(cacheName => {
+        cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME && 
-              cacheName !== OFFLINE_CACHE && 
-              cacheName !== API_CACHE) {
+              cacheName !== API_CACHE_NAME && 
+              cacheName !== DYNAMIC_CACHE_NAME) {
             console.log('🗑️ Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
-    }).then(() => {
-      console.log('✅ Service Worker activated and ready!');
+    })
+    .then(() => {
+      console.log('✅ Service Worker activated');
       return self.clients.claim();
     })
   );
 });
 
-// Fetch event - sophisticated caching strategy
+// Fetch Event - Serve from cache or network with offline fallback
 self.addEventListener('fetch', (event) => {
-  const request = event.request;
+  const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET requests
-  if (request.method !== 'GET') {
-    return;
-  }
-
-  // Handle API requests with network-first strategy
-  if (url.href.includes('parseapi.back4app.com')) {
+  // Handle API requests
+  if (url.pathname.includes('/parse/')) {
     event.respondWith(handleApiRequest(request));
     return;
   }
 
-  // Handle same-origin requests with cache-first strategy
-  if (url.origin === self.location.origin) {
-    event.respondWith(handleSameOriginRequest(request));
+  // Handle navigation requests
+  if (request.mode === 'navigate') {
+    event.respondWith(handleNavigationRequest(request));
     return;
   }
 
-  // Handle external resources with cache-first strategy
-  event.respondWith(handleExternalResource(request));
+  // Handle static assets
+  event.respondWith(handleStaticAssetRequest(request));
 });
 
-// API request handler - Network First with offline fallback
+// API Request Handler with offline queuing
 async function handleApiRequest(request) {
-  const cache = await caches.open(API_CACHE);
+  const cache = await caches.open(API_CACHE_NAME);
   
   try {
-    // Try network first
+    // Network-first strategy for API calls
     const networkResponse = await fetch(request);
     
     if (networkResponse.ok) {
-      // Cache the successful response
-      cache.put(request, networkResponse.clone());
+      // Cache successful API responses
+      const responseClone = networkResponse.clone();
+      cache.put(request, responseClone);
+      
+      // Process any queued offline actions
+      await processQueuedActions();
+      
       return networkResponse;
     }
-    
     throw new Error('Network response not ok');
   } catch (error) {
-    // Network failed, try cache
-    const cachedResponse = await cache.match(request);
+    console.log('🌐 Offline - Serving from cache:', request.url);
     
+    // Try to serve from cache
+    const cachedResponse = await cache.match(request);
     if (cachedResponse) {
-      console.log('📡 Serving API from cache:', request.url);
       return cachedResponse;
     }
     
-    // No cache, return offline response for specific endpoints
-    if (request.url.includes('/classes/Post') || 
-        request.url.includes('/classes/Message')) {
-      return new Response(JSON.stringify({
-        results: getOfflineData(request.url)
-      }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
+    // Queue the failed request for later sync
+    await queueOfflineAction(request);
     
-    // Generic error response
-    return new Response(JSON.stringify({ 
-      error: 'You are offline and no cached data is available',
-      code: 100
-    }), {
-      status: 408,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    // Return appropriate fallback based on request type
+    return createOfflineResponse(request);
   }
 }
 
-// Same-origin request handler - Cache First
-async function handleSameOriginRequest(request) {
+// Navigation Request Handler
+async function handleNavigationRequest(request) {
+  try {
+    // Network-first for navigation
+    return await fetch(request);
+  } catch (error) {
+    // Fallback to cached version or offline page
+    const cache = await caches.open(CACHE_NAME);
+    const cachedPage = await cache.match(request);
+    
+    if (cachedPage) {
+      return cachedPage;
+    }
+    
+    return cache.match('/VibeLink-0372/offline.html');
+  }
+}
+
+// Static Asset Request Handler
+async function handleStaticAssetRequest(request) {
   const cache = await caches.open(CACHE_NAME);
   const cachedResponse = await cache.match(request);
   
   if (cachedResponse) {
-    // Update cache in background
-    updateCache(request, cache);
+    // Cache-first for static assets
     return cachedResponse;
   }
   
@@ -161,238 +175,100 @@ async function handleSameOriginRequest(request) {
     const networkResponse = await fetch(request);
     
     if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone());
+      // Cache new assets
+      const responseClone = networkResponse.clone();
+      cache.put(request, responseClone);
     }
     
     return networkResponse;
   } catch (error) {
-    // If request is for a page, serve offline page
-    if (request.headers.get('Accept')?.includes('text/html')) {
-      const offlineCache = await caches.open(OFFLINE_CACHE);
-      const offlineResponse = await offlineCache.match('/VibeLink-0372/offline.html');
-      return offlineResponse || new Response('Offline', { status: 503 });
-    }
-    
-    throw error;
+    // If both cache and network fail, return appropriate fallback
+    return createAssetFallback(request);
   }
 }
 
-// External resource handler - Cache First
-async function handleExternalResource(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const cachedResponse = await cache.match(request);
+// Offline Action Queue Management
+async function queueOfflineAction(request) {
+  const queue = await getOfflineQueue();
+  const action = {
+    url: request.url,
+    method: request.method,
+    headers: Object.fromEntries(request.headers.entries()),
+    body: request.method !== 'GET' && request.method !== 'HEAD' ? 
+      await request.clone().text() : null,
+    timestamp: Date.now(),
+    id: generateActionId()
+  };
   
-  if (cachedResponse) {
-    return cachedResponse;
+  queue.push(action);
+  await setOfflineQueue(queue);
+  
+  // Trigger background sync if available
+  if ('sync' in self.registration) {
+    try {
+      await self.registration.sync.register('offline-actions');
+    } catch (error) {
+      console.log('Background sync not supported');
+    }
+  }
+}
+
+// Process Queued Offline Actions
+async function processQueuedActions() {
+  const queue = await getOfflineQueue();
+  
+  if (queue.length === 0) return;
+  
+  console.log(`🔄 Processing ${queue.length} queued actions`);
+  
+  const successfulActions = [];
+  
+  for (const action of queue) {
+    try {
+      const fetchOptions = {
+        method: action.method,
+        headers: action.headers,
+        body: action.body
+      };
+      
+      const response = await fetch(action.url, fetchOptions);
+      
+      if (response.ok) {
+        successfulActions.push(action.id);
+        console.log(`✅ Synced action: ${action.method} ${action.url}`);
+      }
+    } catch (error) {
+      console.log(`❌ Failed to sync action: ${action.url}`, error);
+    }
   }
   
-  try {
-    const networkResponse = await fetch(request);
-    
-    if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone());
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    // Return generic error for external resources
-    return new Response('', { 
-      status: 408,
-      statusText: 'Offline'
+  // Remove successful actions from queue
+  const updatedQueue = queue.filter(action => 
+    !successfulActions.includes(action.id)
+  );
+  
+  await setOfflineQueue(updatedQueue);
+  
+  // Notify clients about sync completion
+  const clients = await self.clients.matchAll();
+  clients.forEach(client => {
+    client.postMessage({
+      type: 'SYNC_COMPLETE',
+      successful: successfulActions.length,
+      failed: queue.length - successfulActions.length
     });
-  }
-}
-
-// Background cache update
-async function updateCache(request, cache) {
-  try {
-    const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
-      cache.put(request, networkResponse);
-    }
-  } catch (error) {
-    // Silent fail - we have cached version
-  }
-}
-
-// Offline data for critical features
-function getOfflineData(apiUrl) {
-  const timestamp = new Date().toISOString();
-  
-  if (apiUrl.includes('/classes/Post')) {
-    return [
-      {
-        objectId: 'offline-post-1',
-        author: { __type: 'Pointer', className: '_User', objectId: 'offline-user' },
-        content: "You're currently offline 🌐 but can still browse cached content!",
-        media: [],
-        vibeTags: ["offline", "cached"],
-        aiSuggestions: {},
-        pinned: false,
-        visibility: "public",
-        reactions: { like: 0, love: 0, fire: 0 },
-        shares: 0,
-        location: { __type: 'GeoPoint', latitude: 0, longitude: 0 },
-        createdAt: timestamp,
-        updatedAt: timestamp
-      },
-      {
-        objectId: 'offline-post-2',
-        author: { __type: 'Pointer', className: '_User', objectId: 'offline-user' },
-        content: "Your posts will sync when you're back online 🔄",
-        media: [],
-        vibeTags: ["sync", "offline"],
-        aiSuggestions: {},
-        pinned: false,
-        visibility: "public",
-        reactions: { like: 0, love: 0, fire: 0 },
-        shares: 0,
-        location: { __type: 'GeoPoint', latitude: 0, longitude: 0 },
-        createdAt: timestamp,
-        updatedAt: timestamp
-      }
-    ];
-  }
-  
-  if (apiUrl.includes('/classes/Message')) {
-    return [
-      {
-        objectId: 'offline-msg-1',
-        sender: { __type: 'Pointer', className: '_User', objectId: 'offline-user' },
-        text: "Messages will sync when you're back online 💬",
-        messageType: "text",
-        paymentIncluded: false,
-        readBy: [],
-        createdAt: timestamp,
-        updatedAt: timestamp
-      }
-    ];
-  }
-  
-  return [];
-}
-
-// Background sync for offline actions
-self.addEventListener('sync', (event) => {
-  console.log('🔄 Background sync:', event.tag);
-  
-  if (event.tag === 'vibelink-posts') {
-    event.waitUntil(syncOfflinePosts());
-  }
-  
-  if (event.tag === 'vibelink-messages') {
-    event.waitUntil(syncOfflineMessages());
-  }
-});
-
-// Sync offline posts when back online
-async function syncOfflinePosts() {
-  try {
-    const store = await openOfflineStore('vibelink-posts');
-    const posts = await store.getAll();
-    
-    for (const post of posts) {
-      try {
-        const response = await fetch('https://parseapi.back4app.com/classes/Post', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Parse-Application-Id': 'HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA',
-            'X-Parse-REST-API-Key': 'u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn'
-          },
-          body: JSON.stringify(post)
-        });
-        
-        if (response.ok) {
-          await store.delete(post.localId);
-          console.log('✅ Synced offline post:', post.localId);
-        }
-      } catch (error) {
-        console.error('❌ Failed to sync post:', error);
-      }
-    }
-  } catch (error) {
-    console.error('❌ Sync error:', error);
-  }
-}
-
-// Sync offline messages when back online
-async function syncOfflineMessages() {
-  try {
-    const store = await openOfflineStore('vibelink-messages');
-    const messages = await store.getAll();
-    
-    for (const message of messages) {
-      try {
-        const response = await fetch('https://parseapi.back4app.com/classes/Message', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Parse-Application-Id': 'HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA',
-            'X-Parse-REST-API-Key': 'u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn'
-          },
-          body: JSON.stringify(message)
-        });
-        
-        if (response.ok) {
-          await store.delete(message.localId);
-          console.log('✅ Synced offline message:', message.localId);
-        }
-      } catch (error) {
-        console.error('❌ Failed to sync message:', error);
-      }
-    }
-  } catch (error) {
-    console.error('❌ Sync error:', error);
-  }
-}
-
-// IndexedDB for offline data storage
-function openOfflineStore(storeName) {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open('VibeLinkOffline', 1);
-    
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => {
-      const db = request.result;
-      resolve({
-        add: (data) => new Promise((res, rej) => {
-          const transaction = db.transaction([storeName], 'readwrite');
-          const store = transaction.objectStore(storeName);
-          const addRequest = store.add({ ...data, timestamp: Date.now() });
-          addRequest.onsuccess = () => res(addRequest.result);
-          addRequest.onerror = () => rej(addRequest.error);
-        }),
-        getAll: () => new Promise((res, rej) => {
-          const transaction = db.transaction([storeName], 'readonly');
-          const store = transaction.objectStore(storeName);
-          const getAllRequest = store.getAll();
-          getAllRequest.onsuccess = () => res(getAllRequest.result);
-          getAllRequest.onerror = () => rej(getAllRequest.error);
-        }),
-        delete: (id) => new Promise((res, rej) => {
-          const transaction = db.transaction([storeName], 'readwrite');
-          const store = transaction.objectStore(storeName);
-          const deleteRequest = store.delete(id);
-          deleteRequest.onsuccess = () => res();
-          deleteRequest.onerror = () => rej(deleteRequest.error);
-        })
-      });
-    };
-    
-    request.onupgradeneeded = (event) => {
-      const db = event.target.result;
-      if (!db.objectStoreNames.contains('vibelink-posts')) {
-        db.createObjectStore('vibelink-posts', { keyPath: 'localId' });
-      }
-      if (!db.objectStoreNames.contains('vibelink-messages')) {
-        db.createObjectStore('vibelink-messages', { keyPath: 'localId' });
-      }
-    };
   });
 }
 
-// Push notifications
+// Background Sync Event
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'offline-actions') {
+    console.log('🔄 Background sync triggered');
+    event.waitUntil(processQueuedActions());
+  }
+});
+
+// Push Notification Event
 self.addEventListener('push', (event) => {
   if (!event.data) return;
   
@@ -401,23 +277,13 @@ self.addEventListener('push', (event) => {
     body: data.body,
     icon: '/VibeLink-0372/assets/icon-192.png',
     badge: '/VibeLink-0372/assets/icon-192.png',
-    tag: data.tag || 'vibelink-notification',
-    requireInteraction: true,
-    actions: [
-      {
-        action: 'open',
-        title: 'Open VibeLink',
-        icon: '/VibeLink-0372/assets/icon-192.png'
-      },
-      {
-        action: 'dismiss',
-        title: 'Dismiss',
-        icon: '/VibeLink-0372/assets/icon-192.png'
-      }
-    ],
-    data: {
-      url: data.url || '/VibeLink-0372/'
-    }
+    image: data.image,
+    data: data.data,
+    tag: data.tag,
+    requireInteraction: data.requireInteraction || false,
+    actions: data.actions || [],
+    vibrate: [200, 100, 200],
+    timestamp: data.timestamp || Date.now()
   };
   
   event.waitUntil(
@@ -425,105 +291,322 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// Notification click handler
+// Notification Click Event
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   
-  if (event.action === 'open') {
-    event.waitUntil(
-      clients.matchAll({ type: 'window' }).then(windowClients => {
-        for (const client of windowClients) {
-          if (client.url.includes('/VibeLink-0372/') && 'focus' in client) {
-            return client.focus();
-          }
+  const { notification, action } = event;
+  const data = notification.data || {};
+  
+  let url = '/VibeLink-0372/';
+  
+  // Handle different notification types
+  switch (data.type) {
+    case 'message':
+      url = '/VibeLink-0372/#chat';
+      break;
+    case 'post':
+      url = `/VibeLink-0372/#post-${data.postId}`;
+      break;
+    case 'wallet':
+      url = '/VibeLink-0372/#wallet';
+      break;
+    case 'stream':
+      url = '/VibeLink-0372/#streams';
+      break;
+    default:
+      url = '/VibeLink-0372/';
+  }
+  
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window' }).then((clients) => {
+      // Check if app is already open
+      for (const client of clients) {
+        if (client.url.includes(url) && 'focus' in client) {
+          return client.focus();
         }
-        
-        if (clients.openWindow) {
-          return clients.openWindow(event.notification.data.url);
-        }
-      })
+      }
+      
+      // Open new window
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(url);
+      }
+    })
+  );
+});
+
+// Message Event - Communication with clients
+self.addEventListener('message', (event) => {
+  const { data } = event;
+  
+  switch (data.type) {
+    case 'SKIP_WAITING':
+      self.skipWaiting();
+      break;
+      
+    case 'GET_CACHE_STATUS':
+      event.ports[0].postMessage({
+        cached: APP_SHELL.length,
+        total: APP_SHELL.length
+      });
+      break;
+      
+    case 'CACHE_NEW_RESOURCE':
+      cacheNewResource(data.url, data.content);
+      break;
+      
+    case 'GET_OFFLINE_QUEUE':
+      getOfflineQueue().then(queue => {
+        event.ports[0].postMessage({ queue });
+      });
+      break;
+  }
+});
+
+// Helper Functions
+async function getOfflineQueue() {
+  const cache = await caches.open(DYNAMIC_CACHE_NAME);
+  const response = await cache.match('/offline-queue');
+  
+  if (response) {
+    return await response.json();
+  }
+  
+  return [];
+}
+
+async function setOfflineQueue(queue) {
+  const cache = await caches.open(DYNAMIC_CACHE_NAME);
+  const response = new Response(JSON.stringify(queue), {
+    headers: { 'Content-Type': 'application/json' }
+  });
+  
+  await cache.put('/offline-queue', response);
+}
+
+function generateActionId() {
+  return `action_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+}
+
+function createOfflineResponse(request) {
+  const url = new URL(request.url);
+  const path = url.pathname;
+  
+  // Return appropriate fallback responses for different API endpoints
+  if (path.includes('/classes/Post')) {
+    return new Response(JSON.stringify({
+      results: getSamplePosts(),
+      count: 3
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  
+  if (path.includes('/classes/Message')) {
+    return new Response(JSON.stringify({
+      results: getSampleMessages(),
+      count: 5
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  
+  if (path.includes('/classes/Notification')) {
+    return new Response(JSON.stringify({
+      results: getSampleNotifications(),
+      count: 3
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  
+  // Generic offline response
+  return new Response(JSON.stringify({
+    error: 'offline',
+    message: 'You are currently offline. Data will sync when connection is restored.',
+    timestamp: Date.now()
+  }), {
+    status: 503,
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+
+function createAssetFallback(request) {
+  const url = new URL(request.url);
+  
+  if (url.pathname.endsWith('.css')) {
+    return new Response('/* Offline fallback */', {
+      headers: { 'Content-Type': 'text/css' }
+    });
+  }
+  
+  if (url.pathname.endsWith('.js')) {
+    return new Response('// Offline fallback', {
+      headers: { 'Content-Type': 'application/javascript' }
+    });
+  }
+  
+  if (url.pathname.endsWith('.png') || url.pathname.endsWith('.jpg')) {
+    // Return a simple 1x1 transparent pixel
+    return new Response(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
+      { headers: { 'Content-Type': 'image/png' } }
     );
   }
-});
-
-// Periodic sync for background updates
-self.addEventListener('periodicsync', (event) => {
-  if (event.tag === 'vibelink-background-sync') {
-    console.log('🔄 Periodic background sync');
-    event.waitUntil(performBackgroundSync());
-  }
-});
-
-// Background sync tasks
-async function performBackgroundSync() {
-  try {
-    // Sync user data
-    await syncUserData();
-    
-    // Sync notifications
-    await syncNotifications();
-    
-    // Update cache for critical resources
-    await updateCriticalCache();
-    
-    console.log('✅ Background sync completed');
-  } catch (error) {
-    console.error('❌ Background sync failed:', error);
-  }
-}
-
-// Sync user data in background
-async function syncUserData() {
-  // Implementation for syncing user profile, wallet, etc.
-  console.log('👤 Syncing user data...');
-}
-
-// Sync notifications in background
-async function syncNotifications() {
-  // Implementation for fetching new notifications
-  console.log('🔔 Syncing notifications...');
-}
-
-// Update critical cache in background
-async function updateCriticalCache() {
-  const cache = await caches.open(CACHE_NAME);
-  const criticalUrls = [
-    '/VibeLink-0372/',
-    '/VibeLink-0372/index.html',
-    '/VibeLink-0372/style.css',
-    '/VibeLink-0372/script.js'
-  ];
   
-  for (const url of criticalUrls) {
-    try {
-      const response = await fetch(url);
-      if (response.ok) {
-        await cache.put(url, response);
-      }
-    } catch (error) {
-      console.log('⚠️ Failed to update cache for:', url);
-    }
-  }
+  return new Response('Offline', { status: 503 });
 }
 
-// Cache health check and cleanup
-async function performCacheMaintenance() {
+async function cacheNewResource(url, content) {
+  const cache = await caches.open(DYNAMIC_CACHE_NAME);
+  const response = new Response(content, {
+    headers: { 'Content-Type': 'application/json' }
+  });
+  
+  await cache.put(url, response);
+}
+
+// Sample Data for Offline Mode
+function getSamplePosts() {
+  return [
+    {
+      objectId: 'offline_post_1',
+      author: {
+        __type: 'Pointer',
+        className: '_User',
+        objectId: 'offline_user_1',
+        username: 'VibeMaster'
+      },
+      content: '🌐 Welcome to VibeLink 0372! Even offline, you can still browse your cached content and compose new posts that will sync when you\'re back online! #VibeLink #OfflineMode',
+      media: [],
+      vibeTags: ['VibeLink', 'OfflineMode'],
+      aiSuggestions: {},
+      milestones: [],
+      pinned: false,
+      visibility: 'public',
+      reactions: { like: 15, love: 8, fire: 3 },
+      shares: 2,
+      comments: {
+        __type: 'Relation',
+        className: 'Comment'
+      },
+      createdAt: new Date(Date.now() - 3600000).toISOString(),
+      updatedAt: new Date(Date.now() - 3600000).toISOString()
+    },
+    {
+      objectId: 'offline_post_2',
+      author: {
+        __type: 'Pointer',
+        className: '_User',
+        objectId: 'offline_user_2',
+        username: 'TechInnovator'
+      },
+      content: '🚀 Progressive Web Apps are the future! VibeLink 0372 demonstrates true offline capabilities with real-time sync when connectivity returns. #PWA #Innovation',
+      media: [],
+      vibeTags: ['PWA', 'Innovation'],
+      aiSuggestions: {},
+      milestones: [],
+      pinned: false,
+      visibility: 'public',
+      reactions: { like: 23, love: 12, wow: 5 },
+      shares: 4,
+      comments: {
+        __type: 'Relation',
+        className: 'Comment'
+      },
+      createdAt: new Date(Date.now() - 7200000).toISOString(),
+      updatedAt: new Date(Date.now() - 7200000).toISOString()
+    },
+    {
+      objectId: 'offline_post_3',
+      author: {
+        __type: 'Pointer',
+        className: '_User',
+        objectId: 'offline_user_3',
+        username: 'CreativeSoul'
+      },
+      content: '🎨 Creativity knows no bounds, even without an internet connection! Use this offline time to draft your next masterpiece. #Creativity #OfflineInspiration',
+      media: [],
+      vibeTags: ['Creativity', 'OfflineInspiration'],
+      aiSuggestions: {},
+      milestones: [],
+      pinned: false,
+      visibility: 'public',
+      reactions: { like: 42, love: 18, sparkle: 9 },
+      shares: 7,
+      comments: {
+        __type: 'Relation',
+        className: 'Comment'
+      },
+      createdAt: new Date(Date.now() - 10800000).toISOString(),
+      updatedAt: new Date(Date.now() - 10800000).toISOString()
+    }
+  ];
+}
+
+function getSampleMessages() {
+  return [
+    {
+      objectId: 'offline_msg_1',
+      sender: {
+        __type: 'Pointer',
+        className: '_User',
+        objectId: 'offline_user_2',
+        username: 'TechInnovator'
+      },
+      text: 'Hey! I see you\'re offline. Messages will be delivered when you reconnect.',
+      attachments: [],
+      messageType: 'text',
+      paymentIncluded: false,
+      readBy: ['offline_user_1'],
+      createdAt: new Date(Date.now() - 1800000).toISOString(),
+      updatedAt: new Date(Date.now() - 1800000).toISOString()
+    }
+  ];
+}
+
+function getSampleNotifications() {
+  return [
+    {
+      objectId: 'offline_notif_1',
+      type: 'info',
+      message: '📱 You are currently in offline mode',
+      read: false,
+      createdAt: new Date().toISOString()
+    },
+    {
+      objectId: 'offline_notif_2',
+      type: 'reminder',
+      message: '💾 Your posts will sync when online',
+      read: false,
+      createdAt: new Date().toISOString()
+    }
+  ];
+}
+
+// Cache Health Check
+async function checkCacheHealth() {
   const cache = await caches.open(CACHE_NAME);
   const requests = await cache.keys();
   
-  for (const request of requests) {
-    try {
-      const response = await cache.match(request);
-      if (!response || response.status === 404) {
-        await cache.delete(request);
-      }
-    } catch (error) {
-      await cache.delete(request);
+  console.log(`🔍 Cache health: ${requests.length} items cached`);
+  
+  // Verify critical assets are cached
+  const criticalAssets = APP_SHELL.slice(0, 5); // First 5 are most critical
+  for (const asset of criticalAssets) {
+    const response = await cache.match(asset);
+    if (!response) {
+      console.warn(`⚠️ Critical asset missing from cache: ${asset}`);
     }
   }
 }
 
-// Perform maintenance once a day
-setInterval(performCacheMaintenance, 24 * 60 * 60 * 1000);
+// Periodic cache maintenance
+setInterval(() => {
+  checkCacheHealth();
+}, 86400000); // Run once per day
 
-console.log('🚀 VibeLink 0372 Service Worker loaded successfully!');
+console.log('🎯 VibeLink 0372 Service Worker loaded successfully');
