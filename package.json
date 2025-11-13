@@ -1,311 +1,256 @@
 {
   "name": "vibelink-0372",
   "version": "1.0.0",
-  "description": "VibeLink 0372® - Complete Social Platform PWA - Where the World Vibe Starts",
+  "description": "VibeLink 0372® - Complete Social Media PWA Platform - Where the World Vibe Starts",
+  "main": "index.html",
   "type": "module",
-  "main": "script.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "concurrently \"npm run server\" \"npm run watch\"",
-    "server": "node server.js",
-    "build": "npm run build:css && npm run build:js && npm run build:html && npm run build:assets && npm run build:sw",
-    "build:css": "postcss style.css -o dist/style.min.css --map --env production",
+    "dev": "live-server --port=3000 --host=localhost --entry-file=index.html --wait=100 --ignore=node_modules,.git,*.md",
+    "build": "npm run build:css && npm run build:js && npm run build:assets && npm run build:sw && npm run build:manifest && npm run optimize",
+    "build:css": "postcss style.css -o dist/style.min.css --map",
     "build:js": "rollup -c rollup.config.js",
-    "build:html": "node build-html.js",
-    "build:assets": "node build-assets.js",
+    "build:assets": "node scripts/copy-assets.js",
     "build:sw": "workbox injectManifest workbox-config.js",
-    "watch": "chokidar '**/*.css' '**/*.js' '**/*.html' -c 'npm run build'",
-    "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
-    "test:unit": "jest --config jest.config.js",
-    "test:integration": "node tests/integration.js",
-    "test:e2e": "playwright test",
-    "lint": "eslint . --ext .js,.html --fix",
-    "lint:css": "stylelint '**/*.css' --fix",
-    "audit": "npm audit --audit-level=critical && npm run audit:ci",
-    "audit:ci": "audit-ci --config ./audit-ci.json",
-    "security": "npm run security:scan && npm run security:audit",
-    "security:scan": "snyk test && snyk monitor",
-    "security:audit": "node security-audit.js",
-    "docker:build": "docker build -t vibelink-0372 .",
-    "docker:run": "docker run -d -p 80:80 -p 443:443 --name vibelink-app vibelink-0372",
-    "docker:compose": "docker-compose up -d",
-    "docker:production": "docker-compose -f docker-compose.prod.yml up -d",
+    "build:manifest": "node scripts/generate-manifest.js",
+    "optimize": "node scripts/optimize.js",
+    "preview": "serve dist -p 3000",
     "deploy": "npm run build && npm run deploy:gh-pages",
     "deploy:gh-pages": "gh-pages -d dist",
-    "deploy:netlify": "netlify deploy --prod --dir=dist",
-    "deploy:vercel": "vercel --prod",
-    "deploy:aws": "node deploy-aws.js",
-    "analyze": "npm run analyze:bundle && npm run analyze:performance",
-    "analyze:bundle": "webpack-bundle-analyzer dist/stats.json",
-    "analyze:performance": "lighthouse https://thabang0372.github.io/VibeLink-0372/ --output json --output html --output-path ./lighthouse",
-    "monitor": "npm run monitor:performance && npm run monitor:security",
-    "monitor:performance": "node monitor-performance.js",
-    "monitor:security": "node monitor-security.js",
-    "backup": "node backup-database.js",
-    "restore": "node restore-database.js",
-    "migrate": "node database-migrations.js",
-    "seed": "node database-seeder.js",
-    "clean": "rimraf dist build coverage .cache",
-    "preinstall": "node preinstall-check.js",
-    "postinstall": "node postinstall-setup.js",
-    "prebuild": "npm run clean && npm run lint && npm run test",
-    "postbuild": "npm run analyze && npm run security",
-    "prerelease": "npm run build && npm run test && npm run audit",
-    "release": "standard-version",
-    "postrelease": "git push --follow-tags origin main && npm run deploy"
+    "deploy:production": "npm run build && node scripts/deploy-production.js",
+    "test": "jest --config jest.config.js",
+    "test:unit": "jest --config jest.config.js --testPathPattern=__tests__/unit",
+    "test:integration": "jest --config jest.config.js --testPathPattern=__tests__/integration",
+    "test:security": "node scripts/security-test.js",
+    "test:performance": "node scripts/performance-test.js",
+    "test:lighthouse": "lighthouse http://localhost:3000 --output html --output-path ./reports/lighthouse.html",
+    "lint": "eslint . --ext .js --fix",
+    "lint:css": "stylelint '**/*.css' --fix",
+    "lint:html": "html-validate *.html",
+    "security:audit": "npm audit --audit-level high",
+    "security:scan": "node scripts/security-scan.js",
+    "security:encryption-test": "node scripts/test-encryption.js",
+    "performance:budget": "node scripts/performance-budget.js",
+    "performance:analyze": "webpack-bundle-analyzer dist/stats.json",
+    "pwa:audit": "pwa-asset-generator assets/logo.svg assets -i index.html -m manifest.json --dark-mode --opaque false --padding 0",
+    "pwa:validate": "pwabuilder --url https://thabang0372.github.io/VibeLink-0372/",
+    "docs:generate": "jsdoc -c jsdoc.json",
+    "docs:serve": "serve docs -p 4000",
+    "clean": "rimraf dist docs coverage reports",
+    "clean:all": "npm run clean && rimraf node_modules package-lock.json",
+    "postinstall": "npm run build && npm run security:audit",
+    "predeploy": "npm run test && npm run security:scan",
+    "start": "npm run dev",
+    "serve": "npm run preview"
   },
   "keywords": [
     "pwa",
     "social-media",
+    "progressive-web-app",
     "real-time",
     "encryption",
+    "offline-first",
+    "vibelink",
+    "parse-server",
+    "websockets",
     "marketplace",
     "streaming",
     "wallet",
-    "ai",
+    "messaging",
     "analytics",
-    "offline",
-    "progressive-web-app",
-    "vibelink",
-    "enterprise",
-    "secure",
-    "parse-server",
-    "mongodb",
-    "redis",
-    "docker",
-    "nginx",
-    "websockets"
+    "ai"
   ],
   "author": {
     "name": "VibeLink 0372 Team",
-    "email": "developers@vibelink0372.com",
-    "url": "https://vibelink0372.com"
+    "email": "dev@vibelink0372.com",
+    "url": "https://thabang0372.github.io/VibeLink-0372/"
   },
-  "contributors": [
-    {
-      "name": "Thabang 0372",
-      "email": "thabang0372@vibelink0372.com",
-      "url": "https://github.com/thabang0372"
-    }
-  ],
-  "license": "SEE LICENSE IN LICENSE.md",
+  "license": "Proprietary",
   "repository": {
     "type": "git",
     "url": "https://github.com/thabang0372/VibeLink-0372.git"
   },
-  "bugs": {
-    "url": "https://github.com/thabang0372/VibeLink-0372/issues"
-  },
   "homepage": "https://thabang0372.github.io/VibeLink-0372/",
+  "bugs": {
+    "url": "https://github.com/thabang0372/VibeLink-0372/issues",
+    "email": "support@vibelink0372.com"
+  },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
   "browserslist": [
-    "last 2 versions",
-    "not dead",
-    "not ie < 11",
-    "not op_mini all"
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions",
+    "iOS >= 12",
+    "Android >= 8"
   ],
   "dependencies": {
     "parse": "^4.2.0",
-    "workbox-build": "^7.0.0",
-    "crypto-js": "^4.1.1",
-    "jsencrypt": "^3.3.2",
+    "workbox-window": "^7.0.0",
     "idb": "^7.1.1",
-    "compression": "^1.7.4",
-    "helmet": "^7.1.0",
-    "express": "^4.18.2",
-    "express-rate-limit": "^7.1.5",
-    "cors": "^2.8.5",
-    "express-validator": "^7.0.1",
-    "compression": "^1.7.4",
-    "morgan": "^1.10.0",
+    "lz-string": "^1.4.4",
+    "crypto-js": "^4.1.1",
+    "socket.io-client": "^4.7.2",
+    "webrtc-adapter": "^8.2.3",
+    "qrcode-generator": "^1.4.4",
+    "chart.js": "^4.4.0",
+    "moment": "^2.29.4",
+    "lodash": "^4.17.21",
+    "axios": "^1.5.0",
     "uuid": "^9.0.1",
-    "axios": "^1.6.2",
-    "ws": "^8.14.2",
-    "redis": "^4.6.10",
-    "mongodb": "^6.3.0",
-    "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3",
-    "otplib": "^12.0.1",
-    "qrcode": "^1.5.3",
-    "stripe": "^14.5.0",
-    "sharp": "^0.32.6",
-    "multer": "^1.4.5-lts.1"
+    "js-cookie": "^3.0.5",
+    "fingerprintjs": "^3.4.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.6",
-    "@babel/preset-env": "^7.23.6",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "audit-ci": "^6.6.1",
-    "chokidar": "^3.5.3",
-    "concurrently": "^8.2.2",
+    "live-server": "^1.2.2",
+    "serve": "^14.2.0",
+    "gh-pages": "^5.0.0",
+    "rollup": "^3.29.0",
+    "@rollup/plugin-node-resolve": "^15.2.0",
+    "@rollup/plugin-commonjs": "^25.0.4",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-babel": "^6.0.3",
+    "rollup-plugin-scss": "^4.0.0",
+    "rollup-plugin-copy": "^3.4.0",
+    "postcss": "^8.4.31",
+    "postcss-cli": "^11.0.0",
+    "autoprefixer": "^10.4.16",
     "cssnano": "^6.0.1",
-    "eslint": "^8.56.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "gh-pages": "^6.1.1",
-    "html-minifier": "^4.0.0",
-    "http-server": "^14.1.1",
+    "postcss-preset-env": "^9.1.0",
+    "workbox-cli": "^7.0.0",
+    "workbox-build": "^7.0.0",
+    "pwa-asset-generator": "^6.3.1",
+    "pwabuilder": "^3.0.0",
+    "webpack-bundle-analyzer": "^4.9.0",
+    "lighthouse": "^11.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "jest-puppeteer": "^9.0.0",
-    "lighthouse": "^11.3.0",
-    "netlify-cli": "^17.0.0",
-    "postcss": "^8.4.32",
-    "postcss-cli": "^11.0.0",
-    "postcss-preset-env": "^9.3.0",
-    "playwright": "^1.40.1",
-    "prettier": "^3.1.1",
-    "puppeteer": "^21.6.1",
+    "@testing-library/jest-dom": "^6.1.3",
+    "@testing-library/user-event": "^14.5.1",
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-security": "^1.7.1",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard": "^34.0.0",
+    "html-validate": "^8.1.0",
     "rimraf": "^5.0.5",
-    "rollup": "^4.9.2",
-    "snyk": "^1.1198.0",
-    "standard-version": "^9.5.0",
-    "stylelint": "^16.0.2",
-    "stylelint-config-standard": "^36.0.0",
-    "terser": "^5.24.0",
-    "vercel": "^33.0.1",
-    "webpack-bundle-analyzer": "^4.10.1",
-    "workbox-cli": "^7.0.0"
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "npm-run-all": "^4.1.5",
+    "jsdoc": "^4.0.2",
+    "critical": "^5.1.0",
+    "purgecss": "^5.0.0",
+    "sharp": "^0.32.6",
+    "imagemin": "^8.0.1",
+    "imagemin-webp": "^7.0.0",
+    "imagemin-svgo": "^10.0.1",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "terser-webpack-plugin": "^5.3.9",
+    "css-minimizer-webpack-plugin": "^5.0.1",
+    "html-webpack-plugin": "^5.5.3",
+    "copy-webpack-plugin": "^11.0.0",
+    "compression-webpack-plugin": "^10.0.0",
+    "bundle-buddy": "^0.1.0",
+    "size-limit": "^8.2.6",
+    "@size-limit/preset-app": "^8.2.6"
   },
-  "peerDependencies": {
-    "node": ">=18.0.0"
+  "volta": {
+    "node": "18.17.1",
+    "npm": "9.6.7"
   },
-  "optionalDependencies": {
-    "bufferutil": "^4.0.8",
-    "utf-8-validate": "^6.0.3"
+  "pwa": {
+    "name": "VibeLink 0372®",
+    "short_name": "VibeLink0372",
+    "description": "Where the World Vibe Starts - Complete Social Media Platform",
+    "start_url": "/VibeLink-0372/",
+    "display": "standalone",
+    "background_color": "#0D0D0D",
+    "theme_color": "#FF5A1F",
+    "orientation": "portrait-primary"
   },
-  "bundledDependencies": [
-    "parse",
-    "workbox-build",
-    "crypto-js"
+  "parseConfig": {
+    "applicationId": "HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA",
+    "javascriptKey": "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU",
+    "serverURL": "https://vibelink0372.b4a.app/parse"
+  },
+  "security": {
+    "encryption": {
+      "algorithm": "AES-GCM",
+      "keyLength": 256,
+      "ivLength": 12
+    },
+    "hashing": {
+      "algorithm": "SHA-256",
+      "iterations": 100000
+    }
+  },
+  "performance": {
+    "budgets": {
+      "js": "500kb",
+      "css": "100kb",
+      "images": "2mb",
+      "fonts": "500kb",
+      "total": "4mb"
+    },
+    "targets": {
+      "fcp": "1.5s",
+      "lcp": "2.5s",
+      "fid": "100ms",
+      "cls": "0.1",
+      "tti": "3s"
+    }
+  },
+  "build": {
+    "output": "dist",
+    "assets": "assets",
+    "include": [
+      "*.html",
+      "*.css",
+      "*.js",
+      "*.json",
+      "assets/**/*"
+    ],
+    "exclude": [
+      "node_modules",
+      ".git",
+      "*.md",
+      "Dockerfile",
+      "nginx.conf",
+      "deploy.sh",
+      "scripts/",
+      "__tests__/",
+      "reports/",
+      "coverage/"
+    ]
+  },
+  "deploy": {
+    "production": {
+      "url": "https://thabang0372.github.io/VibeLink-0372/",
+      "branch": "gh-pages",
+      "cname": "vibelink0372.com"
+    },
+    "staging": {
+      "url": "https://staging.vibelink0372.com",
+      "branch": "staging"
+    }
+  },
+  "contributors": [
+    {
+      "name": "Thabang 0372",
+      "email": "thabang0372@vibelink.com",
+      "url": "https://github.com/thabang0372"
+    }
   ],
-  "files": [
-    "dist/",
-    "src/",
-    "assets/",
-    "*.js",
-    "*.html",
-    "*.css",
-    "*.json",
-    "Dockerfile",
-    "nginx.conf",
-    "docker-compose.yml",
-    "deploy.sh",
-    "README.md",
-    "LICENSE.md"
-  ],
-  "config": {
-    "port": 3000,
-    "api_port": 1337,
-    "parse_mount": "/parse",
-    "database_uri": "mongodb://localhost:27017/vibelink",
-    "redis_uri": "redis://localhost:6379",
-    "session_secret": "vibelink-0372-session-secret-2024",
-    "encryption_key": "vibelink-0372-encryption-key-2024"
+  "funding": {
+    "type": "corporate",
+    "url": "https://vibelink0372.com/investors"
   },
+  "private": true,
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "restricted"
-  },
-  "funding": {
-    "type": "patreon",
-    "url": "https://patreon.com/vibelink0372"
-  },
-  "private": true,
-  "os": [
-    "darwin",
-    "linux",
-    "win32"
-  ],
-  "cpu": [
-    "x64",
-    "arm64"
-  ],
-  "volta": {
-    "node": "18.18.2",
-    "npm": "9.8.1"
-  },
-  "release": {
-    "branches": [
-      "main",
-      "develop"
-    ],
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/npm",
-      "@semantic-release/github"
-    ]
-  },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": [
-      "<rootDir>/tests/setup.js"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.js",
-      "!src/**/*.test.js"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 80,
-        "functions": 80,
-        "lines": 80,
-        "statements": 80
-      }
-    }
-  },
-  "stylelint": {
-    "extends": "stylelint-config-standard",
-    "rules": {
-      "color-hex-case": "lower",
-      "color-hex-length": "short",
-      "comment-empty-line-before": "always",
-      "declaration-block-trailing-semicolon": "always",
-      "indentation": 2,
-      "max-nesting-depth": 4
-    }
-  },
-  "eslintConfig": {
-    "extends": "standard",
-    "env": {
-      "browser": true,
-      "es2022": true,
-      "node": true,
-      "jest": true
-    },
-    "parserOptions": {
-      "ecmaVersion": 2022,
-      "sourceType": "module"
-    },
-    "rules": {
-      "no-unused-vars": "warn",
-      "no-console": "warn"
-    }
-  },
-  "prettier": {
-    "semi": true,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "printWidth": 100
-  },
-  "snyk": true,
-  "workbox": {
-    "globDirectory": "dist/",
-    "globPatterns": [
-      "**/*.{html,js,css,json,png,jpg,svg,woff,woff2,ttf,eot}"
-    ],
-    "swDest": "dist/service-worker.js",
-    "clientsClaim": true,
-    "skipWaiting": true
   }
 }
