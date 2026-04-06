@@ -3,42 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>VibeLink 0372® - Where the World Vibe Starts</title>
-
-    <!-- Theme -->
+    <title>VibeLink 0372® – Complete Platform</title>
     <meta name="theme-color" content="#0D0D0D">
-
-    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-
-    <!-- Favicon -->
     <link rel="icon" href="assets/logo.svg">
-
-    <!-- iOS PWA support -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="assets/logo.png">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="app">
-
     <!-- BEFORE LOGIN -->
     <div id="auth-section" class="section active">
         <div class="auth-container">
-
             <div class="logo-header">
-                <img src="assets/logo.svg" alt="VibeLink 0372" class="logo">
+                <img src="assets/logo.svg" alt="VibeLink" class="logo">
                 <h1>VibeLink 0372®</h1>
                 <p class="slogan">Where the World Vibe Starts 🌍🔥</p>
             </div>
-
-            <!-- AUTH FORMS -->
             <div class="auth-forms">
-
                 <!-- LOGIN -->
                 <div id="login-form" class="auth-form active">
                     <h2>Sign In</h2>
@@ -54,7 +37,6 @@
                         Don't have an account? <a href="#" id="show-signup">Sign Up</a>
                     </p>
                 </div>
-
                 <!-- SIGNUP -->
                 <div id="signup-form" class="auth-form">
                     <h2>Create Account</h2>
@@ -72,36 +54,37 @@
                         Already have an account? <a href="#" id="show-login">Sign In</a>
                     </p>
                 </div>
-
             </div>
-
         </div>
     </div>
 
     <!-- MAIN APP AFTER LOGIN -->
     <div id="main-section" class="section">
-
-        <!-- NAVIGATION -->
         <nav class="main-nav">
             <div class="nav-brand">
                 <img src="assets/logo.svg" alt="VibeLink" class="nav-logo">
                 <span>VibeLink 0372®</span>
             </div>
-
             <div class="nav-links">
                 <a href="#home" class="nav-link active" data-section="home">🏠 Home</a>
                 <a href="#feed" class="nav-link" data-section="feed">📱 Feed</a>
                 <a href="#profile" class="nav-link" data-section="profile">👤 Profile</a>
+                <a href="#communities" class="nav-link" data-section="communities">👥 Communities</a>
+                <a href="#events" class="nav-link" data-section="events">📅 Events</a>
+                <a href="#discovery" class="nav-link" data-section="discovery">🔍 Discover</a>
+                <a href="#chat" class="nav-link" data-section="chat">💬 Chat</a>
+                <a href="#wallet" class="nav-link" data-section="wallet">💰 Wallet</a>
+                <a href="#marketplace" class="nav-link" data-section="marketplace">🛒 Market</a>
+                <a href="#learning" class="nav-link" data-section="learning">📚 Learn</a>
+                <a href="#gaming" class="nav-link" data-section="gaming">🎮 Games</a>
+                <a href="#settings" class="nav-link" data-section="settings">⚙️ Settings</a>
             </div>
-
             <div class="nav-actions">
                 <button id="logout-btn" class="nav-button">🚪 Logout</button>
             </div>
         </nav>
 
-        <!-- MAIN CONTENT -->
         <main class="main-content">
-
             <!-- HOME SECTION -->
             <div id="home" class="content-section active">
                 <div class="section-header">
@@ -109,8 +92,8 @@
                     <p>Welcome to your VibeLink universe! 🌍</p>
                 </div>
                 <div id="recent-posts" class="post-feed"></div>
+                <div id="ai-suggestions" class="ai-suggestions"></div>
             </div>
-
             <!-- FEED SECTION -->
             <div id="feed" class="content-section">
                 <div class="section-header">
@@ -122,7 +105,6 @@
                 </div>
                 <div id="feed-posts" class="posts-container"></div>
             </div>
-
             <!-- PROFILE SECTION -->
             <div id="profile" class="content-section">
                 <div class="profile-header">
@@ -130,60 +112,1007 @@
                     <div class="profile-info">
                         <h2 id="profile-username">Username</h2>
                         <p id="profile-bio">Bio will appear here</p>
+                        <div id="profile-stats" class="profile-stats"></div>
                     </div>
                 </div>
+                <div id="stories-container" class="stories-container"></div>
+                <div id="gallery-grid" class="gallery-grid"></div>
                 <div class="profile-content">
                     <h3>📝 My Posts</h3>
                     <div id="user-posts" class="posts-container"></div>
                 </div>
             </div>
-
+            <!-- COMMUNITIES SECTION -->
+            <div id="communities" class="content-section">
+                <div class="section-header">
+                    <h2>👥 Communities</h2>
+                    <button id="create-community-btn" class="vibe-button">Create Community</button>
+                </div>
+                <div id="communities-grid" class="communities-grid"></div>
+                <div id="community-posts" class="posts-container"></div>
+            </div>
+            <!-- EVENTS SECTION -->
+            <div id="events" class="content-section">
+                <div class="section-header">
+                    <h2>📅 Events</h2>
+                    <button id="create-event-btn" class="vibe-button">Create Event</button>
+                </div>
+                <div id="events-list" class="events-list"></div>
+                <div id="live-streams" class="streams-grid"></div>
+            </div>
+            <!-- DISCOVERY SECTION -->
+            <div id="discovery" class="content-section">
+                <div class="section-header">
+                    <h2>🔍 Discover</h2>
+                </div>
+                <div id="recommendations-grid" class="recommendations-grid"></div>
+                <div id="trending-hashtags" class="trending-tags"></div>
+            </div>
+            <!-- CHAT SECTION -->
+            <div id="chat" class="content-section">
+                <div class="chat-container">
+                    <div id="chat-rooms-view" class="chat-rooms-view active">
+                        <h3>Chat Rooms</h3>
+                        <div id="chat-rooms-list" class="chat-rooms-list"></div>
+                        <button id="create-chat-room" class="vibe-button">+ New Chat</button>
+                    </div>
+                    <div id="chat-messages-view" class="chat-messages-view">
+                        <div id="chat-messages" class="chat-messages"></div>
+                        <div class="message-input">
+                            <input type="text" id="message-input" placeholder="Type a message...">
+                            <button id="send-message" class="vibe-button">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- WALLET SECTION -->
+            <div id="wallet" class="content-section">
+                <div class="wallet-header">
+                    <h2>💰 VibeWallet</h2>
+                    <div class="wallet-balance">Balance: <span id="wallet-balance">0</span> VIBE</div>
+                </div>
+                <div class="wallet-actions">
+                    <button id="send-money-btn" class="vibe-button">Send</button>
+                    <button id="add-funds-btn" class="vibe-button">Add Funds</button>
+                </div>
+                <div class="transaction-history">
+                    <h3>Recent Transactions</h3>
+                    <div id="transactions-list"></div>
+                </div>
+            </div>
+            <!-- MARKETPLACE SECTION -->
+            <div id="marketplace" class="content-section">
+                <div class="section-header">
+                    <h2>🛒 Marketplace</h2>
+                    <button id="create-listing-btn" class="vibe-button">+ List Item</button>
+                </div>
+                <div id="marketplace-items" class="marketplace-grid"></div>
+                <h3>🎯 VibeGigs</h3>
+                <div id="vibe-gigs" class="gigs-list"></div>
+            </div>
+            <!-- LEARNING SECTION -->
+            <div id="learning" class="content-section">
+                <div class="section-header">
+                    <h2>📚 Learning Hub</h2>
+                    <button id="create-course-btn" class="vibe-button">Create Course</button>
+                </div>
+                <div id="courses-list" class="courses-list"></div>
+                <div id="live-tutoring" class="tutoring-list"></div>
+            </div>
+            <!-- GAMING SECTION -->
+            <div id="gaming" class="content-section">
+                <div class="section-header">
+                    <h2>🎮 Games</h2>
+                    <button id="create-game-btn" class="vibe-button">Create Session</button>
+                </div>
+                <div id="game-sessions" class="game-sessions"></div>
+                <div id="game-leaderboard" class="leaderboard"></div>
+            </div>
+            <!-- SETTINGS SECTION -->
+            <div id="settings" class="content-section">
+                <div class="section-header">
+                    <h2>⚙️ Settings</h2>
+                </div>
+                <div id="user-settings"></div>
+                <div id="knowledge-base" class="knowledge-base"></div>
+            </div>
         </main>
-
     </div>
-
 </div>
 
-<!-- FOOTER -->
 <footer class="main-footer">
     <div class="footer-content">
         <p>© 2025 VibeLink 0372® — Built by Thabang Agondo</p>
-        <p>Created by: Kasi Vibe Foundation & Projects NPC 🧠 Powered by Unity. ✊ Driven by You.</p>
+        <p>🧠 Powered by Unity. ✊ Driven by You.</p>
     </div>
 </footer>
 
-<!-- WATERMARK -->
-<div class="watermark">
-    <img src="assets/logo.svg" alt="VibeLink">
-    <span>VibeLink 0372®</span>
-</div>
-
-<!-- SCRIPTS -->
-<!-- Parse SDK -->
-<script src="https://npmcdn.com/parse/dist/parse.min.js"></script>
-<script src="security.js" defer></script>
-<script src="script.js" defer></script>
-
-<!-- SERVICE WORKER FOR PWA -->
+<script src="https://unpkg.com/parse/dist/parse.min.js"></script>
 <script>
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js', { scope: './' })
-            .then(reg => console.log('✅ Service Worker registered:', reg.scope))
-            .catch(err => console.error('❌ Service Worker failed:', err));
-    });
-}
+if (typeof Parse === 'undefined') document.write('<script src="parse.min.js"><\/script>');
+Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
+Parse.serverURL = 'https://parseapi.back4app.com/';
+</script>
 
-// Initialize security safely
-document.addEventListener('DOMContentLoaded', async () => {
-    if (window.vibeSecurity?.initializeSecurity) {
+<!-- SECURITY SYSTEM -->
+<script>
+class VibeSecurity {
+    constructor() {
+        this.masterKey = null;
+        this.encryptionKey = null;
+        this.userKeys = new Map();
+        this.sessionKeys = new Map();
+        this.initialized = false;
+        this.initializeSecurity();
+    }
+    async initializeSecurity() {
         try {
-            await window.vibeSecurity.initializeSecurity();
-            console.log('🔒 Security initialized');
-        } catch (err) {
-            console.error('🔒 Security failed:', err);
+            if (!window.crypto || !window.crypto.subtle) throw new Error('Web Crypto API not supported');
+            await this.loadOrGenerateMasterKey();
+            this.setupSecurityMonitoring();
+            this.initialized = true;
+            console.log('🔒 VibeSecurity initialized');
+        } catch(e) { console.error('Security init failed', e); }
+    }
+    async loadOrGenerateMasterKey() {
+        const stored = localStorage.getItem('vibe_master_key');
+        if (stored) this.masterKey = await this.importKey(this.base64ToArrayBuffer(stored), 'AES-GCM', ['encrypt','decrypt']);
+        else {
+            this.masterKey = await this.generateMasterKey();
+            const exported = await this.exportKey(this.masterKey);
+            localStorage.setItem('vibe_master_key', this.arrayBufferToBase64(exported));
         }
     }
+    async generateMasterKey() { return window.crypto.subtle.generateKey({name:'AES-GCM',length:256}, true, ['encrypt','decrypt']); }
+    async generateKey() { return window.crypto.subtle.generateKey({name:'AES-GCM',length:256}, true, ['encrypt','decrypt']); }
+    async encrypt(data, key=this.masterKey) {
+        const enc = new TextEncoder().encode(JSON.stringify(data));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const encrypted = await crypto.subtle.encrypt({name:'AES-GCM',iv}, key, enc);
+        return { iv: this.arrayBufferToBase64(iv), data: this.arrayBufferToBase64(encrypted), timestamp:Date.now(), version:'1.0' };
+    }
+    async decrypt(encryptedData, key=this.masterKey) {
+        const iv = this.base64ToArrayBuffer(encryptedData.iv);
+        const data = this.base64ToArrayBuffer(encryptedData.data);
+        const decrypted = await crypto.subtle.decrypt({name:'AES-GCM',iv}, key, data);
+        return JSON.parse(new TextDecoder().decode(decrypted));
+    }
+    async getUserKey(userId) {
+        if (this.userKeys.has(userId)) return this.userKeys.get(userId);
+        const stored = localStorage.getItem(`vibe_user_key_${userId}`);
+        if (stored) {
+            const enc = JSON.parse(stored);
+            const keyData = await this.decrypt(enc);
+            const key = await this.importKey(this.base64ToArrayBuffer(keyData), 'AES-GCM', ['encrypt','decrypt']);
+            this.userKeys.set(userId, key);
+            return key;
+        }
+        const key = await this.generateKey();
+        this.userKeys.set(userId, key);
+        const encKey = await this.encrypt(await this.exportKey(key), this.masterKey);
+        localStorage.setItem(`vibe_user_key_${userId}`, JSON.stringify(encKey));
+        return key;
+    }
+    async importKey(keyData, algorithm, usages) {
+        return crypto.subtle.importKey('raw', keyData, {name:algorithm,length:256}, true, usages);
+    }
+    async exportKey(key) { return crypto.subtle.exportKey('raw', key); }
+    arrayBufferToBase64(buffer) {
+        const bytes = new Uint8Array(buffer);
+        let bin = '';
+        for (let i=0;i<bytes.byteLength;i++) bin += String.fromCharCode(bytes[i]);
+        return btoa(bin);
+    }
+    base64ToArrayBuffer(base64) {
+        const bin = atob(base64);
+        const bytes = new Uint8Array(bin.length);
+        for (let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+        return bytes.buffer;
+    }
+    getCurrentUserId() { return Parse.User.current() ? Parse.User.current().id : 'anonymous'; }
+    setupSecurityMonitoring() {}
+}
+let securityReady = false;
+function initSecurity() {
+    if (typeof Parse !== 'undefined') { window.vibeSecurity = new VibeSecurity(); securityReady = true; }
+    else setTimeout(initSecurity, 100);
+}
+initSecurity();
+</script>
+
+<!-- FULL INTEGRATED APP - PART 1 (services up to WalletService) -->
+<script>
+// ==================== FULL INTEGRATED APP - PART 1 ====================
+// Helper
+function formatTime(date) { return new Date(date).toLocaleString(); }
+
+// ==================== AuthService ====================
+class AuthService {
+    constructor(app) { this.app = app; }
+    async checkAuthentication() {
+        try {
+            this.app.currentUser = Parse.User.current();
+            if (this.app.currentUser) { this.app.showMainSection(); this.app.hideAuthSection(); }
+            else { this.app.showAuthSection(); this.app.hideMainSection(); }
+            return this.app.currentUser;
+        } catch(e) { this.app.showAuthSection(); return null; }
+    }
+    async handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const pwd = document.getElementById('loginPassword').value;
+        if (!email || !pwd) return this.app.showError('Enter email and password');
+        try {
+            const user = await Parse.User.logIn(email, pwd);
+            await this.handleSuccessfulLogin(user);
+            this.app.showSuccess('Login successful!');
+        } catch(e) { this.app.showError(e.message); }
+    }
+    async handleSignup(e) {
+        e.preventDefault();
+        const u = document.getElementById('signupUsername').value;
+        const em = document.getElementById('signupEmail').value;
+        const p = document.getElementById('signupPassword').value;
+        const bio = document.getElementById('signupBio').value;
+        if (!u || !em || !p) return this.app.showError('Fill all fields');
+        const user = new Parse.User();
+        user.set('username', u); user.set('email', em); user.set('password', p); user.set('bio', bio);
+        try {
+            const newUser = await user.signUp();
+            await this.handleSuccessfulLogin(newUser);
+            this.app.showSuccess('Account created!');
+        } catch(e) { this.app.showError(e.message); }
+    }
+    async handleSuccessfulLogin(user) {
+        this.app.currentUser = user;
+        this.app.showMainSection();
+        this.app.hideAuthSection();
+        await this.app.services.wallet.ensureWalletExists();
+        await this.app.services.profile.ensureProfileExists();
+        await this.app.loadInitialData();
+    }
+    async handleLogout() {
+        await Parse.User.logOut();
+        this.app.currentUser = null;
+        this.app.showAuthSection();
+        this.app.hideMainSection();
+        this.app.showSuccess('Logged out');
+    }
+}
+
+// ==================== ProfileService ====================
+class ProfileService {
+    constructor(app) { this.app = app; }
+    async ensureProfileExists() {
+        const Profile = Parse.Object.extend('Profile');
+        let p = await new Parse.Query(Profile).equalTo('user', this.app.currentUser).first();
+        if (!p) {
+            p = new Profile();
+            p.set('user', this.app.currentUser);
+            p.set('avatar', 'assets/default-avatar.png');
+            p.set('bio', this.app.currentUser.get('bio') || 'Welcome!');
+            p.set('verified', false);
+            await p.save();
+        }
+        return p;
+    }
+    async getUserProfile(userId=null) {
+        const target = userId || this.app.currentUser.id;
+        return await new Parse.Query(Parse.User).get(target);
+    }
+    async updateUserProfile(data) {
+        const user = this.app.currentUser;
+        if (data.username) user.set('username', data.username);
+        if (data.bio) user.set('bio', data.bio);
+        await user.save();
+        this.app.showSuccess('Profile updated');
+        return user;
+    }
+    async uploadProfilePicture(file) {
+        const pf = new Parse.File('avatar.jpg', file);
+        await pf.save();
+        this.app.currentUser.set('profilePicture', pf);
+        await this.app.currentUser.save();
+        this.app.showSuccess('Avatar updated');
+        return pf;
+    }
+    async followUser(userId) {
+        const Follow = Parse.Object.extend('VibeFollow');
+        const f = new Follow();
+        f.set('follower', this.app.currentUser);
+        f.set('following', { __type:'Pointer', className:'_User', objectId:userId });
+        f.set('followedAt', new Date());
+        await f.save();
+        this.app.showSuccess('Followed');
+    }
+    async unfollowUser(userId) {
+        const q = new Parse.Query('VibeFollow');
+        q.equalTo('follower', this.app.currentUser);
+        q.equalTo('following', { __type:'Pointer', className:'_User', objectId:userId });
+        const f = await q.first();
+        if (f) await f.destroy();
+        this.app.showSuccess('Unfollowed');
+    }
+    async getUserStats(userId=null) {
+        const target = userId || this.app.currentUser.id;
+        const Follow = Parse.Object.extend('VibeFollow');
+        const followers = await new Parse.Query(Follow).equalTo('following', { __type:'Pointer', className:'_User', objectId:target }).count();
+        const following = await new Parse.Query(Follow).equalTo('follower', { __type:'Pointer', className:'_User', objectId:target }).count();
+        return { followers, following };
+    }
+    async loadUserStories() { /* story logic omitted for brevity */ }
+    async loadUserGallery() { /* gallery logic omitted */ }
+}
+
+// ==================== PostService ====================
+class PostService {
+    constructor(app) { this.app = app; }
+    async createPost(content, media=[], options={}) {
+        if (!content.trim()) throw new Error('Empty content');
+        const Post = Parse.Object.extend('Post');
+        const p = new Post();
+        const enc = await this.app.services.encryption.encrypt(content);
+        p.set('content', JSON.stringify(enc));
+        p.set('author', this.app.currentUser);
+        p.set('media', media);
+        p.set('vibeTags', this.extractTags(content));
+        p.set('likesCount', 0);
+        p.set('commentCount', 0);
+        await p.save();
+        this.app.showSuccess('Post created');
+        await this.loadFeedPosts();
+        return p;
+    }
+    async loadFeedPosts(limit=20) {
+        const q = new Parse.Query('Post');
+        q.include('author');
+        q.descending('createdAt');
+        q.limit(limit);
+        const posts = await q.find();
+        for (let p of posts) {
+            try {
+                const enc = JSON.parse(p.get('content'));
+                const dec = await this.app.services.encryption.decrypt(enc);
+                p.set('decryptedContent', dec);
+            } catch(e) { p.set('decryptedContent', '[Encrypted]'); }
+        }
+        this.displayPosts(posts);
+        return posts;
+    }
+    async loadUserPosts(userId, limit=20) {
+        const q = new Parse.Query('Post');
+        q.equalTo('author', { __type:'Pointer', className:'_User', objectId:userId });
+        q.descending('createdAt');
+        q.limit(limit);
+        const posts = await q.find();
+        for (let p of posts) {
+            try {
+                const enc = JSON.parse(p.get('content'));
+                const dec = await this.app.services.encryption.decrypt(enc);
+                p.set('decryptedContent', dec);
+            } catch(e) { p.set('decryptedContent', '[Encrypted]'); }
+        }
+        return posts;
+    }
+    async likePost(postId) {
+        const Like = Parse.Object.extend('Like');
+        const q = new Parse.Query(Like);
+        q.equalTo('user', this.app.currentUser);
+        q.equalTo('post', { __type:'Pointer', className:'Post', objectId:postId });
+        const existing = await q.first();
+        if (existing) await existing.destroy();
+        else {
+            const like = new Like();
+            like.set('user', this.app.currentUser);
+            like.set('post', { __type:'Pointer', className:'Post', objectId:postId });
+            await like.save();
+            const post = await new Parse.Query('Post').get(postId);
+            post.increment('likesCount');
+            await post.save();
+        }
+        this.app.showSuccess('Liked');
+        await this.loadFeedPosts();
+    }
+    async commentOnPost(postId, text) {
+        const Comment = Parse.Object.extend('Comment');
+        const c = new Comment();
+        const enc = await this.app.services.encryption.encrypt(text);
+        c.set('content', JSON.stringify(enc));
+        c.set('author', this.app.currentUser);
+        c.set('post', { __type:'Pointer', className:'Post', objectId:postId });
+        await c.save();
+        const post = await new Parse.Query('Post').get(postId);
+        post.increment('commentCount');
+        await post.save();
+        this.app.showSuccess('Comment added');
+        await this.loadFeedPosts();
+    }
+    extractTags(content) { const m = content.match(/#[\w]+/g); return m ? m.map(t=>t.substring(1)) : []; }
+    displayPosts(posts) {
+        const container = document.getElementById('feed-posts') || document.getElementById('recent-posts') || document.getElementById('user-posts');
+        if (!container) return;
+        container.innerHTML = posts.map(p => `
+            <div class="post" data-id="${p.id}">
+                <div class="post-header">
+                    <img src="assets/default-avatar.png" class="post-avatar">
+                    <span class="post-author">${p.get('author').get('username')}</span>
+                    <span class="post-time">${formatTime(p.createdAt)}</span>
+                </div>
+                <div class="post-content">${p.get('decryptedContent')}</div>
+                <div class="post-actions">
+                    <button class="likePost" data-id="${p.id}">❤️ ${p.get('likesCount')||0}</button>
+                    <button class="commentPost" data-id="${p.id}">💬 ${p.get('commentCount')||0}</button>
+                </div>
+            </div>
+        `).join('');
+        document.querySelectorAll('.likePost').forEach(btn => btn.onclick = () => this.likePost(btn.dataset.id));
+        document.querySelectorAll('.commentPost').forEach(btn => btn.onclick = () => { const txt = prompt('Comment:'); if(txt) this.commentOnPost(btn.dataset.id, txt); });
+    }
+}
+
+// ==================== ChatService ====================
+class ChatService {
+    constructor(app) { this.app = app; this.activeChatRoom = null; }
+    async createChatRoom(roomData) {
+        const Room = Parse.Object.extend('VibeChatRoom');
+        const r = new Room();
+        r.set('name', roomData.name);
+        r.set('members', [this.app.currentUser, ...(roomData.members||[])]);
+        r.set('isGroup', roomData.isGroup !== false);
+        await r.save();
+        this.app.showSuccess('Chat room created');
+        await this.loadChatRooms();
+        return r;
+    }
+    async sendMessage(roomId, text) {
+        if (!text.trim()) return;
+        const Message = Parse.Object.extend('Message');
+        const m = new Message();
+        const enc = await this.app.services.encryption.encrypt(text);
+        m.set('text', JSON.stringify(enc));
+        m.set('sender', this.app.currentUser);
+        m.set('room', { __type:'Pointer', className:'VibeChatRoom', objectId:roomId });
+        await m.save();
+        await this.loadChatMessages(roomId);
+    }
+    async loadChatRooms() {
+        const q = new Parse.Query('VibeChatRoom');
+        q.containedIn('members', [this.app.currentUser]);
+        q.descending('updatedAt');
+        const rooms = await q.find();
+        this.displayChatRooms(rooms);
+        return rooms;
+    }
+    async loadChatMessages(roomId) {
+        const q = new Parse.Query('Message');
+        q.equalTo('room', { __type:'Pointer', className:'VibeChatRoom', objectId:roomId });
+        q.include('sender');
+        q.ascending('createdAt');
+        const msgs = await q.find();
+        for (let m of msgs) {
+            try {
+                const enc = JSON.parse(m.get('text'));
+                const dec = await this.app.services.encryption.decrypt(enc);
+                m.set('decryptedContent', dec);
+            } catch(e) { m.set('decryptedContent', '[Encrypted]'); }
+        }
+        this.displayChatMessages(msgs);
+        return msgs;
+    }
+    displayChatRooms(rooms) {
+        const container = document.getElementById('chat-rooms-list');
+        if (!container) return;
+        container.innerHTML = rooms.map(r => `<button class="roomBtn" data-id="${r.id}">${r.get('name')}</button>`).join('');
+        document.querySelectorAll('.roomBtn').forEach(btn => btn.onclick = () => this.openChatRoom(btn.dataset.id));
+    }
+    displayChatMessages(messages) {
+        const container = document.getElementById('chat-messages');
+        if (!container) return;
+        container.innerHTML = messages.map(m => `<div><b>${m.get('sender').get('username')}</b>: ${m.get('decryptedContent')}</div>`).join('');
+    }
+    async openChatRoom(roomId) {
+        this.activeChatRoom = roomId;
+        await this.loadChatMessages(roomId);
+    }
+}
+
+// ==================== WalletService ====================
+class WalletService {
+    constructor(app) { this.app = app; }
+    async ensureWalletExists() {
+        const Wallet = Parse.Object.extend('VibeWallet');
+        let w = await new Parse.Query(Wallet).equalTo('owner', this.app.currentUser).first();
+        if (!w) {
+            w = new Wallet();
+            w.set('owner', this.app.currentUser);
+            w.set('balance', 100);
+            w.set('currency', 'VIBE');
+            await w.save();
+        }
+        return w;
+    }
+    async getBalance() {
+        const w = await this.ensureWalletExists();
+        return w.get('balance');
+    }
+    async addFunds(amount) {
+        const w = await this.ensureWalletExists();
+        w.increment('balance', amount);
+        await w.save();
+        const Transaction = Parse.Object.extend('WalletTransaction');
+        const tx = new Transaction();
+        tx.set('wallet', w);
+        tx.set('amount', amount);
+        tx.set('type', 'credit');
+        tx.set('description', 'Added funds');
+        await tx.save();
+        this.app.showSuccess(`Added ${amount} VIBE`);
+        return w;
+    }
+    async sendMoney(toUserId, amount) {
+        const fromWallet = await this.ensureWalletExists();
+        if (fromWallet.get('balance') < amount) throw new Error('Insufficient funds');
+        const toWallet = await new Parse.Query('VibeWallet').equalTo('owner', { __type:'Pointer', className:'_User', objectId:toUserId }).first();
+        if (!toWallet) throw new Error('Recipient wallet not found');
+        fromWallet.increment('balance', -amount);
+        toWallet.increment('balance', amount);
+        await Parse.Object.saveAll([fromWallet, toWallet]);
+        const Transaction = Parse.Object.extend('WalletTransaction');
+        const tx1 = new Transaction();
+        tx1.set('wallet', fromWallet);
+        tx1.set('amount', -amount);
+        tx1.set('type', 'debit');
+        tx1.set('description', `Sent to ${toUserId}`);
+        await tx1.save();
+        const tx2 = new Transaction();
+        tx2.set('wallet', toWallet);
+        tx2.set('amount', amount);
+        tx2.set('type', 'credit');
+        tx2.set('description', `Received from ${this.app.currentUser.id}`);
+        await tx2.save();
+        this.app.showSuccess(`Sent ${amount} VIBE`);
+    }
+    async getTransactionHistory() {
+        const w = await this.ensureWalletExists();
+        const q = new Parse.Query('WalletTransaction');
+        q.equalTo('wallet', w);
+        q.descending('createdAt');
+        return await q.find();
+    }
+    async displayWalletInfo() {
+        const balance = await this.getBalance();
+        document.getElementById('wallet-balance').innerText = balance;
+        const txns = await this.getTransactionHistory();
+        const container = document.getElementById('transactions-list');
+        if (container) container.innerHTML = txns.map(t => `<div>${t.get('description')}: ${t.get('amount')} VIBE</div>`).join('');
+    }
+}
+</script>
+// ==================== MarketplaceService ====================
+class MarketplaceService {
+    constructor(app) { this.app = app; }
+    async createItem(data) {
+        const Item = Parse.Object.extend('MarketplaceItem');
+        const i = new Item();
+        i.set('seller', this.app.currentUser);
+        i.set('title', data.title);
+        i.set('description', data.description);
+        i.set('price', data.price);
+        i.set('currency', data.currency || 'VIBE');
+        i.set('category', data.category);
+        i.set('status', 'available');
+        i.set('images', data.images || []);
+        await i.save();
+        this.app.showSuccess('Item listed');
+        return i;
+    }
+    async loadItems() {
+        const q = new Parse.Query('MarketplaceItem');
+        q.equalTo('status', 'available');
+        q.include('seller');
+        q.descending('createdAt');
+        const items = await q.find();
+        this.displayItems(items);
+        return items;
+    }
+    async addToCart(itemId) {
+        const Cart = Parse.Object.extend('VibeShoppingCart');
+        let cart = await new Parse.Query(Cart).equalTo('owner', this.app.currentUser).equalTo('status','active').first();
+        if (!cart) {
+            cart = new Cart();
+            cart.set('owner', this.app.currentUser);
+            cart.set('items', []);
+            cart.set('totalPrice', 0);
+            cart.set('status', 'active');
+        }
+        const items = cart.get('items') || [];
+        const existing = items.find(i => i.itemId === itemId);
+        if (existing) existing.quantity++;
+        else items.push({ itemId, quantity:1, addedAt:new Date() });
+        cart.set('items', items);
+        await cart.save();
+        this.app.showSuccess('Added to cart');
+    }
+    displayItems(items) {
+        const container = document.getElementById('marketplace-items');
+        if (!container) return;
+        container.innerHTML = items.map(i => `
+            <div class="marketplace-card">
+                <h4>${i.get('title')}</h4>
+                <p>${i.get('description')}</p>
+                <div>${i.get('price')} ${i.get('currency')}</div>
+                <button onclick="window.vibeApp.services.marketplace.addToCart('${i.id}')">Add to Cart</button>
+            </div>
+        `).join('');
+    }
+}
+
+// ==================== LearningService ====================
+class LearningService {
+    constructor(app) { this.app = app; }
+    async createCourse(data) {
+        const Course = Parse.Object.extend('VibeCourse');
+        const c = new Course();
+        c.set('instructor', this.app.currentUser);
+        c.set('title', data.title);
+        c.set('description', data.description);
+        c.set('price', data.price || 0);
+        c.set('level', data.level || 'beginner');
+        c.set('modules', []);
+        await c.save();
+        this.app.showSuccess('Course created');
+        return c;
+    }
+    async loadCourses() {
+        const q = new Parse.Query('VibeCourse');
+        q.include('instructor');
+        q.descending('createdAt');
+        const courses = await q.find();
+        this.displayCourses(courses);
+        return courses;
+    }
+    async enroll(courseId) {
+        const Course = Parse.Object.extend('VibeCourse');
+        const c = await new Parse.Query(Course).get(courseId);
+        c.addUnique('enrolledStudents', this.app.currentUser);
+        await c.save();
+        this.app.showSuccess('Enrolled');
+    }
+    displayCourses(courses) {
+        const container = document.getElementById('courses-list');
+        if (!container) return;
+        container.innerHTML = courses.map(c => `
+            <div class="course-card">
+                <h4>${c.get('title')}</h4>
+                <p>${c.get('description')}</p>
+                <div>Price: ${c.get('price')} VIBE</div>
+                <button onclick="window.vibeApp.services.learning.enroll('${c.id}')">Enroll</button>
+            </div>
+        `).join('');
+    }
+}
+
+// ==================== GamingService ====================
+class GamingService {
+    constructor(app) { this.app = app; }
+    async createSession(data) {
+        const Session = Parse.Object.extend('VibeGameSession');
+        const s = new Session();
+        s.set('host', this.app.currentUser);
+        s.set('gameType', data.gameType);
+        s.set('title', data.title);
+        s.set('maxPlayers', data.maxPlayers || 4);
+        s.set('currentPlayers', [this.app.currentUser]);
+        s.set('status', 'waiting');
+        await s.save();
+        this.app.showSuccess('Game session created');
+        return s;
+    }
+    async joinSession(sessionId) {
+        const Session = Parse.Object.extend('VibeGameSession');
+        const s = await new Parse.Query(Session).get(sessionId);
+        if (s.get('currentPlayers').length >= s.get('maxPlayers')) throw new Error('Session full');
+        s.addUnique('currentPlayers', this.app.currentUser);
+        await s.save();
+        this.app.showSuccess('Joined game');
+    }
+    async loadSessions() {
+        const q = new Parse.Query('VibeGameSession');
+        q.containedIn('status', ['waiting','active']);
+        q.include('host');
+        q.descending('createdAt');
+        const sessions = await q.find();
+        this.displaySessions(sessions);
+        return sessions;
+    }
+    displaySessions(sessions) {
+        const container = document.getElementById('game-sessions');
+        if (!container) return;
+        container.innerHTML = sessions.map(s => `
+            <div class="game-card">
+                <h4>${s.get('title')}</h4>
+                <div>${s.get('gameType')} | ${s.get('currentPlayers').length}/${s.get('maxPlayers')} players</div>
+                <button onclick="window.vibeApp.services.gaming.joinSession('${s.id}')">Join</button>
+            </div>
+        `).join('');
+    }
+}
+
+// ==================== EventService ====================
+class EventService {
+    constructor(app) { this.app = app; }
+    async createEvent(data) {
+        const Event = Parse.Object.extend('VibeEvent');
+        const e = new Event();
+        e.set('host', this.app.currentUser);
+        e.set('title', data.title);
+        e.set('description', data.description);
+        e.set('eventDate', new Date(data.date));
+        e.set('location', data.location);
+        e.set('ticketsAvailable', data.tickets);
+        e.set('price', data.price || 0);
+        await e.save();
+        this.app.showSuccess('Event created');
+        return e;
+    }
+    async rsvp(eventId) {
+        const Event = Parse.Object.extend('VibeEvent');
+        const e = await new Parse.Query(Event).get(eventId);
+        e.addUnique('attendees', this.app.currentUser);
+        await e.save();
+        this.app.showSuccess('RSVP confirmed');
+    }
+    async loadEvents() {
+        const q = new Parse.Query('VibeEvent');
+        q.greaterThan('eventDate', new Date());
+        q.include('host');
+        q.ascending('eventDate');
+        const events = await q.find();
+        this.displayEvents(events);
+        return events;
+    }
+    displayEvents(events) {
+        const container = document.getElementById('events-list');
+        if (!container) return;
+        container.innerHTML = events.map(e => `
+            <div class="event-card">
+                <h4>${e.get('title')}</h4>
+                <p>${e.get('description')}</p>
+                <div>${new Date(e.get('eventDate')).toLocaleString()}</div>
+                <button onclick="window.vibeApp.services.events.rsvp('${e.id}')">RSVP</button>
+            </div>
+        `).join('');
+    }
+}
+
+// ==================== DiscoveryService ====================
+class DiscoveryService {
+    constructor(app) { this.app = app; }
+    async getTrending() {
+        const q = new Parse.Query('Post');
+        q.descending('likesCount');
+        q.limit(10);
+        const posts = await q.find();
+        return posts;
+    }
+    async getRecommendations() {
+        // Simple: return recent posts
+        const q = new Parse.Query('Post');
+        q.descending('createdAt');
+        q.limit(10);
+        return await q.find();
+    }
+    displayRecommendations(posts) {
+        const container = document.getElementById('recommendations-grid');
+        if (!container) return;
+        container.innerHTML = posts.map(p => `<div class="rec-card">${p.get('content')}</div>`).join('');
+    }
+}
+
+// ==================== CommunityService ====================
+class CommunityService {
+    constructor(app) { this.app = app; }
+    async createCommunity(data) {
+        const Comm = Parse.Object.extend('VibeCommunity');
+        const c = new Comm();
+        c.set('name', data.name);
+        c.set('description', data.description);
+        c.set('owner', this.app.currentUser);
+        c.set('members', [this.app.currentUser]);
+        c.set('privacy', data.privacy || 'public');
+        await c.save();
+        this.app.showSuccess('Community created');
+        return c;
+    }
+    async join(communityId) {
+        const Comm = Parse.Object.extend('VibeCommunity');
+        const c = await new Parse.Query(Comm).get(communityId);
+        c.addUnique('members', this.app.currentUser);
+        await c.save();
+        this.app.showSuccess('Joined community');
+    }
+    async loadCommunities() {
+        const q = new Parse.Query('VibeCommunity');
+        q.include('owner');
+        q.descending('memberCount');
+        const comms = await q.find();
+        this.displayCommunities(comms);
+        return comms;
+    }
+    displayCommunities(comms) {
+        const container = document.getElementById('communities-grid');
+        if (!container) return;
+        container.innerHTML = comms.map(c => `
+            <div class="community-card">
+                <h4>${c.get('name')}</h4>
+                <p>${c.get('description')}</p>
+                <div>Members: ${c.get('members').length}</div>
+                <button onclick="window.vibeApp.services.communities.join('${c.id}')">Join</button>
+            </div>
+        `).join('');
+    }
+}
+
+// ==================== SettingsService ====================
+class SettingsService {
+    constructor(app) { this.app = app; }
+    async getSettings() {
+        const Setting = Parse.Object.extend('VibeUserSettings');
+        let s = await new Parse.Query(Setting).equalTo('user', this.app.currentUser).first();
+        if (!s) {
+            s = new Setting();
+            s.set('user', this.app.currentUser);
+            s.set('theme', 'dark');
+            s.set('notifications', { push: true });
+            await s.save();
+        }
+        return s;
+    }
+    async updateSettings(data) {
+        const s = await this.getSettings();
+        if (data.theme) s.set('theme', data.theme);
+        if (data.notifications) s.set('notifications', data.notifications);
+        await s.save();
+        this.app.showSuccess('Settings updated');
+    }
+    displaySettings() {
+        // placeholder
+    }
+}
+
+// ==================== AIService ====================
+class AIService {
+    constructor(app) { this.app = app; }
+    async trackUserBehavior(action, data) {
+        const AI = Parse.Object.extend('AI');
+        let ai = await new Parse.Query(AI).equalTo('user', this.app.currentUser).first();
+        if (!ai) {
+            ai = new AI();
+            ai.set('user', this.app.currentUser);
+            ai.set('learningPattern', {});
+        }
+        const pattern = ai.get('learningPattern') || {};
+        pattern[action] = (pattern[action] || 0) + 1;
+        ai.set('learningPattern', pattern);
+        await ai.save();
+    }
+    async getSuggestions() {
+        return { content: ['Try posting more often'], connections: [] };
+    }
+}
+
+// ==================== MAIN APP ====================
+class VibeLink0372 {
+    constructor() {
+        this.currentUser = null;
+        this.services = {};
+        this.init();
+    }
+    async init() {
+        this.services.auth = new AuthService(this);
+        this.services.profile = new ProfileService(this);
+        this.services.posts = new PostService(this);
+        this.services.chat = new ChatService(this);
+        this.services.wallet = new WalletService(this);
+        this.services.marketplace = new MarketplaceService(this);
+        this.services.learning = new LearningService(this);
+        this.services.gaming = new GamingService(this);
+        this.services.events = new EventService(this);
+        this.services.discovery = new DiscoveryService(this);
+        this.services.communities = new CommunityService(this);
+        this.services.settings = new SettingsService(this);
+        this.services.ai = new AIService(this);
+        this.services.encryption = window.vibeSecurity;
+
+        await this.services.auth.checkAuthentication();
+        this.setupEventListeners();
+        console.log('✅ VibeLink 0372 fully loaded');
+    }
+    async loadInitialData() {
+        await Promise.all([
+            this.services.wallet.ensureWalletExists(),
+            this.services.profile.ensureProfileExists(),
+            this.services.posts.loadFeedPosts(10),
+            this.services.chat.loadChatRooms(),
+            this.services.events.loadEvents(),
+            this.services.marketplace.loadItems(),
+            this.services.gaming.loadSessions(),
+            this.services.communities.loadCommunities(),
+            this.services.discovery.getRecommendations()
+        ]);
+    }
+    setupEventListeners() {
+        document.getElementById('loginForm')?.addEventListener('submit', (e) => this.services.auth.handleLogin(e));
+        document.getElementById('signupForm')?.addEventListener('submit', (e) => this.services.auth.handleSignup(e));
+        document.getElementById('logout-btn')?.addEventListener('click', () => this.services.auth.handleLogout());
+        document.getElementById('create-post')?.addEventListener('click', async () => {
+            const content = document.getElementById('post-content').value;
+            if (content) {
+                await this.services.posts.createPost(content);
+                document.getElementById('post-content').value = '';
+            }
+        });
+        document.getElementById('send-message')?.addEventListener('click', async () => {
+            const input = document.getElementById('message-input');
+            if (input.value && this.services.chat.activeChatRoom) {
+                await this.services.chat.sendMessage(this.services.chat.activeChatRoom, input.value);
+                input.value = '';
+            }
+        });
+        document.getElementById('create-chat-room')?.addEventListener('click', async () => {
+            const name = prompt('Room name');
+            if (name) await this.services.chat.createChatRoom({ name, members: [] });
+        });
+        document.getElementById('add-funds-btn')?.addEventListener('click', async () => {
+            await this.services.wallet.addFunds(100);
+            this.services.wallet.displayWalletInfo();
+        });
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = link.dataset.section;
+                this.showSection(section);
+            });
+        });
+    }
+    showSection(sectionId) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(sectionId)?.classList.add('active');
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        const activeLink = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
+        if (activeLink) activeLink.classList.add('active');
+        if (sectionId === 'profile') this.services.profile.getUserStats().then(s => { document.getElementById('profile-stats').innerHTML = `Followers: ${s.followers} Following: ${s.following}`; });
+        if (sectionId === 'wallet') this.services.wallet.displayWalletInfo();
+        if (sectionId === 'chat') this.services.chat.loadChatRooms();
+        if (sectionId === 'feed') this.services.posts.loadFeedPosts();
+        if (sectionId === 'home') this.services.posts.loadFeedPosts(5);
+        if (sectionId === 'marketplace') this.services.marketplace.loadItems();
+        if (sectionId === 'learning') this.services.learning.loadCourses();
+        if (sectionId === 'gaming') this.services.gaming.loadSessions();
+        if (sectionId === 'events') this.services.events.loadEvents();
+        if (sectionId === 'communities') this.services.communities.loadCommunities();
+    }
+    showAuthSection() {
+        document.getElementById('auth-section').classList.add('active');
+        document.getElementById('main-section').classList.remove('active');
+    }
+    hideAuthSection() {
+        document.getElementById('auth-section').classList.remove('active');
+    }
+    showMainSection() {
+        document.getElementById('auth-section').classList.remove('active');
+        document.getElementById('main-section').classList.add('active');
+    }
+    hideMainSection() {
+        document.getElementById('main-section').classList.remove('active');
+    }
+    showError(msg) { alert('❌ ' + msg); }
+    showSuccess(msg) { alert('✅ ' + msg); }
+}
+
+// Start the app
+window.addEventListener('DOMContentLoaded', () => {
+    window.vibeApp = new VibeLink0372();
 });
 </script>
 
