@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head><title>Back4App Connection Test</title></head>
+<body>
+    <h1>Testing Back4App...</h1>
+    <div id="result"></div>
+    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+    <script>
+        Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
+        Parse.serverURL = 'https://parseapi.back4app.com/';
+
+        async function test() {
+            try {
+                // Try to create a test object
+                const Test = Parse.Object.extend('TestConnection');
+                const obj = new Test();
+                obj.set('message', 'Hello from VibeLink');
+                await obj.save();
+                document.getElementById('result').innerHTML = '✅ Back4App is connected! Test object saved.';
+                // Clean up: delete the test object
+                await obj.destroy();
+            } catch (err) {
+                document.getElementById('result').innerHTML = '❌ Back4App connection failed: ' + err.message;
+            }
+        }
+        test();
+    </script>
+</body>
+</html>
