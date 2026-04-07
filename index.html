@@ -12,6 +12,15 @@
 </head>
 <body>
 
+<div id="errorDisplay" style="background:red; color:white; padding:10px; margin:10px; font-family:monospace; white-space:pre-wrap; border-radius:5px;"></div>
+
+<script>
+window.onerror = function(message, source, lineno, colno, error) {
+    var display = document.getElementById('errorDisplay');
+    display.innerHTML += '❌ Error: ' + message + '<br>📍 File: ' + source + '<br>📍 Line: ' + lineno + '<br><hr>';
+    return false;
+};
+</script>
 <div id="app">
     <!-- BEFORE LOGIN -->
     <div id="auth-section" class="section active">
@@ -227,15 +236,14 @@
     </div>
 </footer>
 
+<!-- ONE SCRIPT BLOCK FOR EVERYTHING -->
 <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
 <script>
 if (typeof Parse === 'undefined') document.write('<script src="parse.min.js"><\/script>');
 Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
 Parse.serverURL = 'https://parseapi.back4app.com/';
-</script>
 
-<!-- SECURITY SYSTEM -->
-<script>
+// ==================== SECURITY SYSTEM ====================
 class VibeSecurity {
     constructor() {
         this.masterKey = null;
@@ -318,11 +326,7 @@ function initSecurity() {
     else setTimeout(initSecurity, 100);
 }
 initSecurity();
-</script>
 
-<!-- FULL INTEGRATED APP - PART 1 (services up to WalletService) -->
-<script>
-// ==================== FULL INTEGRATED APP - PART 1 ====================
 // Helper
 function formatTime(date) { return new Date(date).toLocaleString(); }
 
@@ -687,7 +691,7 @@ class WalletService {
         if (container) container.innerHTML = txns.map(t => `<div>${t.get('description')}: ${t.get('amount')} VIBE</div>`).join('');
     }
 }
-</script>
+
 // ==================== MarketplaceService ====================
 class MarketplaceService {
     constructor(app) { this.app = app; }
@@ -1114,7 +1118,13 @@ class VibeLink0372 {
 window.addEventListener('DOMContentLoaded', () => {
     window.vibeApp = new VibeLink0372();
 });
-</script>
 
+// Force show main section if user is already logged in
+if (Parse.User.current()) {
+    document.getElementById('auth-section').classList.remove('active');
+    document.getElementById('main-section').classList.add('active');
+    console.log('User already logged in, showing main section');
+}
+</script>
 </body>
 </html>
