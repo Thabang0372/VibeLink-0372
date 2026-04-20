@@ -130,7 +130,7 @@
 <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
 <script>
     // ==================== PARSE INIT ====================
-Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
+Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU");
 Parse.serverURL = 'https://parseapi.back4app.com/';
 
 // ==================== SECURITY ====================
@@ -160,12 +160,14 @@ class VibeSecurity {
         }
     }
     async encrypt(data, key=this.masterKey) {
+        await this.ready;
         const enc = new TextEncoder().encode(JSON.stringify(data));
         const iv = crypto.getRandomValues(new Uint8Array(12));
         const encrypted = await crypto.subtle.encrypt({name:'AES-GCM',iv}, key, enc);
         return { iv: this.arrayBufferToBase64(iv), data: this.arrayBufferToBase64(encrypted), timestamp:Date.now() };
     }
     async decrypt(encryptedData, key=this.masterKey) {
+        await this.ready;
         const iv = this.base64ToArrayBuffer(encryptedData.iv);
         const data = this.base64ToArrayBuffer(encryptedData.data);
         const decrypted = await crypto.subtle.decrypt({name:'AES-GCM',iv}, key, data);
@@ -185,6 +187,14 @@ class VibeSecurity {
     }
     async importKey(keyData) {
         return crypto.subtle.importKey('raw', keyData, {name:'AES-GCM',length:256}, true, ['encrypt','decrypt']);
+    }
+    async generateKey() {
+        await this.ready;
+        return crypto.subtle.generateKey({name:'AES-GCM',length:256}, true, ['encrypt','decrypt']);
+    }
+    async exportKey(key) {
+        await this.ready;
+        return crypto.subtle.exportKey('raw', key);
     }
 }
 window.vibeSecurity = new VibeSecurity();
@@ -983,6 +993,12 @@ class ChatService {
         this.app.showSuccess('Secure chat initiated');
         return s;
     }
+    async addToChatRoom(roomId, userId) {
+        const Room = Parse.Object.extend('VibeChatRoom');
+        const room = await new Parse.Query(Room).get(roomId);
+        room.addUnique('members', { __type: 'Pointer', className: '_User', objectId: userId });
+        await room.save();
+    }
 }
 
 // WalletService (full with loyalty)
@@ -1256,6 +1272,10 @@ class LearningService {
         q.set('course', { __type:'Pointer', className:'VibeCourse', objectId:data.courseId });
         await q.save();
         this.app.showSuccess('Quiz created');
+    }
+    async continueCourse(courseId) {
+        this.app.showSuccess(`Continue learning course ${courseId}`);
+        // Optional: add navigation to the course's first module
     }
 }
 
