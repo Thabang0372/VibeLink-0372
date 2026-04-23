@@ -8,317 +8,14 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/logo.svg">
     <link rel="apple-touch-icon" href="assets/logo.png">
-    
-    <!-- Font Awesome for icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- ==================== YOUR CSS (WITH EMOJI FIX) ==================== -->
-    <style>
-        /* ----- CSS Variables & Themes ----- */
-        :root {
-            --primary: #4361ee;
-            --secondary: #3a0ca3;
-            --accent: #f72585;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --success: #4cc9f0;
-            --warning: #ffba08;
-            --danger: #f72585;
-            --gray: #6c757d;
-            --bg-light: #ffffff;
-            --bg-dark: #121212;
-            --text-light: #212529;
-            --text-dark: #f8f9fa;
-        }
-
-        [data-theme="light"] {
-            --bg-primary: var(--bg-light);
-            --bg-secondary: #f8f9fa;
-            --text-primary: var(--text-light);
-            --text-secondary: #495057;
-            --border-color: #dee2e6;
-        }
-
-        [data-theme="dark"] {
-            --bg-primary: var(--bg-dark);
-            --bg-secondary: #1e1e1e;
-            --text-primary: var(--text-dark);
-            --text-secondary: #adb5bd;
-            --border-color: #343a40;
-        }
-
-        /* ===== EMOJI FIX: Apply globally ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s;
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #app { flex: 1; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-
-        /* ----- Header & Navigation ----- */
-        header {
-            background-color: var(--bg-secondary);
-            padding: 10px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-bottom: 1px solid var(--border-color);
-        }
-        .header-content { display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; font-weight: bold; font-size: 1.5rem; color: var(--primary); }
-        .logo span { color: var(--accent); }
-        .nav-icons { display: flex; gap: 15px; }
-        .nav-icon { font-size: 1.2rem; color: var(--text-secondary); cursor: pointer; }
-
-        /* ----- Main Navigation Bar ----- */
-        .main-nav {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--bg-secondary);
-            padding: 0.8rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            gap: 10px;
-        }
-        .nav-brand { display: flex; align-items: center; gap: 8px; font-weight: bold; color: var(--primary); }
-        .nav-logo { width: 30px; height: 30px; }
-        .nav-links { display: flex; flex-wrap: wrap; gap: 5px; }
-        .nav-link {
-            color: var(--text-primary);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-        }
-        .nav-link:hover { background-color: rgba(67, 97, 238, 0.1); }
-        .nav-link.active { background: var(--primary); color: white; }
-        .nav-actions .nav-button {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        /* ----- Authentication Container ----- */
-        .auth-container {
-            max-width: 450px;
-            margin: 50px auto;
-            padding: 2rem;
-            background-color: var(--bg-secondary);
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            text-align: center;
-        }
-        .logo-header img { width: 80px; margin-bottom: 1rem; }
-        .auth-forms .auth-form { display: none; }
-        .auth-forms .auth-form.active { display: block; }
-        .auth-form h2 { margin-bottom: 1.5rem; color: var(--text-primary); }
-        .form-group { margin-bottom: 1.2rem; text-align: left; }
-        .form-group label { display: block; margin-bottom: 0.3rem; color: var(--text-secondary); }
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 1rem;
-        }
-        .password-wrapper { position: relative; }
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-secondary);
-        }
-
-        /* ----- Buttons ----- */
-        .vibe-button {
-            background: linear-gradient(135deg, #FF5A1F, #FFD733);
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #0D0D0D;
-            display: inline-block;
-            margin: 0.5rem 0;
-            transition: opacity 0.2s;
-        }
-        .vibe-button:hover { opacity: 0.9; }
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 25px;
-            background-color: var(--primary);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* ----- Sections & Content ----- */
-        .section { display: none; }
-        .section.active { display: block; }
-        .content-section { display: none; padding: 20px 0; }
-        .content-section.active { display: block; }
-
-        /* ----- Cards & Posts ----- */
-        .post, .card {
-            background-color: var(--bg-secondary);
-            border-radius: 15px;
-            padding: 1.2rem;
-            margin: 1rem 0;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        .post-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; }
-        .post-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-        .post-author { font-weight: bold; color: var(--primary); }
-        .post-time { font-size: 0.8rem; color: var(--text-secondary); }
-        .post-content { margin-bottom: 1rem; }
-        .post-actions {
-            display: flex;
-            gap: 1.5rem;
-            border-top: 1px solid var(--border-color);
-            padding-top: 0.8rem;
-        }
-        .post-actions button {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* ----- Grid Layouts ----- */
-        .grid-2col {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.2rem;
-            margin-top: 1rem;
-        }
-
-        /* ----- Chat Specific ----- */
-        .chat-container { display: flex; gap: 1.5rem; }
-        .chat-rooms-list { flex: 1; background: var(--bg-secondary); border-radius: 15px; padding: 1rem; }
-        .chat-messages {
-            flex: 2;
-            background: var(--bg-secondary);
-            border-radius: 15px;
-            padding: 1rem;
-            height: 400px;
-            overflow-y: auto;
-        }
-        .message-input { display: flex; gap: 0.5rem; margin-top: 1rem; }
-        .message-input input {
-            flex: 1;
-            padding: 0.8rem;
-            border-radius: 25px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        /* ----- Wallet, Profile, etc. ----- */
-        .wallet-balance { font-size: 2rem; font-weight: bold; color: var(--success); }
-        .profile-header { display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; }
-        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); }
-        .profile-stats { display: flex; gap: 1.5rem; margin-top: 0.5rem; }
-        .stories-container { display: flex; gap: 1rem; overflow-x: auto; padding: 1rem 0; }
-        .story { cursor: pointer; text-align: center; }
-        .story img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
-        .gallery-item { position: relative; }
-        .gallery-item img, .gallery-item video { width: 100%; border-radius: 10px; object-fit: cover; }
-
-        /* ----- Utility Classes ----- */
-        .text-center { text-align: center; }
-        .mt-20 { margin-top: 20px; }
-        .hidden { display: none; }
-
-        /* ----- Footer ----- */
-        .main-footer {
-            background-color: var(--bg-secondary);
-            padding: 1.5rem;
-            text-align: center;
-            border-top: 1px solid var(--border-color);
-            margin-top: 2rem;
-        }
-
-        /* ----- Responsive ----- */
-        @media (max-width: 768px) {
-            .main-nav { flex-direction: column; align-items: stretch; }
-            .nav-links { justify-content: center; }
-            .chat-container { flex-direction: column; }
-            .profile-header { flex-direction: column; text-align: center; }
-        }
-
-        /* ----- Loading Spinner ----- */
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left: 4px solid var(--primary);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* ----- Notification Popup ----- */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background-color: var(--success);
-            color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-        .notification.error { background-color: var(--danger); }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-    </style>
+    <!-- External Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Parse SDK -->
+    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
 </head>
-<body data-theme="dark">
-    <!-- Notification Popup -->
-    <div class="notification" id="notification"></div>
-
+<body>
     <div id="app">
         <!-- AUTH SECTION -->
         <div id="auth-section" class="section active">
@@ -332,42 +29,28 @@
                     <div id="login-form" class="auth-form active">
                         <h2>Sign In</h2>
                         <form id="loginForm">
-                            <div class="form-group">
-                                <label><i class="fas fa-envelope"></i> Email</label>
-                                <input type="email" id="loginEmail" placeholder="Enter your email" required>
-                            </div>
-                            <div class="form-group password-wrapper">
-                                <label><i class="fas fa-lock"></i> Password</label>
-                                <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                            <input type="email" id="loginEmail" placeholder="📧 Email" required>
+                            <div class="password-wrapper">
+                                <input type="password" id="loginPassword" placeholder="🔒 Password" required>
                                 <button type="button" class="toggle-password" id="toggleLoginPassword"><i class="far fa-eye"></i></button>
                             </div>
                             <button type="submit" class="vibe-button">🚀 Sign In</button>
                         </form>
-                        <p class="auth-switch mt-20">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+                        <p class="auth-switch">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
                     </div>
                     <div id="signup-form" class="auth-form">
                         <h2>Create Account</h2>
                         <form id="signupForm">
-                            <div class="form-group">
-                                <label><i class="fas fa-user"></i> Username</label>
-                                <input type="text" id="signupUsername" placeholder="Choose a username" required>
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-envelope"></i> Email</label>
-                                <input type="email" id="signupEmail" placeholder="Enter your email" required>
-                            </div>
-                            <div class="form-group password-wrapper">
-                                <label><i class="fas fa-lock"></i> Password</label>
-                                <input type="password" id="signupPassword" placeholder="Create a password" required>
+                            <input type="text" id="signupUsername" placeholder="👤 Username" required>
+                            <input type="email" id="signupEmail" placeholder="📧 Email" required>
+                            <div class="password-wrapper">
+                                <input type="password" id="signupPassword" placeholder="🔒 Password" required>
                                 <button type="button" class="toggle-password" id="toggleSignupPassword"><i class="far fa-eye"></i></button>
                             </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-info-circle"></i> Bio (optional)</label>
-                                <textarea id="signupBio" placeholder="Tell us about yourself" rows="2"></textarea>
-                            </div>
+                            <textarea id="signupBio" placeholder="💬 Bio (optional)"></textarea>
                             <button type="submit" class="vibe-button">🌟 Create Account</button>
                         </form>
-                        <p class="auth-switch mt-20">Already have an account? <a href="#" id="show-login">Sign In</a></p>
+                        <p class="auth-switch">Already have an account? <a href="#" id="show-login">Sign In</a></p>
                     </div>
                 </div>
             </div>
@@ -375,93 +58,179 @@
 
         <!-- MAIN APP -->
         <div id="main-section" class="section">
-            <nav class="main-nav">
-                <div class="nav-brand">
-                    <img src="assets/logo.svg" alt="VibeLink" class="nav-logo">
-                    <span>VibeLink 0372®</span>
+            <!-- Top Header -->
+            <header class="app-header">
+                <div class="header-left">
+                    <img src="assets/logo.svg" alt="VibeLink" class="header-logo">
+                    <span class="header-title">VibeLink 0372®</span>
                 </div>
+                <div class="header-right">
+                    <button class="icon-button" id="notifications-btn"><i class="far fa-bell"></i></button>
+                    <button class="icon-button" id="search-btn"><i class="fas fa-search"></i></button>
+                    <button class="icon-button" id="menu-btn"><i class="fas fa-bars"></i></button>
+                </div>
+            </header>
+
+            <!-- Original 14-link navigation -->
+            <nav class="main-nav">
                 <div class="nav-links">
-                    <a href="#home" class="nav-link active" data-section="home"><i class="fas fa-home"></i> Home</a>
-                    <a href="#feed" class="nav-link" data-section="feed"><i class="fas fa-newspaper"></i> Feed</a>
-                    <a href="#profile" class="nav-link" data-section="profile"><i class="fas fa-user"></i> Profile</a>
-                    <a href="#communities" class="nav-link" data-section="communities"><i class="fas fa-users"></i> Communities</a>
-                    <a href="#events" class="nav-link" data-section="events"><i class="fas fa-calendar"></i> Events</a>
-                    <a href="#discovery" class="nav-link" data-section="discovery"><i class="fas fa-compass"></i> Discover</a>
-                    <a href="#chat" class="nav-link" data-section="chat"><i class="fas fa-comments"></i> Chat</a>
-                    <a href="#wallet" class="nav-link" data-section="wallet"><i class="fas fa-wallet"></i> Wallet</a>
-                    <a href="#marketplace" class="nav-link" data-section="marketplace"><i class="fas fa-store"></i> Market</a>
-                    <a href="#learning" class="nav-link" data-section="learning"><i class="fas fa-graduation-cap"></i> Learn</a>
-                    <a href="#gaming" class="nav-link" data-section="gaming"><i class="fas fa-gamepad"></i> Games</a>
-                    <a href="#settings" class="nav-link" data-section="settings"><i class="fas fa-cog"></i> Settings</a>
-                    <a href="#ar" class="nav-link" data-section="ar"><i class="fas fa-glasses"></i> AR</a>
-                    <a href="#qa" class="nav-link" data-section="qa"><i class="fas fa-question-circle"></i> Q&A</a>
+                    <a href="#" class="nav-link active" data-section="home"><i class="fas fa-home"></i> Home</a>
+                    <a href="#" class="nav-link" data-section="feed"><i class="fas fa-newspaper"></i> Feed</a>
+                    <a href="#" class="nav-link" data-section="profile"><i class="fas fa-user"></i> Profile</a>
+                    <a href="#" class="nav-link" data-section="communities"><i class="fas fa-users"></i> Communities</a>
+                    <a href="#" class="nav-link" data-section="events"><i class="fas fa-calendar"></i> Events</a>
+                    <a href="#" class="nav-link" data-section="discovery"><i class="fas fa-compass"></i> Discover</a>
+                    <a href="#" class="nav-link" data-section="chat"><i class="fas fa-comments"></i> Chat</a>
+                    <a href="#" class="nav-link" data-section="wallet"><i class="fas fa-wallet"></i> Wallet</a>
+                    <a href="#" class="nav-link" data-section="marketplace"><i class="fas fa-store"></i> Market</a>
+                    <a href="#" class="nav-link" data-section="learning"><i class="fas fa-graduation-cap"></i> Learn</a>
+                    <a href="#" class="nav-link" data-section="gaming"><i class="fas fa-gamepad"></i> Games</a>
+                    <a href="#" class="nav-link" data-section="settings"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="#" class="nav-link" data-section="ar"><i class="fas fa-glasses"></i> AR</a>
+                    <a href="#" class="nav-link" data-section="qa"><i class="fas fa-question-circle"></i> Q&A</a>
                 </div>
                 <div class="nav-actions">
                     <button id="logout-btn" class="nav-button"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
             </nav>
 
+            <!-- Slide-out Menu -->
+            <div id="slide-menu" class="slide-menu hidden">
+                <div class="slide-menu-header">
+                    <h3>All Features</h3>
+                    <button id="close-menu" class="icon-button"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="slide-menu-content">
+                    <a href="#" data-section="communities"><i class="fas fa-users"></i> Communities</a>
+                    <a href="#" data-section="events"><i class="fas fa-calendar"></i> Events</a>
+                    <a href="#" data-section="marketplace"><i class="fas fa-store"></i> Marketplace</a>
+                    <a href="#" data-section="learning"><i class="fas fa-graduation-cap"></i> Learning</a>
+                    <a href="#" data-section="gaming"><i class="fas fa-gamepad"></i> Gaming</a>
+                    <a href="#" data-section="wallet"><i class="fas fa-wallet"></i> Wallet</a>
+                    <a href="#" data-section="ar"><i class="fas fa-glasses"></i> AR</a>
+                    <a href="#" data-section="qa"><i class="fas fa-question-circle"></i> Q&A</a>
+                    <a href="#" data-section="settings"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="#" id="logout-menu-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
             <main class="main-content container">
-                <!-- Home Dashboard -->
-                <div id="home" class="content-section active">
-                    <h2><i class="fas fa-chart-line"></i> Home Dashboard</h2>
-                    <div id="recent-posts" class="post-feed"></div>
+                <!-- HOME SECTION -->
+                <div id="home-section" class="content-section active">
+                    <div class="stories-container" id="stories-container"></div>
+                    <div class="create-post-card">
+                        <img id="home-user-avatar" src="assets/default-avatar.png" class="create-avatar">
+                        <input type="text" id="home-post-input" placeholder="What's vibing today? 🎵" class="create-input">
+                        <button class="icon-button" id="home-add-media"><i class="fas fa-image"></i></button>
+                        <button class="vibe-button" id="home-post-btn">Post</button>
+                    </div>
+                    <div id="home-feed" class="posts-container"></div>
                     <div id="ai-suggestions" class="grid-2col"></div>
                 </div>
 
-                <!-- Feed -->
-                <div id="feed" class="content-section">
+                <!-- FEED SECTION -->
+                <div id="feed-section" class="content-section">
                     <h2><i class="fas fa-newspaper"></i> VibeWall Feed</h2>
                     <div class="post-creator card">
-                        <textarea id="post-content" placeholder="What's vibing today? 🎵"></textarea>
-                        <button id="create-post" class="vibe-button"><i class="fas fa-paper-plane"></i> Post</button>
+                        <textarea id="feed-post-content" placeholder="Share your vibe... 🎵"></textarea>
+                        <button id="feed-create-post" class="vibe-button"><i class="fas fa-paper-plane"></i> Post</button>
                     </div>
                     <div id="feed-posts" class="posts-container"></div>
                 </div>
 
-                <!-- Profile -->
-                <div id="profile" class="content-section">
+                <!-- PROFILE SECTION -->
+                <div id="profile-section" class="content-section">
                     <div class="profile-header">
-                        <img id="profile-avatar" src="assets/default-avatar.png" alt="Profile" class="profile-avatar">
+                        <img id="profile-avatar-img" src="assets/default-avatar.png" class="profile-avatar-large">
                         <div class="profile-info">
-                            <h2 id="profile-username">Username</h2>
-                            <p id="profile-bio">Bio will appear here</p>
-                            <div id="profile-stats" class="profile-stats"></div>
+                            <h2 id="profile-username-display">@username</h2>
+                            <p id="profile-bio-display">Bio</p>
+                            <div class="profile-stats">
+                                <span id="profile-posts-count">0 posts</span>
+                                <span id="profile-followers-count">0 followers</span>
+                                <span id="profile-following-count">0 following</span>
+                            </div>
                         </div>
                     </div>
-                    <h3><i class="fas fa-history"></i> Stories</h3>
-                    <div id="stories-container" class="stories-container"></div>
-                    <h3><i class="fas fa-images"></i> Gallery</h3>
-                    <div id="gallery-grid" class="gallery-grid"></div>
-                    <h3><i class="fas fa-pencil-alt"></i> My Posts</h3>
-                    <div id="user-posts" class="posts-container"></div>
+                    <div class="profile-actions">
+                        <button class="vibe-button" id="edit-profile-btn">Edit Profile</button>
+                        <button class="vibe-button" id="profile-settings-btn"><i class="fas fa-cog"></i> Settings</button>
+                    </div>
+                    <div class="profile-tabs">
+                        <button class="profile-tab active" data-tab="posts">Posts</button>
+                        <button class="profile-tab" data-tab="gallery">Gallery</button>
+                        <button class="profile-tab" data-tab="wallet">Wallet</button>
+                    </div>
+                    <div id="profile-posts-tab" class="profile-pane active">
+                        <div id="user-posts-grid" class="grid-2col"></div>
+                    </div>
+                    <div id="profile-gallery-tab" class="profile-pane">
+                        <div id="user-gallery-grid" class="gallery-grid"></div>
+                        <button id="upload-gallery-btn" class="vibe-button"><i class="fas fa-upload"></i> Upload</button>
+                    </div>
+                    <div id="profile-wallet-tab" class="profile-pane">
+                        <div class="wallet-balance">Balance: <span id="wallet-balance-display">0</span> VIBE</div>
+                        <div class="wallet-actions">
+                            <button class="vibe-button" id="send-money-btn">Send</button>
+                            <button class="vibe-button" id="add-funds-btn">Add Funds</button>
+                            <button class="vibe-button" id="send-tip-btn">Send Tip</button>
+                        </div>
+                        <div id="transactions-list"></div>
+                        <div class="loyalty-info">
+                            <p>Loyalty Points: <span id="loyalty-points-display">0</span></p>
+                            <p>Level: <span id="loyalty-level-display">Bronze</span></p>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Communities -->
-                <div id="communities" class="content-section">
+                <!-- COMMUNITIES SECTION -->
+                <div id="communities-section" class="content-section">
                     <h2><i class="fas fa-users"></i> Communities</h2>
                     <button id="create-community-btn" class="vibe-button"><i class="fas fa-plus"></i> Create Community</button>
                     <div id="communities-grid" class="grid-2col"></div>
-                    <div id="community-posts" class="posts-container"></div>
+                    <div id="selected-community-view" class="hidden">
+                        <button id="back-to-communities" class="vibe-button"><i class="fas fa-arrow-left"></i> Back</button>
+                        <h3 id="community-name"></h3>
+                        <p id="community-description"></p>
+                        <div id="community-posts" class="posts-container"></div>
+                        <button id="post-in-community" class="vibe-button">Post in Community</button>
+                        <h4>Members</h4>
+                        <div id="community-members-list"></div>
+                        <h4>Premium Tiers</h4>
+                        <div id="premium-tiers-list"></div>
+                    </div>
                 </div>
 
-                <!-- Events -->
-                <div id="events" class="content-section">
+                <!-- EVENTS SECTION -->
+                <div id="events-section" class="content-section">
                     <h2><i class="fas fa-calendar-alt"></i> Events</h2>
                     <button id="create-event-btn" class="vibe-button"><i class="fas fa-plus"></i> Create Event</button>
                     <div id="events-list" class="grid-2col"></div>
-                    <div id="live-streams" class="grid-2col"></div>
+                    <h3>Live Streams</h3>
+                    <button id="start-live-stream-btn" class="vibe-button"><i class="fas fa-video"></i> Go Live</button>
+                    <div id="live-streams-list" class="grid-2col"></div>
+                    <div id="active-stream-viewer" class="hidden">
+                        <video id="stream-video" controls autoplay></video>
+                        <div id="stream-chat" class="chat-messages"></div>
+                    </div>
                 </div>
 
-                <!-- Discovery -->
-                <div id="discovery" class="content-section">
+                <!-- DISCOVERY SECTION -->
+                <div id="discovery-section" class="content-section">
                     <h2><i class="fas fa-compass"></i> Discover</h2>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="discovery-search" placeholder="Search people, posts, tags...">
+                    </div>
+                    <div class="trending-tags" id="trending-tags"></div>
                     <div id="recommendations-grid" class="grid-2col"></div>
-                    <div id="trending-hashtags"></div>
+                    <h3>Challenges</h3>
+                    <div id="challenges-list" class="grid-2col"></div>
                 </div>
 
-                <!-- Chat -->
-                <div id="chat" class="content-section">
+                <!-- CHAT SECTION -->
+                <div id="chat-section" class="content-section">
                     <div class="chat-container">
                         <div class="chat-rooms-list">
                             <h3><i class="fas fa-comment-dots"></i> Chat Rooms</h3>
@@ -478,20 +247,36 @@
                             </div>
                         </div>
                     </div>
+                    <!-- CHAT WINDOW OVERLAY -->
+                    <div id="chat-window" class="chat-window-overlay hidden">
+                        <div class="chat-header">
+                            <button class="back-button" id="close-chat"><i class="fas fa-arrow-left"></i></button>
+                            <img id="chat-avatar" src="assets/default-avatar.png">
+                            <div>
+                                <h3 id="chat-title">Chat</h3>
+                                <span id="chat-status">Online</span>
+                            </div>
+                        </div>
+                        <div id="chat-messages-overlay" class="chat-messages"></div>
+                        <div class="chat-input-container">
+                            <input type="text" id="chat-message-input" placeholder="Message...">
+                            <button id="send-chat-message"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Wallet -->
-                <div id="wallet" class="content-section">
+                <!-- WALLET SECTION -->
+                <div id="wallet-section" class="content-section">
                     <h2><i class="fas fa-wallet"></i> Wallet</h2>
                     <div class="wallet-balance">Balance: <span id="wallet-balance">0</span> VIBE</div>
                     <div class="wallet-actions">
-                        <button id="send-money-btn" class="vibe-button"><i class="fas fa-paper-plane"></i> Send</button>
-                        <button id="add-funds-btn" class="vibe-button"><i class="fas fa-plus-circle"></i> Add Funds</button>
-                        <button id="send-tip-btn" class="vibe-button"><i class="fas fa-gem"></i> Send Tip</button>
+                        <button id="send-money-btn-wallet" class="vibe-button">Send</button>
+                        <button id="add-funds-btn-wallet" class="vibe-button">Add Funds</button>
+                        <button id="send-tip-btn-wallet" class="vibe-button">Send Tip</button>
                     </div>
                     <div class="transaction-history">
                         <h3>Recent Transactions</h3>
-                        <div id="transactions-list"></div>
+                        <div id="transactions-list-wallet"></div>
                     </div>
                     <div class="loyalty-info">
                         <h3>Loyalty Program</h3>
@@ -500,68 +285,114 @@
                     </div>
                 </div>
 
-                <!-- Marketplace -->
-                <div id="marketplace" class="content-section">
+                <!-- MARKETPLACE SECTION -->
+                <div id="marketplace-section" class="content-section">
                     <h2><i class="fas fa-store"></i> Marketplace</h2>
                     <button id="create-listing-btn" class="vibe-button"><i class="fas fa-plus"></i> List Item</button>
                     <div id="marketplace-items" class="grid-2col"></div>
                     <h3>VibeGigs</h3>
+                    <button id="create-gig-btn" class="vibe-button"><i class="fas fa-plus"></i> Post Gig</button>
                     <div id="vibe-gigs" class="grid-2col"></div>
+                    <h3>Shopping Cart</h3>
+                    <div id="shopping-cart-items"></div>
+                    <button id="checkout-cart" class="vibe-button">Checkout</button>
                 </div>
 
-                <!-- Learning -->
-                <div id="learning" class="content-section">
+                <!-- LEARNING SECTION -->
+                <div id="learning-section" class="content-section">
                     <h2><i class="fas fa-graduation-cap"></i> Learning</h2>
                     <button id="create-course-btn" class="vibe-button"><i class="fas fa-plus"></i> Create Course</button>
                     <div id="courses-list" class="grid-2col"></div>
-                    <div id="live-tutoring" class="grid-2col"></div>
+                    <h3>Live Tutoring</h3>
+                    <button id="offer-tutoring-btn" class="vibe-button">Offer Tutoring</button>
+                    <div id="live-tutoring-list" class="grid-2col"></div>
+                    <h3>My Quizzes</h3>
                     <button id="create-quiz-btn" class="vibe-button"><i class="fas fa-question"></i> Create Quiz</button>
+                    <div id="my-quizzes-list"></div>
+                    <h3>My Certificates</h3>
+                    <div id="my-certificates-list"></div>
                 </div>
 
-                <!-- Gaming -->
-                <div id="gaming" class="content-section">
-                    <h2><i class="fas fa-gamepad"></i> Games</h2>
-                    <button id="create-game-btn" class="vibe-button"><i class="fas fa-plus"></i> Create Session</button>
-                    <div id="game-sessions" class="grid-2col"></div>
-                    <div id="game-leaderboard"></div>
+                <!-- GAMING SECTION -->
+                <div id="gaming-section" class="content-section">
+                    <h2><i class="fas fa-gamepad"></i> Gaming</h2>
+                    <button id="create-game-session-btn" class="vibe-button"><i class="fas fa-plus"></i> Create Session</button>
+                    <div id="game-sessions-list" class="grid-2col"></div>
+                    <h3>Tournaments</h3>
                     <button id="create-tournament-btn" class="vibe-button"><i class="fas fa-trophy"></i> Create Tournament</button>
+                    <div id="tournaments-list" class="grid-2col"></div>
+                    <h3>Leaderboard</h3>
+                    <div id="game-leaderboard"></div>
                 </div>
 
-                <!-- Settings -->
-                <div id="settings" class="content-section">
+                <!-- SETTINGS SECTION -->
+                <div id="settings-section" class="content-section">
                     <h2><i class="fas fa-cog"></i> Settings</h2>
-                    <div id="user-settings"></div>
-                    <div id="knowledge-base"></div>
+                    <div id="user-settings-container"></div>
+                    <h3>Knowledge Base</h3>
+                    <div id="knowledge-base-list"></div>
+                    <h3>Legacy Data</h3>
+                    <button id="export-data-btn" class="vibe-button">Export My Data</button>
+                    <button id="import-data-btn" class="vibe-button">Import Data</button>
                 </div>
 
-                <!-- AR Experiences -->
-                <div id="ar" class="content-section">
+                <!-- AR SECTION -->
+                <div id="ar-section" class="content-section">
                     <h2><i class="fas fa-glasses"></i> AR Experiences</h2>
                     <button id="create-ar-btn" class="vibe-button"><i class="fas fa-plus"></i> Create AR Experience</button>
                     <div id="ar-list" class="grid-2col"></div>
                 </div>
 
-                <!-- Q&A -->
-                <div id="qa" class="content-section">
+                <!-- Q&A SECTION -->
+                <div id="qa-section" class="content-section">
                     <h2><i class="fas fa-question-circle"></i> Q&A</h2>
                     <button id="ask-question-btn" class="vibe-button"><i class="fas fa-question"></i> Ask a Question</button>
                     <div id="qa-list" class="grid-2col"></div>
                 </div>
+
+                <!-- STORY VIEWER OVERLAY -->
+                <div id="story-viewer" class="story-viewer hidden">
+                    <div class="story-progress-container" id="story-progress"></div>
+                    <div class="story-header">
+                        <img id="story-user-avatar" src="assets/default-avatar.png">
+                        <span id="story-username">username</span>
+                        <span id="story-time">2h</span>
+                        <button class="close-story" id="close-story"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div id="story-content" class="story-content"></div>
+                    <div class="story-actions">
+                        <input type="text" id="story-reply-input" placeholder="Send message...">
+                        <button id="send-story-reply"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
             </main>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <div class="nav-item active" data-section="home">
+                    <i class="fas fa-home"></i><span>Home</span>
+                </div>
+                <div class="nav-item" data-section="explore">
+                    <i class="fas fa-compass"></i><span>Explore</span>
+                </div>
+                <div class="nav-item nav-item-create">
+                    <div class="create-button" id="floating-create-btn">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                </div>
+                <div class="nav-item" data-section="inbox">
+                    <i class="fas fa-comment"></i><span>Inbox</span>
+                </div>
+                <div class="nav-item" data-section="profile">
+                    <i class="fas fa-user"></i><span>Profile</span>
+                </div>
+            </nav>
         </div>
     </div>
 
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p>© 2025 VibeLink 0372® — Built by Thabang Agondo</p>
-            <p>🧠 Powered by Unity. ✊ Driven by You.</p>
-        </div>
-    </footer>
+    <!-- Notification Popup -->
+    <div class="notification" id="notification"></div>
 
-    <!-- Parse SDK -->
-    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
-    
-    <!-- ==================== YOUR JAVASCRIPT (FIXED & COMPLETE) ==================== -->
     <script>
         // ==================== PARSE INIT ====================
         Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU");
@@ -570,79 +401,136 @@
         // ==================== HELPERS ====================
         function formatTime(date) { return new Date(date).toLocaleString(); }
         function showNotification(message, type = 'success') {
-            const notif = document.getElementById('notification');
-            notif.textContent = message;
-            notif.className = 'notification' + (type === 'error' ? ' error' : '');
-            notif.style.display = 'block';
-            setTimeout(() => notif.style.display = 'none', 3000);
+            const n = document.getElementById('notification');
+            n.textContent = message;
+            n.className = 'notification' + (type === 'error' ? ' error' : '');
+            n.style.display = 'block';
+            setTimeout(() => n.style.display = 'none', 3000);
+        }
+        function getOptimizedImageUrl(url, width = 600) {
+            if (!url) return 'assets/default-avatar.png';
+            return url;
         }
 
-        // ==================== MODEL CLASSES (ALL 46+) ====================
-        class User { static getSchema() { return { className: '_User', fields: { username: 'String', email: 'String', password: 'String', avatar: 'File', bio: 'String', emailVerified: 'Boolean' } }; } static createParseClass() { return Parse.Object.extend('_User'); } }
-        class Role { static getSchema() { return { className: '_Role', fields: { name: 'String', users: 'Relation', ACL: 'ACL' } }; } static createParseClass() { return Parse.Object.extend('_Role'); } }
-        class Session { static getSchema() { return { className: '_Session', fields: { sessionToken: 'String', user: 'Pointer', expiresAt: 'Date' } }; } static createParseClass() { return Parse.Object.extend('_Session'); } }
-        class AI { static getSchema() { return { className: 'AI', fields: { user: 'Pointer<_User>', aiData: 'Object', preferences: 'Object', learningPattern: 'Object' } }; } static createParseClass() { return Parse.Object.extend('AI'); } }
-        class VibeAnalytics { static getSchema() { return { className: 'VibeAnalytics', fields: { user: 'Pointer<_User>', post: 'Pointer<Post>', reach: 'Number', engagement: 'Number', locationData: 'Object', boostLevel: 'Number', adConsent: 'Boolean', actionType: 'String', date: 'Date' } }; } static createParseClass() { return Parse.Object.extend('VibeAnalytics'); } }
-        class VibeUserBehavior { static getSchema() { return { className: 'VibeUserBehavior', fields: { user: 'Pointer<_User>', contentType: 'String', action: 'String', data: 'Object' } }; } static createParseClass() { return Parse.Object.extend('VibeUserBehavior'); } }
-        class Post { static getSchema() { return { className: 'Post', fields: { author: 'Pointer<_User>', content: 'String', media: 'Array', vibeTags: 'Array', aiSuggestions: 'Object', milestones: 'Array', pinned: 'Boolean', visibility: 'String', reactions: 'Object', shares: 'Number', comments: 'Relation', location: 'GeoPoint', likesCount: 'Number', commentCount: 'Number', engagementScore: 'Number' } }; } static createParseClass() { return Parse.Object.extend('Post'); } }
-        class Comment { static getSchema() { return { className: 'Comment', fields: { author: 'Pointer<_User>', content: 'String', post: 'Pointer<Post>', likes: 'Number', parentComment: 'Pointer<Comment>' } }; } static createParseClass() { return Parse.Object.extend('Comment'); } }
-        class Like { static getSchema() { return { className: 'Like', fields: { user: 'Pointer<_User>', post: 'Pointer<Post>', type: 'String', reaction: 'String' } }; } static createParseClass() { return Parse.Object.extend('Like'); } }
-        class Friendship { static getSchema() { return { className: 'Friendship', fields: { requester: 'Pointer<_User>', recipient: 'Pointer<_User>', status: 'String' } }; } static createParseClass() { return Parse.Object.extend('Friendship'); } }
-        class VibeThreadPost { static getSchema() { return { className: 'VibeThreadPost', fields: { author: 'Pointer<_User>', content: 'String', parentPost: 'Pointer<VibeThreadPost>', media: 'Array', tags: 'Array', reactions: 'Object', shares: 'Number' } }; } static createParseClass() { return Parse.Object.extend('VibeThreadPost'); } }
-        class VibeChatRoom { static getSchema() { return { className: 'VibeChatRoom', fields: { name: 'String', members: 'Relation', isGroup: 'Boolean', lastMessage: 'Pointer<Message>', mediaEnabled: 'Boolean', audioVibesEnabled: 'Boolean', admin: 'Pointer<_User>' } }; } static createParseClass() { return Parse.Object.extend('VibeChatRoom'); } }
-        class Message { static getSchema() { return { className: 'Message', fields: { sender: 'Pointer<_User>', chatRoom: 'Pointer<VibeChatRoom>', text: 'String', attachments: 'Array', messageType: 'String', paymentIncluded: 'Boolean', readBy: 'Array' } }; } static createParseClass() { return Parse.Object.extend('Message'); } }
-        class VibeSecureChat { static getSchema() { return { className: 'VibeSecureChat', fields: { sender: 'Pointer<_User>', receiver: 'Pointer<_User>', encryptedPayload: 'String', encryptionLevel: 'String', verificationStatus: 'Boolean', killSwitchEnabled: 'Boolean', chatKey: 'String', expiresAt: 'Date' } }; } static createParseClass() { return Parse.Object.extend('VibeSecureChat'); } }
-        class VibeAudioRoom { static getSchema() { return { className: 'VibeAudioRoom', fields: { name: 'String', host: 'Pointer<_User>', members: 'Relation', moderators: 'Relation', isPrivate: 'Boolean', topic: 'String', isRecording: 'Boolean', startedAt: 'Date', endedAt: 'Date', maxParticipants: 'Number' } }; } static createParseClass() { return Parse.Object.extend('VibeAudioRoom'); } }
-        class Notification { static getSchema() { return { className: 'Notification', fields: { user: 'Pointer<_User>', type: 'String', message: 'String', read: 'Boolean', relatedObject: 'Pointer' } }; } static createParseClass() { return Parse.Object.extend('Notification'); } }
-        class VibeEvent { static getSchema() { return { className: 'VibeEvent', fields: { host: 'Pointer<_User>', title: 'String', description: 'String', eventDate: 'Date', location: 'GeoPoint', ticketsAvailable: 'Number', qrEntry: 'String', promoted: 'Boolean', attendees: 'Relation', coverImage: 'File', price: 'Number' } }; } static createParseClass() { return Parse.Object.extend('VibeEvent'); } }
-        class Stream { static getSchema() { return { className: 'Stream', fields: { streamName: 'String', host: 'Pointer<_User>', viewers: 'Array', isLive: 'Boolean', thumbnail: 'File', category: 'String' } }; } static createParseClass() { return Parse.Object.extend('Stream'); } }
-        class VibeLiveStream { static getSchema() { return { className: 'VibeLiveStream', fields: { host: 'Pointer<_User>', title: 'String', category: 'String', streamKey: 'String', viewers: 'Array', isLive: 'Boolean', replayURL: 'String', type: 'String', thumbnail: 'File', startedAt: 'Date' } }; } static createParseClass() { return Parse.Object.extend('VibeLiveStream'); } }
-        class VibeWallet { static getSchema() { return { className: 'VibeWallet', fields: { owner: 'Pointer<_User>', balance: 'Number', transactions: 'Relation', aiTips: 'Array', budgetPlan: 'Object', currency: 'String' } }; } static createParseClass() { return Parse.Object.extend('VibeWallet'); } }
-        class WalletTransaction { static getSchema() { return { className: 'WalletTransaction', fields: { type: 'String', amount: 'Number', status: 'String', reference: 'String', timestamp: 'Date', wallet: 'Pointer<VibeWallet>', description: 'String' } }; } static createParseClass() { return Parse.Object.extend('WalletTransaction'); } }
-        class VibeTips { static getSchema() { return { className: 'VibeTips', fields: { sender: 'Pointer<_User>', creator: 'Pointer<_User>', amount: 'Number', currency: 'String', message: 'String' } }; } static createParseClass() { return Parse.Object.extend('VibeTips'); } }
-        class VibeLoyaltyProgram { static getSchema() { return { className: 'VibeLoyaltyProgram', fields: { user: 'Pointer<_User>', points: 'Number', level: 'String', rewardsRedeemed: 'Array' } }; } static createParseClass() { return Parse.Object.extend('VibeLoyaltyProgram'); } }
-        class MarketplaceItem { static getSchema() { return { className: 'MarketplaceItem', fields: { seller: 'Pointer<_User>', title: 'String', description: 'String', price: 'Number', currency: 'String', category: 'String', barterOption: 'Boolean', status: 'String', orderChat: 'Relation', images: 'Array', condition: 'String' } }; } static createParseClass() { return Parse.Object.extend('MarketplaceItem'); } }
-        class VibeGig { static getSchema() { return { className: 'VibeGig', fields: { poster: 'Pointer<_User>', skillNeeded: 'String', description: 'String', payment: 'Number', currency: 'String', status: 'String', applicants: 'Relation', verifiedProfessionals: 'Boolean', deadline: 'Date', location: 'GeoPoint' } }; } static createParseClass() { return Parse.Object.extend('VibeGig'); } }
-        class VibeShoppingCart { static getSchema() { return { className: 'VibeShoppingCart', fields: { owner: 'Pointer<_User>', items: 'Array', totalPrice: 'Number', currency: 'String', status: 'String' } }; } static createParseClass() { return Parse.Object.extend('VibeShoppingCart'); } }
-        class VibeLearn { static getSchema() { return { className: 'VibeLearn', fields: { creator: 'Pointer<_User>', title: 'String', description: 'String', contentURL: 'String', quizArray: 'Array', liveTutorEnabled: 'Boolean', participants: 'Relation', difficulty: 'String', duration: 'Number' } }; } static createParseClass() { return Parse.Object.extend('VibeLearn'); } }
-        class VibeCourse { static getSchema() { return { className: 'VibeCourse', fields: { instructor: 'Pointer<_User>', title: 'String', description: 'String', category: 'String', price: 'Number', level: 'String', modules: 'Array', enrolledStudents: 'Relation', thumbnail: 'File', objectives: 'Array', requirements: 'Array', tags: 'Array', averageRating: 'Number', ratingCount: 'Number' } }; } static createParseClass() { return Parse.Object.extend('VibeCourse'); } }
-        class VibeStudentProgress { static getSchema() { return { className: 'VibeStudentProgress', fields: { student: 'Pointer<_User>', course: 'Pointer<VibeCourse>', completedModules: 'Array', currentModule: 'Number', progressPercentage: 'Number', quizScores: 'Object', timeSpent: 'Number', lastAccessed: 'Date' } }; } static createParseClass() { return Parse.Object.extend('VibeStudentProgress'); } }
-        class VibeQuiz { static getSchema() { return { className: 'VibeQuiz', fields: { title: 'String', description: 'String', questions: 'Array', timeLimit: 'Number', passingScore: 'Number', maxAttempts: 'Number', course: 'Pointer<VibeCourse>', tags: 'Array' } }; } static createParseClass() { return Parse.Object.extend('VibeQuiz'); } }
-        class VibeLiveTutoring { static getSchema() { return { className: 'VibeLiveTutoring', fields: { tutor: 'Pointer<_User>', title: 'String', subject: 'String', description: 'String', pricePerHour: 'Number', maxStudents: 'Number', students: 'Array', isLive: 'Boolean', whiteboardData: 'Object', resources: 'Array', chatRoom: 'Pointer<Message>', scheduledStart: 'Date', actualStart: 'Date', actualEnd: 'Date' } }; } static createParseClass() { return Parse.Object.extend('VibeLiveTutoring'); } }
-        class VibeQuizAttempt { static getSchema() { return { className: 'VibeQuizAttempt', fields: { student: 'Pointer<_User>', quiz: 'Pointer<VibeQuiz>', score: 'Number', passed: 'Boolean', answers: 'Array', results: 'Array', timeSpent: 'Number', completedAt: 'Date' } }; } static createParseClass() { return Parse.Object.extend('VibeQuizAttempt'); } }
-        class VibeCertificate { static getSchema() { return { className: 'VibeCertificate', fields: { student: 'Pointer<_User>', course: 'Pointer<VibeCourse>', courseTitle: 'String', instructor: 'Pointer<_User>', completionDate: 'Date', certificateId: 'String', verificationUrl: 'String' } }; } static createParseClass() { return Parse.Object.extend('VibeCertificate'); } }
-        class VibeCourseRating { static getSchema() { return { className: 'VibeCourseRating', fields: { student: 'Pointer<_User>', course: 'Pointer<VibeCourse>', rating: 'Number', review: 'String', helpful: 'Number', verified: 'Boolean' } }; } static createParseClass() { return Parse.Object.extend('VibeCourseRating'); } }
-        class VibeTutoringPayment { static getSchema() { return { className: 'VibeTutoringPayment', fields: { student: 'Pointer<_User>', session: 'Pointer<VibeLiveTutoring>', amount: 'Number', status: 'String', reservedAt: 'Date', completedAt: 'Date' } }; } static createParseClass() { return Parse.Object.extend('VibeTutoringPayment'); } }
-        class Profile { static getSchema() { return { className: 'Profile', fields: { user: 'Pointer<_User>', avatar: 'File', nftBadges: 'Array', achievements: 'Array', bio: 'String', skills: 'Array', interests: 'Array', customSkin: 'String', layoutStyle: 'String', verified: 'Boolean', followers: 'Relation', following: 'Relation', location: 'GeoPoint' } }; } static createParseClass() { return Parse.Object.extend('Profile'); } }
-        class VibeStory { static getSchema() { return { className: 'VibeStory', fields: { author: 'Pointer<_User>', content: 'String', media: 'File', type: 'String', backgroundColor: 'String', textColor: 'String', expiresAt: 'Date', views: 'Array', reactions: 'Array', isActive: 'Boolean' } }; } static createParseClass() { return Parse.Object.extend('VibeStory'); } }
-        class VibeGallery { static getSchema() { return { className: 'VibeGallery', fields: { owner: 'Pointer<_User>', file: 'File', caption: 'String', type: 'String', likes: 'Array', comments: 'Array', tags: 'Array', isPublic: 'Boolean' } }; } static createParseClass() { return Parse.Object.extend('VibeGallery'); } }
-        class VibeFollow { static getSchema() { return { className: 'VibeFollow', fields: { follower: 'Pointer<_User>', following: 'Pointer<_User>', followedAt: 'Date' } }; } static createParseClass() { return Parse.Object.extend('VibeFollow'); } }
-        class VibeVerification { static getSchema() { return { className: 'VibeVerification', fields: { user: 'Pointer<_User>', type: 'String', status: 'String', submittedData: 'Object', submittedAt: 'Date', reviewedAt: 'Date', reviewedBy: 'Pointer<_User>' } }; } static createParseClass() { return Parse.Object.extend('VibeVerification'); } }
-        class Discovery { static getSchema() { return { className: 'Discovery', fields: { tag: 'String', trendScore: 'Number', aiTopicCluster: 'Object', recommendedUsers: 'Array', recommendedPosts: 'Array', category: 'String', region: 'String' } }; } static createParseClass() { return Parse.Object.extend('Discovery'); } }
-        class VibeChallenge { static getSchema() { return { className: 'VibeChallenge', fields: { title: 'String', description: 'String', mediaTemplate: 'File', startDate: 'Date', endDate: 'Date', participants: 'Relation', reward: 'Number', trendScore: 'Number' } }; } static createParseClass() { return Parse.Object.extend('VibeChallenge'); } }
-        class VibeGame { static getSchema() { return { className: 'VibeGame', fields: { gameTitle: 'String', description: 'String', thumbnail: 'File', rewards: 'Array', leaderboard: 'Array', status: 'String', players: 'Relation', maxPlayers: 'Number' } }; } static createParseClass() { return Parse.Object.extend('VibeGame'); } }
-        class VibeGameSession { static getSchema() { return { className: 'VibeGameSession', fields: { host: 'Pointer<_User>', gameType: 'String', title: 'String', description: 'String', maxPlayers: 'Number', currentPlayers: 'Array', spectators: 'Array', isPrivate: 'Boolean', password: 'String', status: 'String', settings: 'Object', invitedUsers: 'Array', chatRoom: 'Pointer<Message>', gameState: 'Pointer<VibeGameState>', startedAt: 'Date', endedAt: 'Date', winner: 'Pointer<_User>' } }; } static createParseClass() { return Parse.Object.extend('VibeGameSession'); } }
-        class VibeGameState { static getSchema() { return { className: 'VibeGameState', fields: { session: 'Pointer<VibeGameSession>', gameType: 'String', currentTurn: 'Number', players: 'Array', boardState: 'Object', history: 'Array', currentPhase: 'String' } }; } static createParseClass() { return Parse.Object.extend('VibeGameState'); } }
-        class VibeLeaderboard { static getSchema() { return { className: 'VibeLeaderboard', fields: { user: 'Pointer<_User>', gameType: 'String', totalScore: 'Number', gamesPlayed: 'Number', gamesWon: 'Number', bestScore: 'Number', lastPlayed: 'Date' } }; } static createParseClass() { return Parse.Object.extend('VibeLeaderboard'); } }
-        class VibeAchievement { static getSchema() { return { className: 'VibeAchievement', fields: { user: 'Pointer<_User>', achievement: 'String', unlockedAt: 'Date', gameSession: 'Pointer<VibeGameSession>' } }; } static createParseClass() { return Parse.Object.extend('VibeAchievement'); } }
-        class VibeTournament { static getSchema() { return { className: 'VibeTournament', fields: { organizer: 'Pointer<_User>', title: 'String', description: 'String', gameType: 'String', format: 'String', maxParticipants: 'Number', entryFee: 'Number', prizePool: 'Number', startDate: 'Date', endDate: 'Date', rules: 'Array', participants: 'Array', brackets: 'Object', status: 'String' } }; } static createParseClass() { return Parse.Object.extend('VibeTournament'); } }
-        class VibeCommunity { static getSchema() { return { className: 'VibeCommunity', fields: { name: 'String', description: 'String', category: 'String', privacy: 'String', owner: 'Pointer<_User>', admins: 'Array', moderators: 'Array', members: 'Array', rules: 'Array', tags: 'Array', coverImage: 'File', icon: 'File', memberCount: 'Number', postCount: 'Number', isActive: 'Boolean', verificationLevel: 'String', location: 'GeoPoint', language: 'String', chatRooms: 'Array', events: 'Array' } }; } static createParseClass() { return Parse.Object.extend('VibeCommunity'); } }
-        class VibeCircle { static getSchema() { return { className: 'VibeCircle', fields: { name: 'String', description: 'String', tags: 'Array', moderators: 'Relation', members: 'Relation', engagementScore: 'Number', isPrivate: 'Boolean' } }; } static createParseClass() { return Parse.Object.extend('VibeCircle'); } }
-        class VibePremiumCircle { static getSchema() { return { className: 'VibePremiumCircle', fields: { name: 'String', owner: 'Pointer<_User>', subscriptionPrice: 'Number', members: 'Relation', moderators: 'Relation', accessLevel: 'String', content: 'Relation<Post>' } }; } static createParseClass() { return Parse.Object.extend('VibePremiumCircle'); } }
-        class VibePage { static getSchema() { return { className: 'VibePage', fields: { owner: 'Pointer<_User>', title: 'String', pageType: 'String', bio: 'String', analytics: 'Object', followers: 'Relation', monetizationEnabled: 'Boolean', subscriptions: 'Relation', coverImage: 'File', verified: 'Boolean' } }; } static createParseClass() { return Parse.Object.extend('VibePage'); } }
-        class VibeCreatorTier { static getSchema() { return { className: 'VibeCreatorTier', fields: { community: 'Pointer<VibeCommunity>', name: 'String', description: 'String', price: 'Number', currency: 'String', benefits: 'Array', maxMembers: 'Number', isActive: 'Boolean', subscribers: 'Array' } }; } static createParseClass() { return Parse.Object.extend('VibeCreatorTier'); } }
-        class Settings { static getSchema() { return { className: 'Settings', fields: { user: 'Pointer<_User>', theme: 'String', layout: 'String', aiSuggestions: 'Boolean', lowDataMode: 'Boolean', privacyControls: 'Object', culturalMode: 'String', notifications: 'Object', language: 'String' } }; } static createParseClass() { return Parse.Object.extend('Settings'); } }
-        class Legacy { static getSchema() { return { className: 'Legacy', fields: { user: 'Pointer<_User>', backupData: 'Object', exportDate: 'Date', deviceLinked: 'Array', aiPersonalization: 'Object', migrationVersion: 'String' } }; } static createParseClass() { return Parse.Object.extend('Legacy'); } }
-        class VibeARExperience { static getSchema() { return { className: 'VibeARExperience', fields: { creator: 'Pointer<_User>', experienceType: 'String', mediaFile: 'File', interactiveObjects: 'Array', filters: 'Array', usageStats: 'Object' } }; } static createParseClass() { return Parse.Object.extend('VibeARExperience'); } }
-        class VibeQA { static getSchema() { return { className: 'VibeQA', fields: { question: 'String', asker: 'Pointer<_User>', answers: 'Relation', topic: 'String', tags: 'Array', views: 'Number', votes: 'Number' } }; } static createParseClass() { return Parse.Object.extend('VibeQA'); } }
-        class VibeQuestion { static getSchema() { return { className: 'VibeQuestion', fields: { author: 'Pointer<_User>', title: 'String', description: 'String', category: 'String', tags: 'Array', priority: 'String', status: 'String', answers: 'Array', upvotes: 'Number', views: 'Number', isAnonymous: 'Boolean' } }; } static createParseClass() { return Parse.Object.extend('VibeQuestion'); } }
-        class VibeKnowledgeArticle { static getSchema() { return { className: 'VibeKnowledgeArticle', fields: { title: 'String', content: 'String', category: 'String', tags: 'Array', keywords: 'Array', excerpt: 'String', helpfulCount: 'Number', isPublished: 'Boolean', author: 'Pointer<_User>', lastUpdated: 'Date' } }; } static createParseClass() { return Parse.Object.extend('VibeKnowledgeArticle'); } }
-        class VibeUserSettings { static getSchema() { return { className: 'VibeUserSettings', fields: { user: 'Pointer<_User>', privacy: 'Object', notifications: 'Object', appearance: 'Object', content: 'Object', security: 'Object', legacyData: 'Object', arPreferences: 'Object', qaPreferences: 'Object', connectedAccounts: 'Object', parentalControls: 'Object' } }; } static createParseClass() { return Parse.Object.extend('VibeUserSettings'); } }
+        // ==================== VIBE SECURITY ====================
+        class VibeSecurity {
+            constructor() {
+                this.masterKey = null;
+                this.ready = new Promise(r => this._resolveReady = r);
+                this.initializeSecurity();
+            }
+            async initializeSecurity() {
+                try {
+                    if (!window.crypto || !window.crypto.subtle) throw new Error('Web Crypto API not supported');
+                    await this.loadOrGenerateMasterKey();
+                    this.initialized = true;
+                    this._resolveReady();
+                } catch (e) { console.error('Security init failed', e); }
+            }
+            async loadOrGenerateMasterKey() {
+                const stored = localStorage.getItem('vibe_master_key');
+                if (stored) this.masterKey = await this.importKey(this.base64ToArrayBuffer(stored));
+                else {
+                    this.masterKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+                    const exported = await crypto.subtle.exportKey('raw', this.masterKey);
+                    localStorage.setItem('vibe_master_key', this.arrayBufferToBase64(exported));
+                }
+            }
+            async encrypt(data, key = this.masterKey) {
+                await this.ready;
+                const enc = new TextEncoder().encode(JSON.stringify(data));
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc);
+                return { iv: this.arrayBufferToBase64(iv), data: this.arrayBufferToBase64(encrypted), timestamp: Date.now() };
+            }
+            async decrypt(encryptedData, key = this.masterKey) {
+                await this.ready;
+                const iv = this.base64ToArrayBuffer(encryptedData.iv);
+                const data = this.base64ToArrayBuffer(encryptedData.data);
+                const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
+                return JSON.parse(new TextDecoder().decode(decrypted));
+            }
+            arrayBufferToBase64(buffer) {
+                const bytes = new Uint8Array(buffer);
+                let bin = '';
+                for (let i = 0; i < bytes.byteLength; i++) bin += String.fromCharCode(bytes[i]);
+                return btoa(bin);
+            }
+            base64ToArrayBuffer(base64) {
+                const bin = atob(base64);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                return bytes.buffer;
+            }
+            async importKey(keyData) {
+                return crypto.subtle.importKey('raw', keyData, { name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+            }
+        }
+        window.vibeSecurity = new VibeSecurity();
 
-        console.log('✅ All 46+ model classes registered');
+        // ==================== ALL 46+ MODEL CLASSES (REGISTERED) ====================
+        class User { static getSchema() { return { className: '_User', fields: { username: 'String', email: 'String', password: 'String', avatar: 'File', bio: 'String', emailVerified: 'Boolean' } }; } }
+        class Role { static getSchema() { return { className: '_Role', fields: { name: 'String', users: 'Relation', ACL: 'ACL' } }; } }
+        class Session { static getSchema() { return { className: '_Session', fields: { sessionToken: 'String', user: 'Pointer', expiresAt: 'Date' } }; } }
+        class AI { static getSchema() { return { className: 'AI', fields: { user: 'Pointer<_User>', aiData: 'Object', preferences: 'Object', learningPattern: 'Object' } }; } }
+        class VibeAnalytics { static getSchema() { return { className: 'VibeAnalytics', fields: { user: 'Pointer<_User>', post: 'Pointer<Post>', reach: 'Number', engagement: 'Number', locationData: 'Object', boostLevel: 'Number', adConsent: 'Boolean', actionType: 'String', date: 'Date' } }; } }
+        class VibeUserBehavior { static getSchema() { return { className: 'VibeUserBehavior', fields: { user: 'Pointer<_User>', contentType: 'String', action: 'String', data: 'Object' } }; } }
+        class Post { static getSchema() { return { className: 'Post', fields: { author: 'Pointer<_User>', content: 'String', media: 'Array', vibeTags: 'Array', aiSuggestions: 'Object', milestones: 'Array', pinned: 'Boolean', visibility: 'String', reactions: 'Object', shares: 'Number', comments: 'Relation', location: 'GeoPoint', likesCount: 'Number', commentCount: 'Number', shareCount: 'Number', engagementScore: 'Number' } }; } }
+        class Comment { static getSchema() { return { className: 'Comment', fields: { author: 'Pointer<_User>', content: 'String', post: 'Pointer<Post>', likes: 'Number', parentComment: 'Pointer<Comment>' } }; } }
+        class Like { static getSchema() { return { className: 'Like', fields: { user: 'Pointer<_User>', post: 'Pointer<Post>', type: 'String', reaction: 'String' } }; } }
+        class Friendship { static getSchema() { return { className: 'Friendship', fields: { requester: 'Pointer<_User>', recipient: 'Pointer<_User>', status: 'String' } }; } }
+        class VibeThreadPost { static getSchema() { return { className: 'VibeThreadPost', fields: { author: 'Pointer<_User>', content: 'String', parentPost: 'Pointer<VibeThreadPost>', media: 'Array', tags: 'Array', reactions: 'Object', shares: 'Number' } }; } }
+        class VibeChatRoom { static getSchema() { return { className: 'VibeChatRoom', fields: { name: 'String', members: 'Relation', isGroup: 'Boolean', lastMessage: 'Pointer<Message>', mediaEnabled: 'Boolean', audioVibesEnabled: 'Boolean', admin: 'Pointer<_User>' } }; } }
+        class Message { static getSchema() { return { className: 'Message', fields: { sender: 'Pointer<_User>', chatRoom: 'Pointer<VibeChatRoom>', text: 'String', attachments: 'Array', messageType: 'String', paymentIncluded: 'Boolean', readBy: 'Array' } }; } }
+        class VibeSecureChat { static getSchema() { return { className: 'VibeSecureChat', fields: { sender: 'Pointer<_User>', receiver: 'Pointer<_User>', encryptedPayload: 'String', encryptionLevel: 'String', verificationStatus: 'Boolean', killSwitchEnabled: 'Boolean', chatKey: 'String', expiresAt: 'Date' } }; } }
+        class VibeAudioRoom { static getSchema() { return { className: 'VibeAudioRoom', fields: { name: 'String', host: 'Pointer<_User>', members: 'Relation', moderators: 'Relation', isPrivate: 'Boolean', topic: 'String', isRecording: 'Boolean', startedAt: 'Date', endedAt: 'Date', maxParticipants: 'Number' } }; } }
+        class Notification { static getSchema() { return { className: 'Notification', fields: { user: 'Pointer<_User>', type: 'String', message: 'String', read: 'Boolean', relatedObject: 'Pointer' } }; } }
+        class VibeEvent { static getSchema() { return { className: 'VibeEvent', fields: { host: 'Pointer<_User>', title: 'String', description: 'String', eventDate: 'Date', location: 'GeoPoint', ticketsAvailable: 'Number', qrEntry: 'String', promoted: 'Boolean', attendees: 'Relation', coverImage: 'File', price: 'Number' } }; } }
+        class Stream { static getSchema() { return { className: 'Stream', fields: { streamName: 'String', host: 'Pointer<_User>', viewers: 'Array', isLive: 'Boolean', thumbnail: 'File', category: 'String' } }; } }
+        class VibeLiveStream { static getSchema() { return { className: 'VibeLiveStream', fields: { host: 'Pointer<_User>', title: 'String', category: 'String', streamKey: 'String', viewers: 'Array', isLive: 'Boolean', replayURL: 'String', type: 'String', thumbnail: 'File', startedAt: 'Date' } }; } }
+        class VibeWallet { static getSchema() { return { className: 'VibeWallet', fields: { owner: 'Pointer<_User>', balance: 'Number', transactions: 'Relation', aiTips: 'Array', budgetPlan: 'Object', currency: 'String' } }; } }
+        class WalletTransaction { static getSchema() { return { className: 'WalletTransaction', fields: { type: 'String', amount: 'Number', status: 'String', reference: 'String', timestamp: 'Date', wallet: 'Pointer<VibeWallet>', description: 'String' } }; } }
+        class VibeTips { static getSchema() { return { className: 'VibeTips', fields: { sender: 'Pointer<_User>', creator: 'Pointer<_User>', amount: 'Number', currency: 'String', message: 'String' } }; } }
+        class VibeLoyaltyProgram { static getSchema() { return { className: 'VibeLoyaltyProgram', fields: { user: 'Pointer<_User>', points: 'Number', level: 'String', rewardsRedeemed: 'Array' } }; } }
+        class MarketplaceItem { static getSchema() { return { className: 'MarketplaceItem', fields: { seller: 'Pointer<_User>', title: 'String', description: 'String', price: 'Number', currency: 'String', category: 'String', barterOption: 'Boolean', status: 'String', orderChat: 'Relation', images: 'Array', condition: 'String' } }; } }
+        class VibeGig { static getSchema() { return { className: 'VibeGig', fields: { poster: 'Pointer<_User>', skillNeeded: 'String', description: 'String', payment: 'Number', currency: 'String', status: 'String', applicants: 'Relation', verifiedProfessionals: 'Boolean', deadline: 'Date', location: 'GeoPoint' } }; } }
+        class VibeShoppingCart { static getSchema() { return { className: 'VibeShoppingCart', fields: { owner: 'Pointer<_User>', items: 'Array', totalPrice: 'Number', currency: 'String', status: 'String' } }; } }
+        class VibeLearn { static getSchema() { return { className: 'VibeLearn', fields: { creator: 'Pointer<_User>', title: 'String', description: 'String', contentURL: 'String', quizArray: 'Array', liveTutorEnabled: 'Boolean', participants: 'Relation', difficulty: 'String', duration: 'Number' } }; } }
+        class VibeCourse { static getSchema() { return { className: 'VibeCourse', fields: { instructor: 'Pointer<_User>', title: 'String', description: 'String', category: 'String', price: 'Number', level: 'String', modules: 'Array', enrolledStudents: 'Relation', thumbnail: 'File', objectives: 'Array', requirements: 'Array', tags: 'Array', averageRating: 'Number', ratingCount: 'Number' } }; } }
+        class VibeStudentProgress { static getSchema() { return { className: 'VibeStudentProgress', fields: { student: 'Pointer<_User>', course: 'Pointer<VibeCourse>', completedModules: 'Array', currentModule: 'Number', progressPercentage: 'Number', quizScores: 'Object', timeSpent: 'Number', lastAccessed: 'Date' } }; } }
+        class VibeQuiz { static getSchema() { return { className: 'VibeQuiz', fields: { title: 'String', description: 'String', questions: 'Array', timeLimit: 'Number', passingScore: 'Number', maxAttempts: 'Number', course: 'Pointer<VibeCourse>', tags: 'Array' } }; } }
+        class VibeLiveTutoring { static getSchema() { return { className: 'VibeLiveTutoring', fields: { tutor: 'Pointer<_User>', title: 'String', subject: 'String', description: 'String', pricePerHour: 'Number', maxStudents: 'Number', students: 'Array', isLive: 'Boolean', whiteboardData: 'Object', resources: 'Array', chatRoom: 'Pointer<Message>', scheduledStart: 'Date', actualStart: 'Date', actualEnd: 'Date' } }; } }
+        class VibeQuizAttempt { static getSchema() { return { className: 'VibeQuizAttempt', fields: { student: 'Pointer<_User>', quiz: 'Pointer<VibeQuiz>', score: 'Number', passed: 'Boolean', answers: 'Array', results: 'Array', timeSpent: 'Number', completedAt: 'Date' } }; } }
+        class VibeCertificate { static getSchema() { return { className: 'VibeCertificate', fields: { student: 'Pointer<_User>', course: 'Pointer<VibeCourse>', courseTitle: 'String', instructor: 'Pointer<_User>', completionDate: 'Date', certificateId: 'String', verificationUrl: 'String' } }; } }
+        class VibeCourseRating { static getSchema() { return { className: 'VibeCourseRating', fields: { student: 'Pointer<_User>', course: 'Pointer<VibeCourse>', rating: 'Number', review: 'String', helpful: 'Number', verified: 'Boolean' } }; } }
+        class VibeTutoringPayment { static getSchema() { return { className: 'VibeTutoringPayment', fields: { student: 'Pointer<_User>', session: 'Pointer<VibeLiveTutoring>', amount: 'Number', status: 'String', reservedAt: 'Date', completedAt: 'Date' } }; } }
+        class Profile { static getSchema() { return { className: 'Profile', fields: { user: 'Pointer<_User>', avatar: 'File', nftBadges: 'Array', achievements: 'Array', bio: 'String', skills: 'Array', interests: 'Array', customSkin: 'String', layoutStyle: 'String', verified: 'Boolean', followers: 'Relation', following: 'Relation', location: 'GeoPoint' } }; } }
+        class VibeStory { static getSchema() { return { className: 'VibeStory', fields: { author: 'Pointer<_User>', content: 'String', media: 'File', type: 'String', backgroundColor: 'String', textColor: 'String', expiresAt: 'Date', views: 'Array', reactions: 'Array', isActive: 'Boolean' } }; } }
+        class VibeGallery { static getSchema() { return { className: 'VibeGallery', fields: { owner: 'Pointer<_User>', file: 'File', caption: 'String', type: 'String', likes: 'Array', comments: 'Array', tags: 'Array', isPublic: 'Boolean' } }; } }
+        class VibeFollow { static getSchema() { return { className: 'VibeFollow', fields: { follower: 'Pointer<_User>', following: 'Pointer<_User>', followedAt: 'Date' } }; } }
+        class VibeVerification { static getSchema() { return { className: 'VibeVerification', fields: { user: 'Pointer<_User>', type: 'String', status: 'String', submittedData: 'Object', submittedAt: 'Date', reviewedAt: 'Date', reviewedBy: 'Pointer<_User>' } }; } }
+        class Discovery { static getSchema() { return { className: 'Discovery', fields: { tag: 'String', trendScore: 'Number', aiTopicCluster: 'Object', recommendedUsers: 'Array', recommendedPosts: 'Array', category: 'String', region: 'String' } }; } }
+        class VibeChallenge { static getSchema() { return { className: 'VibeChallenge', fields: { title: 'String', description: 'String', mediaTemplate: 'File', startDate: 'Date', endDate: 'Date', participants: 'Relation', reward: 'Number', trendScore: 'Number' } }; } }
+        class VibeGame { static getSchema() { return { className: 'VibeGame', fields: { gameTitle: 'String', description: 'String', thumbnail: 'File', rewards: 'Array', leaderboard: 'Array', status: 'String', players: 'Relation', maxPlayers: 'Number' } }; } }
+        class VibeGameSession { static getSchema() { return { className: 'VibeGameSession', fields: { host: 'Pointer<_User>', gameType: 'String', title: 'String', description: 'String', maxPlayers: 'Number', currentPlayers: 'Array', spectators: 'Array', isPrivate: 'Boolean', password: 'String', status: 'String', settings: 'Object', invitedUsers: 'Array', chatRoom: 'Pointer<Message>', gameState: 'Pointer<VibeGameState>', startedAt: 'Date', endedAt: 'Date', winner: 'Pointer<_User>' } }; } }
+        class VibeGameState { static getSchema() { return { className: 'VibeGameState', fields: { session: 'Pointer<VibeGameSession>', gameType: 'String', currentTurn: 'Number', players: 'Array', boardState: 'Object', history: 'Array', currentPhase: 'String' } }; } }
+        class VibeLeaderboard { static getSchema() { return { className: 'VibeLeaderboard', fields: { user: 'Pointer<_User>', gameType: 'String', totalScore: 'Number', gamesPlayed: 'Number', gamesWon: 'Number', bestScore: 'Number', lastPlayed: 'Date' } }; } }
+        class VibeAchievement { static getSchema() { return { className: 'VibeAchievement', fields: { user: 'Pointer<_User>', achievement: 'String', unlockedAt: 'Date', gameSession: 'Pointer<VibeGameSession>' } }; } }
+        class VibeTournament { static getSchema() { return { className: 'VibeTournament', fields: { organizer: 'Pointer<_User>', title: 'String', description: 'String', gameType: 'String', format: 'String', maxParticipants: 'Number', entryFee: 'Number', prizePool: 'Number', startDate: 'Date', endDate: 'Date', rules: 'Array', participants: 'Array', brackets: 'Object', status: 'String' } }; } }
+        class VibeCommunity { static getSchema() { return { className: 'VibeCommunity', fields: { name: 'String', description: 'String', category: 'String', privacy: 'String', owner: 'Pointer<_User>', admins: 'Array', moderators: 'Array', members: 'Array', rules: 'Array', tags: 'Array', coverImage: 'File', icon: 'File', memberCount: 'Number', postCount: 'Number', isActive: 'Boolean', verificationLevel: 'String', location: 'GeoPoint', language: 'String', chatRooms: 'Array', events: 'Array' } }; } }
+        class VibeCircle { static getSchema() { return { className: 'VibeCircle', fields: { name: 'String', description: 'String', tags: 'Array', moderators: 'Relation', members: 'Relation', engagementScore: 'Number', isPrivate: 'Boolean' } }; } }
+        class VibePremiumCircle { static getSchema() { return { className: 'VibePremiumCircle', fields: { name: 'String', owner: 'Pointer<_User>', subscriptionPrice: 'Number', members: 'Relation', moderators: 'Relation', accessLevel: 'String', content: 'Relation<Post>' } }; } }
+        class VibePage { static getSchema() { return { className: 'VibePage', fields: { owner: 'Pointer<_User>', title: 'String', pageType: 'String', bio: 'String', analytics: 'Object', followers: 'Relation', monetizationEnabled: 'Boolean', subscriptions: 'Relation', coverImage: 'File', verified: 'Boolean' } }; } }
+        class VibeCreatorTier { static getSchema() { return { className: 'VibeCreatorTier', fields: { community: 'Pointer<VibeCommunity>', name: 'String', description: 'String', price: 'Number', currency: 'String', benefits: 'Array', maxMembers: 'Number', isActive: 'Boolean', subscribers: 'Array' } }; } }
+        class Settings { static getSchema() { return { className: 'Settings', fields: { user: 'Pointer<_User>', theme: 'String', layout: 'String', aiSuggestions: 'Boolean', lowDataMode: 'Boolean', privacyControls: 'Object', culturalMode: 'String', notifications: 'Object', language: 'String' } }; } }
+        class Legacy { static getSchema() { return { className: 'Legacy', fields: { user: 'Pointer<_User>', backupData: 'Object', exportDate: 'Date', deviceLinked: 'Array', aiPersonalization: 'Object', migrationVersion: 'String' } }; } }
+        class VibeARExperience { static getSchema() { return { className: 'VibeARExperience', fields: { creator: 'Pointer<_User>', experienceType: 'String', mediaFile: 'File', interactiveObjects: 'Array', filters: 'Array', usageStats: 'Object' } }; } }
+        class VibeQA { static getSchema() { return { className: 'VibeQA', fields: { question: 'String', asker: 'Pointer<_User>', answers: 'Relation', topic: 'String', tags: 'Array', views: 'Number', votes: 'Number' } }; } }
+        class VibeQuestion { static getSchema() { return { className: 'VibeQuestion', fields: { author: 'Pointer<_User>', title: 'String', description: 'String', category: 'String', tags: 'Array', priority: 'String', status: 'String', answers: 'Array', upvotes: 'Number', views: 'Number', isAnonymous: 'Boolean' } }; } }
+        class VibeKnowledgeArticle { static getSchema() { return { className: 'VibeKnowledgeArticle', fields: { title: 'String', content: 'String', category: 'String', tags: 'Array', keywords: 'Array', excerpt: 'String', helpfulCount: 'Number', isPublished: 'Boolean', author: 'Pointer<_User>', lastUpdated: 'Date' } }; } }
+        class VibeUserSettings { static getSchema() { return { className: 'VibeUserSettings', fields: { user: 'Pointer<_User>', privacy: 'Object', notifications: 'Object', appearance: 'Object', content: 'Object', security: 'Object', legacyData: 'Object', arPreferences: 'Object', qaPreferences: 'Object', connectedAccounts: 'Object', parentalControls: 'Object' } }; } }
 
-        // ==================== SERVICE CLASSES (WITH FIXES) ====================
-        // AuthService
+        // ==================== SERVICE CLASSES (FULLY IMPLEMENTED) ====================
         class AuthService {
             constructor(app) { this.app = app; }
             async checkAuthentication() {
@@ -651,7 +539,7 @@
                     if (this.app.currentUser) { this.app.showMainSection(); this.app.hideAuthSection(); }
                     else { this.app.showAuthSection(); this.app.hideMainSection(); }
                     return this.app.currentUser;
-                } catch(e) { this.app.showAuthSection(); return null; }
+                } catch (e) { this.app.showAuthSection(); return null; }
             }
             async handleLogin(e) {
                 e.preventDefault();
@@ -662,7 +550,7 @@
                     const user = await Parse.User.logIn(email, pwd);
                     await this.handleSuccessfulLogin(user);
                     showNotification('Login successful!');
-                } catch(e) { showNotification(e.message, 'error'); }
+                } catch (e) { showNotification(e.message, 'error'); }
             }
             async handleSignup(e) {
                 e.preventDefault();
@@ -677,7 +565,7 @@
                     const newUser = await user.signUp();
                     await this.handleSuccessfulLogin(newUser);
                     showNotification('Account created!');
-                } catch(e) { showNotification(e.message, 'error'); }
+                } catch (e) { showNotification(e.message, 'error'); }
             }
             async handleSuccessfulLogin(user) {
                 this.app.currentUser = user;
@@ -697,7 +585,6 @@
             }
         }
 
-        // ProfileService
         class ProfileService {
             constructor(app) { this.app = app; }
             async ensureProfileExists() {
@@ -715,82 +602,56 @@
             }
             async loadProfileData() {
                 if (!this.app.currentUser) return;
-                document.getElementById('profile-username').innerText = this.app.currentUser.get('username');
-                document.getElementById('profile-bio').innerText = this.app.currentUser.get('bio') || 'No bio';
+                document.getElementById('profile-username-display').innerText = this.app.currentUser.get('username');
+                document.getElementById('profile-bio-display').innerText = this.app.currentUser.get('bio') || 'No bio';
                 const stats = await this.getUserStats();
-                document.getElementById('profile-stats').innerHTML = `<span>👥 ${stats.followers} followers</span> <span>👤 ${stats.following} following</span>`;
-                const posts = await this.app.services.posts.loadUserPosts(this.app.currentUser.id);
-                const container = document.getElementById('user-posts');
-                if (container) container.innerHTML = posts.map(p => `<div class="post">${p.get('decryptedContent')}</div>`).join('');
+                document.getElementById('profile-posts-count').innerText = `${stats.posts} posts`;
+                document.getElementById('profile-followers-count').innerText = `${stats.followers} followers`;
+                document.getElementById('profile-following-count').innerText = `${stats.following} following`;
+                await this.loadUserPosts();
                 await this.loadUserStories();
                 await this.loadUserGallery();
             }
             async getUserStats() {
-                const Follow = Parse.Object.extend('VibeFollow');
-                const followers = await new Parse.Query(Follow).equalTo('following', this.app.currentUser).count();
-                const following = await new Parse.Query(Follow).equalTo('follower', this.app.currentUser).count();
-                return { followers, following };
+                const posts = await new Parse.Query('Post').equalTo('author', this.app.currentUser).count();
+                const followers = await new Parse.Query('VibeFollow').equalTo('following', this.app.currentUser).count();
+                const following = await new Parse.Query('VibeFollow').equalTo('follower', this.app.currentUser).count();
+                return { posts, followers, following };
+            }
+            async loadUserPosts() {
+                const posts = await new Parse.Query('Post').equalTo('author', this.app.currentUser).descending('createdAt').find();
+                const container = document.getElementById('user-posts-grid');
+                container.innerHTML = posts.map(p => `<div class="card"><p>${p.get('content')}</p><small>${formatTime(p.createdAt)}</small></div>`).join('');
             }
             async loadUserStories() {
-                const VibeStory = Parse.Object.extend('VibeStory');
-                const q = new Parse.Query(VibeStory);
-                q.equalTo('author', this.app.currentUser);
-                q.greaterThan('expiresAt', new Date());
-                q.descending('createdAt');
-                const stories = await q.find();
+                const stories = await new Parse.Query('VibeStory').equalTo('author', this.app.currentUser).greaterThan('expiresAt', new Date()).find();
                 const container = document.getElementById('stories-container');
-                if (!container) return;
-                if (stories.length === 0) { container.innerHTML = '<div>No stories yet. Click + to add a story.</div>'; return; }
-                container.innerHTML = stories.map(s => `
-                    <div class="story" data-id="${s.id}" onclick="window.vibeApp.services.profile.viewStory('${s.id}')">
-                        <img src="${s.get('media')?.url() || 'assets/default-avatar.png'}">
-                        <div>${s.get('content')}</div>
-                    </div>
-                `).join('');
+                container.innerHTML = stories.map(s => `<div class="story-item" data-id="${s.id}"><div class="story-avatar"><img src="${s.get('media')?.url() || 'assets/default-avatar.png'}"></div><span class="story-username">${s.get('content')}</span></div>`).join('');
+                document.querySelectorAll('.story-item').forEach(el => el.onclick = () => this.viewStory(el.dataset.id));
             }
-            async createStory(content, mediaFile) {
-                const VibeStory = Parse.Object.extend('VibeStory');
-                const story = new VibeStory();
+            async viewStory(storyId) {
+                const story = await new Parse.Query('VibeStory').get(storyId);
+                document.getElementById('story-viewer').classList.remove('hidden');
+                document.getElementById('story-username').innerText = story.get('author').get('username');
+                document.getElementById('story-content').innerHTML = story.get('media') ? `<img src="${story.get('media').url()}" style="max-width:100%;">` : `<p>${story.get('content')}</p>`;
+            }
+            async loadUserGallery() {
+                const items = await new Parse.Query('VibeGallery').equalTo('owner', this.app.currentUser).find();
+                const container = document.getElementById('user-gallery-grid');
+                container.innerHTML = items.map(i => `<div class="gallery-item"><img src="${i.get('file').url()}"><p>${i.get('caption')}</p></div>`).join('');
+            }
+            async createStory(content, file) {
+                const story = new Parse.Object('VibeStory');
                 story.set('author', this.app.currentUser);
                 story.set('content', content);
-                if (mediaFile) {
-                    const file = new Parse.File('story.jpg', mediaFile);
-                    await file.save();
-                    story.set('media', file);
-                }
-                story.set('type', mediaFile ? 'image' : 'text');
-                story.set('expiresAt', new Date(Date.now() + 24*60*60*1000));
-                story.set('views', []);
-                story.set('reactions', []);
+                if (file) { const pf = new Parse.File('story.jpg', file); await pf.save(); story.set('media', pf); }
+                story.set('expiresAt', new Date(Date.now() + 24 * 60 * 60 * 1000));
                 await story.save();
                 showNotification('Story posted');
                 await this.loadUserStories();
             }
-            async viewStory(storyId) {
-                const VibeStory = Parse.Object.extend('VibeStory');
-                const story = await new Parse.Query(VibeStory).get(storyId);
-                alert(story.get('content'));
-            }
-            async loadUserGallery() {
-                const VibeGallery = Parse.Object.extend('VibeGallery');
-                const q = new Parse.Query(VibeGallery);
-                q.equalTo('owner', this.app.currentUser);
-                q.descending('createdAt');
-                const items = await q.find();
-                const container = document.getElementById('gallery-grid');
-                if (!container) return;
-                if (items.length === 0) { container.innerHTML = '<div>No gallery items. Upload images or videos.</div>'; return; }
-                container.innerHTML = items.map(i => `
-                    <div class="gallery-item">
-                        ${i.get('type') === 'image' ? `<img src="${i.get('file').url()}">` : `<video src="${i.get('file').url()}" controls></video>`}
-                        <p>${i.get('caption')}</p>
-                        <button onclick="window.vibeApp.services.profile.likeGalleryItem('${i.id}')">❤️ ${i.get('likes')?.length || 0}</button>
-                    </div>
-                `).join('');
-            }
             async uploadToGallery(file, caption) {
-                const VibeGallery = Parse.Object.extend('VibeGallery');
-                const item = new VibeGallery();
+                const item = new Parse.Object('VibeGallery');
                 const pf = new Parse.File('gallery.' + file.name.split('.').pop(), file);
                 await pf.save();
                 item.set('owner', this.app.currentUser);
@@ -798,341 +659,652 @@
                 item.set('caption', caption);
                 item.set('type', file.type.startsWith('image/') ? 'image' : 'video');
                 item.set('likes', []);
-                item.set('comments', []);
                 item.set('isPublic', true);
                 await item.save();
                 showNotification('Added to gallery');
                 await this.loadUserGallery();
             }
-            async likeGalleryItem(itemId) {
-                const VibeGallery = Parse.Object.extend('VibeGallery');
-                const item = await new Parse.Query(VibeGallery).get(itemId);
-                const likes = item.get('likes') || [];
-                if (likes.some(l => l.user.id === this.app.currentUser.id)) {
-                    item.set('likes', likes.filter(l => l.user.id !== this.app.currentUser.id));
-                } else {
-                    likes.push({ user: this.app.currentUser, likedAt: new Date() });
-                    item.set('likes', likes);
-                }
-                await item.save();
-                await this.loadUserGallery();
-            }
         }
 
-        // PostService (FIXED: plain text)
         class PostService {
             constructor(app) { this.app = app; }
-            async createPost(content, media=[]) {
+            async createPost(content, media = null) {
                 const Post = Parse.Object.extend('Post');
                 const p = new Post();
                 p.set('content', content);
                 p.set('author', this.app.currentUser);
-                if (media.length) {
-                    const files = await Promise.all(media.map(m => new Parse.File('media.jpg', m).save()));
-                    p.set('media', files);
-                }
                 p.set('likesCount', 0);
                 p.set('commentCount', 0);
+                p.set('shareCount', 0);
+                if (media) { const file = new Parse.File('media.jpg', media); await file.save(); p.set('media', [file]); }
                 await p.save();
                 showNotification('Post created');
-                await this.loadFeedPosts();
+                await this.loadFeed();
             }
-            async loadFeedPosts(limit=20) {
-                const q = new Parse.Query('Post');
-                q.include('author');
-                q.descending('createdAt');
-                q.limit(limit);
+            async loadFeed() {
+                const q = new Parse.Query('Post').include('author').descending('createdAt').limit(20);
                 const posts = await q.find();
                 for (let p of posts) {
-                    p.set('decryptedContent', p.get('content'));
+                    const raw = p.get('content');
+                    if (typeof raw === 'string' && raw.startsWith('{') && raw.includes('"iv"')) {
+                        try { const dec = await window.vibeSecurity.decrypt(JSON.parse(raw)); p.set('decryptedContent', dec); }
+                        catch (e) { p.set('decryptedContent', '[Encrypted]'); }
+                    } else { p.set('decryptedContent', raw || ''); }
+                }
+                this.displayPosts(posts, 'home-feed');
+            }
+            async loadFeedPosts() {
+                const q = new Parse.Query('Post').include('author').descending('createdAt').limit(20);
+                const posts = await q.find();
+                for (let p of posts) {
+                    const raw = p.get('content');
+                    if (typeof raw === 'string' && raw.startsWith('{') && raw.includes('"iv"')) {
+                        try { const dec = await window.vibeSecurity.decrypt(JSON.parse(raw)); p.set('decryptedContent', dec); }
+                        catch (e) { p.set('decryptedContent', '[Encrypted]'); }
+                    } else { p.set('decryptedContent', raw || ''); }
                 }
                 this.displayPosts(posts, 'feed-posts');
-                if (limit === 5) this.displayPosts(posts, 'recent-posts');
-                return posts;
-            }
-            async loadUserPosts(userId, limit=20) {
-                const q = new Parse.Query('Post');
-                q.equalTo('author', { __type:'Pointer', className:'_User', objectId:userId });
-                q.descending('createdAt');
-                q.limit(limit);
-                const posts = await q.find();
-                for (let p of posts) {
-                    p.set('decryptedContent', p.get('content'));
-                }
-                return posts;
             }
             async likePost(postId) {
                 const Like = Parse.Object.extend('Like');
-                const q = new Parse.Query(Like);
-                q.equalTo('user', this.app.currentUser);
-                q.equalTo('post', { __type:'Pointer', className:'Post', objectId:postId });
+                const q = new Parse.Query(Like).equalTo('user', this.app.currentUser).equalTo('post', { __type: 'Pointer', className: 'Post', objectId: postId });
                 const existing = await q.first();
-                if (existing) await existing.destroy();
-                else {
-                    const like = new Like();
-                    like.set('user', this.app.currentUser);
-                    like.set('post', { __type:'Pointer', className:'Post', objectId:postId });
-                    await like.save();
-                    const post = await new Parse.Query('Post').get(postId);
-                    post.increment('likesCount');
-                    await post.save();
-                }
-                await this.loadFeedPosts();
+                const post = await new Parse.Query('Post').get(postId);
+                if (existing) { await existing.destroy(); post.increment('likesCount', -1); }
+                else { const like = new Like(); like.set('user', this.app.currentUser); like.set('post', { __type: 'Pointer', className: 'Post', objectId: postId }); await like.save(); post.increment('likesCount', 1); }
+                await post.save();
+                await this.loadFeed();
             }
             async commentOnPost(postId, text) {
                 const Comment = Parse.Object.extend('Comment');
                 const c = new Comment();
                 c.set('content', text);
                 c.set('author', this.app.currentUser);
-                c.set('post', { __type:'Pointer', className:'Post', objectId:postId });
+                c.set('post', { __type: 'Pointer', className: 'Post', objectId: postId });
                 await c.save();
                 const post = await new Parse.Query('Post').get(postId);
                 post.increment('commentCount');
                 await post.save();
                 showNotification('Comment added');
-                await this.loadFeedPosts();
+                await this.loadFeed();
+            }
+            async deletePost(postId) {
+                if (!confirm('Delete permanently?')) return;
+                const post = await new Parse.Query('Post').get(postId);
+                if (post.get('author').id !== this.app.currentUser.id) return showNotification('Not yours', 'error');
+                await post.destroy();
+                showNotification('Post deleted');
+                await this.loadFeed();
+            }
+            async sharePost(postId) {
+                const post = await new Parse.Query('Post').get(postId);
+                const url = `${window.location.origin}?post=${postId}`;
+                if (navigator.share) await navigator.share({ title: `Post by ${post.get('author').get('username')}`, text: post.get('decryptedContent'), url });
+                else { await navigator.clipboard.writeText(url); showNotification('Link copied'); }
+                post.increment('shareCount'); await post.save();
             }
             displayPosts(posts, containerId) {
                 const container = document.getElementById(containerId);
                 if (!container) return;
                 container.innerHTML = posts.map(p => `
-                    <div class="post" data-id="${p.id}">
+                    <div class="post">
                         <div class="post-header">
-                            <img src="assets/default-avatar.png" class="post-avatar">
+                            <img src="${p.get('author').get('avatar')?.url() || 'assets/default-avatar.png'}" class="post-avatar">
                             <span class="post-author">${p.get('author').get('username')}</span>
                             <span class="post-time">${formatTime(p.createdAt)}</span>
                         </div>
                         <div class="post-content">${p.get('decryptedContent')}</div>
+                        ${p.get('media')?.length ? `<img src="${p.get('media')[0].url()}" class="post-media">` : ''}
                         <div class="post-actions">
-                            <button class="likePost" data-id="${p.id}"><i class="far fa-heart"></i> ${p.get('likesCount')||0}</button>
-                            <button class="commentPost" data-id="${p.id}"><i class="far fa-comment"></i> ${p.get('commentCount')||0}</button>
+                            <button class="post-action like-btn" data-id="${p.id}"><i class="far fa-heart"></i> ${p.get('likesCount') || 0}</button>
+                            <button class="post-action comment-btn" data-id="${p.id}"><i class="far fa-comment"></i> ${p.get('commentCount') || 0}</button>
+                            <button class="post-action share-btn" data-id="${p.id}"><i class="fas fa-share"></i></button>
+                            ${p.get('author').id === this.app.currentUser.id ? `<button class="post-action delete-btn" data-id="${p.id}"><i class="fas fa-trash"></i></button>` : ''}
                         </div>
                     </div>
                 `).join('');
-                document.querySelectorAll('.likePost').forEach(btn => btn.onclick = () => this.likePost(btn.dataset.id));
-                document.querySelectorAll('.commentPost').forEach(btn => btn.onclick = () => { const txt = prompt('Comment:'); if(txt) this.commentOnPost(btn.dataset.id, txt); });
+                container.querySelectorAll('.like-btn').forEach(b => b.onclick = () => this.likePost(b.dataset.id));
+                container.querySelectorAll('.comment-btn').forEach(b => b.onclick = () => { const txt = prompt('Comment:'); if (txt) this.commentOnPost(b.dataset.id, txt); });
+                container.querySelectorAll('.delete-btn').forEach(b => b.onclick = () => this.deletePost(b.dataset.id));
+                container.querySelectorAll('.share-btn').forEach(b => b.onclick = () => this.sharePost(b.dataset.id));
             }
         }
 
-        // ChatService (FIXED: field name 'chatRoom')
         class ChatService {
-            constructor(app) { this.app = app; this.activeChatRoom = null; }
-            async createChatRoom(roomData) {
-                const Room = Parse.Object.extend('VibeChatRoom');
-                const r = new Room();
-                r.set('name', roomData.name);
-                r.set('members', [this.app.currentUser, ...(roomData.members||[])]);
-                r.set('isGroup', roomData.isGroup !== false);
-                await r.save();
-                showNotification('Chat room created');
-                await this.loadChatRooms();
-                return r;
+            constructor(app) { this.app = app; this.activeRoom = null; this.subscription = null; }
+            async loadChatRooms() {
+                const q = new Parse.Query('VibeChatRoom').containedIn('members', [this.app.currentUser]);
+                const rooms = await q.find();
+                const container = document.getElementById('chat-rooms-list');
+                container.innerHTML = rooms.map(r => `<div class="chat-room" data-id="${r.id}"><strong>${r.get('name')}</strong></div>`).join('');
+                container.querySelectorAll('.chat-room').forEach(el => el.onclick = () => this.openRoom(el.dataset.id));
             }
-            async sendMessage(roomId, text) {
-                if (!text.trim()) return;
+            async openRoom(roomId) {
+                this.activeRoom = roomId;
+                document.getElementById('chat-window')?.classList.remove('hidden');
+                const room = await new Parse.Query('VibeChatRoom').get(roomId);
+                document.getElementById('chat-title').innerText = room.get('name');
+                await this.loadMessages(roomId);
+                if (this.subscription) this.subscription.unsubscribe();
+                const query = new Parse.Query('Message').equalTo('chatRoom', { __type: 'Pointer', className: 'VibeChatRoom', objectId: roomId });
+                this.subscription = await query.subscribe();
+                this.subscription.on('create', (msg) => { if (msg.get('sender').id !== this.app.currentUser.id) this.appendMessage(msg); });
+            }
+            async loadMessages(roomId) {
+                const q = new Parse.Query('Message').equalTo('chatRoom', { __type: 'Pointer', className: 'VibeChatRoom', objectId: roomId }).include('sender').ascending('createdAt');
+                const msgs = await q.find();
+                const container = document.getElementById('chat-messages') || document.getElementById('chat-messages-overlay');
+                container.innerHTML = msgs.map(m => `<div class="message ${m.get('sender').id === this.app.currentUser.id ? 'sent' : 'received'}"><strong>${m.get('sender').get('username')}</strong>: ${m.get('text')}</div>`).join('');
+                container.scrollTop = container.scrollHeight;
+            }
+            appendMessage(msg) {
+                const container = document.getElementById('chat-messages') || document.getElementById('chat-messages-overlay');
+                const div = document.createElement('div');
+                div.className = `message ${msg.get('sender').id === this.app.currentUser.id ? 'sent' : 'received'}`;
+                div.innerHTML = `<strong>${msg.get('sender').get('username')}</strong>: ${msg.get('text')}`;
+                container.appendChild(div);
+                container.scrollTop = container.scrollHeight;
+            }
+            async sendMessage(text) {
+                if (!this.activeRoom || !text.trim()) return;
                 const Message = Parse.Object.extend('Message');
                 const m = new Message();
                 m.set('text', text);
                 m.set('sender', this.app.currentUser);
-                m.set('chatRoom', { __type:'Pointer', className:'VibeChatRoom', objectId:roomId });
+                m.set('chatRoom', { __type: 'Pointer', className: 'VibeChatRoom', objectId: this.activeRoom });
                 await m.save();
-                await this.loadChatMessages(roomId);
+                document.getElementById('message-input').value = '';
+                document.getElementById('chat-message-input').value = '';
             }
-            async loadChatRooms() {
-                const q = new Parse.Query('VibeChatRoom');
-                q.containedIn('members', [this.app.currentUser]);
-                q.descending('updatedAt');
-                const rooms = await q.find();
-                const container = document.getElementById('chat-rooms-list');
-                if (container) container.innerHTML = rooms.map(r => `<button class="roomBtn vibe-button" data-id="${r.id}">${r.get('name')}</button>`).join('');
-                document.querySelectorAll('.roomBtn').forEach(btn => btn.onclick = () => this.openChatRoom(btn.dataset.id));
-                return rooms;
-            }
-            async loadChatMessages(roomId) {
-                const q = new Parse.Query('Message');
-                q.equalTo('chatRoom', { __type:'Pointer', className:'VibeChatRoom', objectId:roomId });
-                q.include('sender');
-                q.ascending('createdAt');
-                const msgs = await q.find();
-                const container = document.getElementById('chat-messages');
-                container.innerHTML = msgs.map(m => `<div><b>${m.get('sender').get('username')}</b>: ${m.get('text')}</div>`).join('');
-            }
-            async openChatRoom(roomId) {
-                this.activeChatRoom = roomId;
+            async createRoom(name, members = []) {
                 const Room = Parse.Object.extend('VibeChatRoom');
-                const room = await new Parse.Query(Room).get(roomId);
-                const titleEl = document.createElement('h3');
-                titleEl.style.margin = '0 0 10px 0';
-                titleEl.textContent = room.get('name');
-                const msgContainer = document.getElementById('chat-messages');
-                msgContainer.innerHTML = '';
-                msgContainer.before(titleEl);
-                await this.loadChatMessages(roomId);
+                const r = new Room();
+                r.set('name', name);
+                r.set('members', [this.app.currentUser, ...members]);
+                r.set('isGroup', members.length > 0);
+                await r.save();
+                showNotification('Chat room created');
+                await this.loadChatRooms();
             }
-            async createAudioRoom(name, isPrivate=false, maxParticipants=50) {
+            async createAudioRoom(name) {
                 const Room = Parse.Object.extend('VibeAudioRoom');
                 const r = new Room();
                 r.set('name', name);
                 r.set('host', this.app.currentUser);
                 r.set('members', [this.app.currentUser]);
-                r.set('moderators', [this.app.currentUser]);
-                r.set('isPrivate', isPrivate);
-                r.set('maxParticipants', maxParticipants);
                 r.set('startedAt', new Date());
                 await r.save();
                 showNotification('Audio room created');
-                return r;
             }
             async createSecureChat(receiverId) {
                 const Secure = Parse.Object.extend('VibeSecureChat');
                 const s = new Secure();
                 s.set('sender', this.app.currentUser);
-                s.set('receiver', { __type:'Pointer', className:'_User', objectId:receiverId });
+                s.set('receiver', { __type: 'Pointer', className: '_User', objectId: receiverId });
                 s.set('encryptionLevel', 'high');
-                s.set('verificationStatus', false);
-                s.set('killSwitchEnabled', false);
                 await s.save();
                 showNotification('Secure chat initiated');
-                return s;
             }
         }
 
-        // WalletService
         class WalletService {
             constructor(app) { this.app = app; }
             async ensureWalletExists() {
                 const Wallet = Parse.Object.extend('VibeWallet');
                 let w = await new Parse.Query(Wallet).equalTo('owner', this.app.currentUser).first();
-                if (!w) {
-                    w = new Wallet();
-                    w.set('owner', this.app.currentUser);
-                    w.set('balance', 100);
-                    await w.save();
-                }
+                if (!w) { w = new Wallet(); w.set('owner', this.app.currentUser); w.set('balance', 100); await w.save(); }
                 return w;
             }
             async ensureLoyaltyProgramExists() {
                 const Loyalty = Parse.Object.extend('VibeLoyaltyProgram');
                 let l = await new Parse.Query(Loyalty).equalTo('user', this.app.currentUser).first();
-                if (!l) {
-                    l = new Loyalty();
-                    l.set('user', this.app.currentUser);
-                    l.set('points', 0);
-                    l.set('level', 'bronze');
-                    l.set('rewardsRedeemed', []);
-                    await l.save();
-                }
+                if (!l) { l = new Loyalty(); l.set('user', this.app.currentUser); l.set('points', 0); l.set('level', 'Bronze'); await l.save(); }
                 return l;
             }
-            async getBalance() {
+            async getBalance() { const w = await this.ensureWalletExists(); return w.get('balance'); }
+            async displayWalletInfo() {
+                const balance = await this.getBalance();
+                const els = ['wallet-balance-display', 'wallet-balance', 'wallet-balance-standalone'];
+                els.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = balance; });
+                const loyalty = await this.ensureLoyaltyProgramExists();
+                ['loyalty-points-display', 'loyalty-points'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = loyalty.get('points'); });
+                ['loyalty-level-display', 'loyalty-level'].forEach(id => { const el = document.getElementById(id); if (el) el.innerText = loyalty.get('level'); });
+                const txns = await this.getTransactionHistory();
+                const container = document.getElementById('transactions-list') || document.getElementById('transactions-list-wallet');
+                if (container) container.innerHTML = txns.map(t => `<div>${t.get('description')}: ${t.get('amount')} VIBE</div>`).join('');
+            }
+            async getTransactionHistory() {
                 const w = await this.ensureWalletExists();
-                return w.get('balance');
+                const q = new Parse.Query('WalletTransaction').equalTo('wallet', w).descending('createdAt').limit(20);
+                return await q.find();
             }
             async addFunds(amount) {
                 const w = await this.ensureWalletExists();
                 w.increment('balance', amount);
                 await w.save();
-                const Transaction = Parse.Object.extend('WalletTransaction');
-                const tx = new Transaction();
-                tx.set('wallet', w);
-                tx.set('amount', amount);
-                tx.set('type', 'credit');
-                tx.set('description', 'Added funds');
+                const tx = new Parse.Object('WalletTransaction');
+                tx.set('wallet', w); tx.set('amount', amount); tx.set('type', 'credit'); tx.set('description', 'Added funds');
                 await tx.save();
                 showNotification(`Added ${amount} VIBE`);
                 await this.displayWalletInfo();
             }
             async sendMoney(toUserId, amount) {
-                const fromWallet = await this.ensureWalletExists();
-                if (fromWallet.get('balance') < amount) throw new Error('Insufficient funds');
-                const toWallet = await new Parse.Query('VibeWallet').equalTo('owner', { __type:'Pointer', className:'_User', objectId:toUserId }).first();
-                if (!toWallet) throw new Error('Recipient wallet not found');
-                fromWallet.increment('balance', -amount);
-                toWallet.increment('balance', amount);
-                await Parse.Object.saveAll([fromWallet, toWallet]);
-                const Transaction = Parse.Object.extend('WalletTransaction');
-                const tx1 = new Transaction();
-                tx1.set('wallet', fromWallet);
-                tx1.set('amount', -amount);
-                tx1.set('type', 'debit');
-                tx1.set('description', `Sent to ${toUserId}`);
+                const from = await this.ensureWalletExists();
+                if (from.get('balance') < amount) return showNotification('Insufficient funds', 'error');
+                const to = await new Parse.Query('VibeWallet').equalTo('owner', { __type: 'Pointer', className: '_User', objectId: toUserId }).first();
+                if (!to) return showNotification('Recipient not found', 'error');
+                from.increment('balance', -amount);
+                to.increment('balance', amount);
+                await Parse.Object.saveAll([from, to]);
+                const tx1 = new Parse.Object('WalletTransaction');
+                tx1.set('wallet', from); tx1.set('amount', -amount); tx1.set('type', 'debit'); tx1.set('description', `Sent to ${toUserId}`);
                 await tx1.save();
-                const tx2 = new Transaction();
-                tx2.set('wallet', toWallet);
-                tx2.set('amount', amount);
-                tx2.set('type', 'credit');
-                tx2.set('description', `Received from ${this.app.currentUser.id}`);
+                const tx2 = new Parse.Object('WalletTransaction');
+                tx2.set('wallet', to); tx2.set('amount', amount); tx2.set('type', 'credit'); tx2.set('description', `Received from ${this.app.currentUser.id}`);
                 await tx2.save();
                 showNotification(`Sent ${amount} VIBE`);
                 await this.displayWalletInfo();
             }
             async sendTip(creatorId, amount, message) {
-                const fromWallet = await this.ensureWalletExists();
-                if (fromWallet.get('balance') < amount) throw new Error('Insufficient funds');
-                const creatorWallet = await new Parse.Query('VibeWallet').equalTo('owner', { __type:'Pointer', className:'_User', objectId:creatorId }).first();
-                if (!creatorWallet) throw new Error('Creator wallet not found');
-                fromWallet.increment('balance', -amount);
-                creatorWallet.increment('balance', amount);
-                await Parse.Object.saveAll([fromWallet, creatorWallet]);
-                const Tip = Parse.Object.extend('VibeTips');
-                const tip = new Tip();
-                tip.set('sender', this.app.currentUser);
-                tip.set('creator', { __type:'Pointer', className:'_User', objectId:creatorId });
-                tip.set('amount', amount);
-                tip.set('message', message);
+                const from = await this.ensureWalletExists();
+                if (from.get('balance') < amount) return showNotification('Insufficient funds', 'error');
+                const to = await new Parse.Query('VibeWallet').equalTo('owner', { __type: 'Pointer', className: '_User', objectId: creatorId }).first();
+                if (!to) return showNotification('Creator wallet not found', 'error');
+                from.increment('balance', -amount);
+                to.increment('balance', amount);
+                await Parse.Object.saveAll([from, to]);
+                const tip = new Parse.Object('VibeTips');
+                tip.set('sender', this.app.currentUser); tip.set('creator', { __type: 'Pointer', className: '_User', objectId: creatorId }); tip.set('amount', amount); tip.set('message', message);
                 await tip.save();
-                const tx1 = new Parse.Object('WalletTransaction');
-                tx1.set('wallet', fromWallet);
-                tx1.set('amount', -amount);
-                tx1.set('type', 'debit');
-                tx1.set('description', `Tip to ${creatorId}`);
-                await tx1.save();
-                const tx2 = new Parse.Object('WalletTransaction');
-                tx2.set('wallet', creatorWallet);
-                tx2.set('amount', amount);
-                tx2.set('type', 'credit');
-                tx2.set('description', `Tip from ${this.app.currentUser.id}`);
-                await tx2.save();
-                await this.addLoyaltyPoints(10, 'sending_tip');
+                await this.addLoyaltyPoints(10);
                 showNotification('Tip sent');
                 await this.displayWalletInfo();
             }
-            async addLoyaltyPoints(points, reason) {
-                let loyalty = await this.ensureLoyaltyProgramExists();
-                loyalty.increment('points', points);
-                const newPoints = loyalty.get('points');
-                if (newPoints >= 1000) loyalty.set('level', 'platinum');
-                else if (newPoints >= 500) loyalty.set('level', 'gold');
-                else if (newPoints >= 100) loyalty.set('level', 'silver');
-                await loyalty.save();
-                document.getElementById('loyalty-points').innerText = `Points: ${newPoints}`;
-                document.getElementById('loyalty-level').innerText = `Level: ${loyalty.get('level')}`;
-                showNotification(`Earned ${points} loyalty points for ${reason}`);
-            }
-            async getTransactionHistory() {
-                const w = await this.ensureWalletExists();
-                const q = new Parse.Query('WalletTransaction');
-                q.equalTo('wallet', w);
-                q.descending('createdAt');
-                return await q.find();
-            }
-            async displayWalletInfo() {
-                const balance = await this.getBalance();
-                document.getElementById('wallet-balance').innerText = balance;
-                const txns = await this.getTransactionHistory();
-                const container = document.getElementById('transactions-list');
-                if (container) container.innerHTML = txns.map(t => `<div>${t.get('description')}: ${t.get('amount')} VIBE</div>`).join('');
-                const loyalty = await this.ensureLoyaltyProgramExists();
-                document.getElementById('loyalty-points').innerText = `Points: ${loyalty.get('points')}`;
-                document.getElementById('loyalty-level').innerText = `Level: ${loyalty.get('level')}`;
+            async addLoyaltyPoints(points) {
+                const l = await this.ensureLoyaltyProgramExists();
+                l.increment('points', points);
+                const total = l.get('points');
+                if (total >= 1000) l.set('level', 'Platinum');
+                else if (total >= 500) l.set('level', 'Gold');
+                else if (total >= 100) l.set('level', 'Silver');
+                await l.save();
             }
         }
 
-        // MarketplaceService, LearningService, GamingService, etc. (unchanged, fully implemented)
-        // [All other services remain exactly as in your original file]
+        class CommunityService {
+            constructor(app) { this.app = app; }
+            async createCommunity(data) {
+                const Comm = Parse.Object.extend('VibeCommunity');
+                const c = new Comm();
+                c.set('name', data.name); c.set('description', data.description); c.set('owner', this.app.currentUser); c.set('members', [this.app.currentUser]); c.set('privacy', data.privacy || 'public');
+                await c.save();
+                showNotification('Community created');
+                await this.loadCommunities();
+            }
+            async loadCommunities() {
+                const q = new Parse.Query('VibeCommunity').include('owner').descending('memberCount');
+                const comms = await q.find();
+                const container = document.getElementById('communities-grid');
+                container.innerHTML = comms.map(c => `<div class="card"><h4>${c.get('name')}</h4><p>${c.get('description')}</p><button data-id="${c.id}" class="view-community-btn">View</button></div>`).join('');
+                container.querySelectorAll('.view-community-btn').forEach(b => b.onclick = () => this.viewCommunity(b.dataset.id));
+            }
+            async viewCommunity(id) {
+                const c = await new Parse.Query('VibeCommunity').get(id);
+                document.getElementById('communities-grid').classList.add('hidden');
+                const view = document.getElementById('selected-community-view');
+                view.classList.remove('hidden');
+                document.getElementById('community-name').innerText = c.get('name');
+                document.getElementById('community-description').innerText = c.get('description');
+                const posts = await new Parse.Query('Post').equalTo('community', c).include('author').find();
+                document.getElementById('community-posts').innerHTML = posts.map(p => `<div class="post">${p.get('content')}</div>`).join('');
+                document.getElementById('community-members-list').innerHTML = c.get('members').map(m => `<div>${m.username}</div>`).join('');
+                document.getElementById('back-to-communities').onclick = () => { view.classList.add('hidden'); document.getElementById('communities-grid').classList.remove('hidden'); };
+            }
+            async joinCommunity(id) {
+                const c = await new Parse.Query('VibeCommunity').get(id);
+                c.addUnique('members', this.app.currentUser);
+                await c.save();
+                showNotification('Joined');
+            }
+        }
+
+        class EventService {
+            constructor(app) { this.app = app; }
+            async createEvent(data) {
+                const Event = Parse.Object.extend('VibeEvent');
+                const e = new Event();
+                e.set('host', this.app.currentUser); e.set('title', data.title); e.set('description', data.description); e.set('eventDate', new Date(data.date)); e.set('location', data.location); e.set('ticketsAvailable', data.tickets); e.set('price', data.price || 0);
+                await e.save();
+                showNotification('Event created');
+                await this.loadEvents();
+            }
+            async loadEvents() {
+                const q = new Parse.Query('VibeEvent').greaterThan('eventDate', new Date()).include('host').ascending('eventDate');
+                const events = await q.find();
+                const container = document.getElementById('events-list');
+                container.innerHTML = events.map(e => `<div class="card"><h4>${e.get('title')}</h4><p>${e.get('description')}</p><button data-id="${e.id}" class="rsvp-btn">RSVP</button></div>`).join('');
+                container.querySelectorAll('.rsvp-btn').forEach(b => b.onclick = () => this.rsvp(b.dataset.id));
+            }
+            async rsvp(eventId) {
+                const e = await new Parse.Query('VibeEvent').get(eventId);
+                e.addUnique('attendees', this.app.currentUser);
+                await e.save();
+                showNotification('RSVP confirmed');
+            }
+            async startLiveStream(title) {
+                const Stream = Parse.Object.extend('VibeLiveStream');
+                const s = new Stream();
+                s.set('host', this.app.currentUser); s.set('title', title); s.set('isLive', true); s.set('startedAt', new Date());
+                await s.save();
+                showNotification('Live stream started');
+                await this.loadLiveStreams();
+            }
+            async loadLiveStreams() {
+                const q = new Parse.Query('VibeLiveStream').equalTo('isLive', true).include('host');
+                const streams = await q.find();
+                document.getElementById('live-streams-list').innerHTML = streams.map(s => `<div class="card"><h4>${s.get('title')}</h4><button data-id="${s.id}" class="watch-stream-btn">Watch</button></div>`).join('');
+            }
+        }
+
+        class MarketplaceService {
+            constructor(app) { this.app = app; }
+            async createItem(data) {
+                const Item = Parse.Object.extend('MarketplaceItem');
+                const i = new Item();
+                i.set('seller', this.app.currentUser); i.set('title', data.title); i.set('description', data.description); i.set('price', data.price); i.set('status', 'available');
+                await i.save();
+                showNotification('Item listed');
+                await this.loadItems();
+            }
+            async loadItems() {
+                const q = new Parse.Query('MarketplaceItem').equalTo('status', 'available').include('seller');
+                const items = await q.find();
+                document.getElementById('marketplace-items').innerHTML = items.map(i => `<div class="card"><h4>${i.get('title')}</h4><p>${i.get('price')} VIBE</p><button data-id="${i.id}" class="add-to-cart-btn">Add to Cart</button></div>`).join('');
+                document.querySelectorAll('.add-to-cart-btn').forEach(b => b.onclick = () => this.addToCart(b.dataset.id));
+            }
+            async addToCart(itemId) {
+                let cart = await new Parse.Query('VibeShoppingCart').equalTo('owner', this.app.currentUser).equalTo('status', 'active').first();
+                if (!cart) { cart = new Parse.Object('VibeShoppingCart'); cart.set('owner', this.app.currentUser); cart.set('items', []); cart.set('status', 'active'); }
+                const items = cart.get('items') || [];
+                const existing = items.find(i => i.itemId === itemId);
+                if (existing) existing.quantity++; else items.push({ itemId, quantity: 1 });
+                cart.set('items', items);
+                await cart.save();
+                showNotification('Added to cart');
+            }
+            async createGig(data) {
+                const Gig = Parse.Object.extend('VibeGig');
+                const g = new Gig();
+                g.set('poster', this.app.currentUser); g.set('skillNeeded', data.skill); g.set('description', data.desc); g.set('payment', data.payment); g.set('status', 'open');
+                await g.save();
+                showNotification('Gig posted');
+                await this.loadGigs();
+            }
+            async loadGigs() {
+                const q = new Parse.Query('VibeGig').equalTo('status', 'open').include('poster');
+                const gigs = await q.find();
+                document.getElementById('vibe-gigs').innerHTML = gigs.map(g => `<div class="card"><h4>${g.get('skillNeeded')}</h4><p>${g.get('payment')} VIBE</p><button data-id="${g.id}" class="apply-gig-btn">Apply</button></div>`).join('');
+                document.querySelectorAll('.apply-gig-btn').forEach(b => b.onclick = () => this.applyToGig(b.dataset.id));
+            }
+            async applyToGig(gigId) {
+                const g = await new Parse.Query('VibeGig').get(gigId);
+                g.addUnique('applicants', this.app.currentUser);
+                await g.save();
+                showNotification('Applied');
+            }
+        }
+
+        class LearningService {
+            constructor(app) { this.app = app; }
+            async createCourse(data) {
+                const Course = Parse.Object.extend('VibeCourse');
+                const c = new Course();
+                c.set('instructor', this.app.currentUser); c.set('title', data.title); c.set('description', data.description); c.set('price', data.price || 0);
+                await c.save();
+                showNotification('Course created');
+                await this.loadCourses();
+            }
+            async loadCourses() {
+                const q = new Parse.Query('VibeCourse').include('instructor');
+                const courses = await q.find();
+                document.getElementById('courses-list').innerHTML = courses.map(c => `<div class="card"><h4>${c.get('title')}</h4><p>${c.get('price')} VIBE</p><button data-id="${c.id}" class="enroll-btn">Enroll</button></div>`).join('');
+                document.querySelectorAll('.enroll-btn').forEach(b => b.onclick = () => this.enroll(b.dataset.id));
+            }
+            async enroll(courseId) {
+                const c = await new Parse.Query('VibeCourse').get(courseId);
+                c.addUnique('enrolledStudents', this.app.currentUser);
+                await c.save();
+                showNotification('Enrolled');
+            }
+            async createQuiz(data) {
+                const Quiz = Parse.Object.extend('VibeQuiz');
+                const q = new Quiz();
+                q.set('title', data.title); q.set('questions', data.questions); q.set('course', { __type: 'Pointer', className: 'VibeCourse', objectId: data.courseId });
+                await q.save();
+                showNotification('Quiz created');
+            }
+        }
+
+        class GamingService {
+            constructor(app) { this.app = app; }
+            async createSession(data) {
+                const Session = Parse.Object.extend('VibeGameSession');
+                const s = new Session();
+                s.set('host', this.app.currentUser); s.set('gameType', data.gameType); s.set('title', data.title); s.set('maxPlayers', data.maxPlayers || 4); s.set('currentPlayers', [this.app.currentUser]); s.set('status', 'waiting');
+                await s.save();
+                showNotification('Session created');
+                await this.loadSessions();
+            }
+            async loadSessions() {
+                const q = new Parse.Query('VibeGameSession').containedIn('status', ['waiting', 'active']).include('host');
+                const sessions = await q.find();
+                document.getElementById('game-sessions-list').innerHTML = sessions.map(s => `<div class="card"><h4>${s.get('title')}</h4><p>${s.get('currentPlayers').length}/${s.get('maxPlayers')}</p><button data-id="${s.id}" class="join-session-btn">Join</button></div>`).join('');
+                document.querySelectorAll('.join-session-btn').forEach(b => b.onclick = () => this.joinSession(b.dataset.id));
+            }
+            async joinSession(sessionId) {
+                const s = await new Parse.Query('VibeGameSession').get(sessionId);
+                if (s.get('currentPlayers').length >= s.get('maxPlayers')) return showNotification('Full', 'error');
+                s.addUnique('currentPlayers', this.app.currentUser);
+                await s.save();
+                showNotification('Joined');
+            }
+            async createTournament(data) {
+                const Tournament = Parse.Object.extend('VibeTournament');
+                const t = new Tournament();
+                t.set('organizer', this.app.currentUser); t.set('title', data.title); t.set('gameType', data.gameType); t.set('maxParticipants', data.max); t.set('status', 'registration');
+                await t.save();
+                showNotification('Tournament created');
+            }
+        }
+
+        class DiscoveryService {
+            constructor(app) { this.app = app; }
+            async loadRecommendations() {
+                const q = new Parse.Query('Post').descending('engagementScore').limit(20).include('author');
+                const posts = await q.find();
+                const container = document.getElementById('recommendations-grid');
+                if (container) container.innerHTML = posts.map(p => `<div class="card"><h4>${p.get('author').get('username')}</h4><p>${p.get('content')}</p></div>`).join('');
+            }
+            async search(query) {
+                const q = new Parse.Query('Post').contains('content', query).limit(20);
+                return await q.find();
+            }
+            async loadTrendingTags() {
+                const q = new Parse.Query('Discovery').descending('trendScore').limit(10);
+                const tags = await q.find();
+                const container = document.getElementById('trending-tags');
+                if (container) container.innerHTML = tags.map(t => `<span class="tag">#${t.get('tag')}</span>`).join('');
+            }
+            async loadChallenges() {
+                const q = new Parse.Query('VibeChallenge').greaterThan('endDate', new Date());
+                const challenges = await q.find();
+                const container = document.getElementById('challenges-list');
+                if (container) container.innerHTML = challenges.map(c => `<div class="card"><h4>${c.get('title')}</h4><button data-id="${c.id}" class="join-challenge-btn">Join</button></div>`).join('');
+                document.querySelectorAll('.join-challenge-btn').forEach(b => b.onclick = () => this.joinChallenge(b.dataset.id));
+            }
+            async joinChallenge(id) {
+                const c = await new Parse.Query('VibeChallenge').get(id);
+                c.addUnique('participants', this.app.currentUser);
+                await c.save();
+                showNotification('Joined challenge');
+            }
+        }
+
+        class SettingsService {
+            constructor(app) { this.app = app; }
+            async displaySettings() {
+                const container = document.getElementById('user-settings-container');
+                if (!container) return;
+                let settings = await new Parse.Query('VibeUserSettings').equalTo('user', this.app.currentUser).first();
+                if (!settings) {
+                    settings = new Parse.Object('VibeUserSettings');
+                    settings.set('user', this.app.currentUser);
+                    settings.set('theme', 'dark');
+                    settings.set('notifications', { push: true, email: true });
+                    settings.set('privacy', { profileVisibility: 'public' });
+                    await settings.save();
+                }
+                container.innerHTML = `
+                    <div class="card">
+                        <h3>Appearance</h3>
+                        <label><input type="radio" name="theme" value="dark" ${settings.get('theme') === 'dark' ? 'checked' : ''}> Dark</label>
+                        <label><input type="radio" name="theme" value="light" ${settings.get('theme') === 'light' ? 'checked' : ''}> Light</label>
+                        <h3>Notifications</h3>
+                        <label><input type="checkbox" id="pushNotif" ${settings.get('notifications').push ? 'checked' : ''}> Push</label>
+                        <label><input type="checkbox" id="emailNotif" ${settings.get('notifications').email ? 'checked' : ''}> Email</label>
+                        <h3>Privacy</h3>
+                        <select id="privacySelect">
+                            <option value="public" ${settings.get('privacy').profileVisibility === 'public' ? 'selected' : ''}>Public</option>
+                            <option value="friends" ${settings.get('privacy').profileVisibility === 'friends' ? 'selected' : ''}>Friends Only</option>
+                            <option value="private" ${settings.get('privacy').profileVisibility === 'private' ? 'selected' : ''}>Private</option>
+                        </select>
+                        <button id="saveSettingsBtn" class="vibe-button">Save Settings</button>
+                    </div>
+                `;
+                document.getElementById('saveSettingsBtn').onclick = async () => {
+                    const theme = document.querySelector('input[name="theme"]:checked').value;
+                    const push = document.getElementById('pushNotif').checked;
+                    const email = document.getElementById('emailNotif').checked;
+                    const privacy = document.getElementById('privacySelect').value;
+                    settings.set('theme', theme);
+                    settings.set('notifications', { push, email });
+                    settings.set('privacy', { profileVisibility: privacy });
+                    await settings.save();
+                    showNotification('Settings saved');
+                };
+            }
+            async exportUserData() {
+                const data = { user: this.app.currentUser.toJSON() };
+                const posts = await new Parse.Query('Post').equalTo('author', this.app.currentUser).find();
+                data.posts = posts.map(p => p.toJSON());
+                const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'vibelink-data.json'; a.click();
+                showNotification('Data exported');
+            }
+        }
+
+        class ARService {
+            constructor(app) { this.app = app; }
+            async createExperience(data) {
+                const AR = Parse.Object.extend('VibeARExperience');
+                const exp = new AR();
+                exp.set('creator', this.app.currentUser);
+                exp.set('experienceType', data.type);
+                if (data.mediaFile) {
+                    const file = new Parse.File('ar.jpg', data.mediaFile);
+                    await file.save();
+                    exp.set('mediaFile', file);
+                }
+                exp.set('interactiveObjects', data.interactiveObjects || []);
+                exp.set('filters', data.filters || []);
+                await exp.save();
+                showNotification('AR experience created');
+                await this.loadExperiences();
+            }
+            async loadExperiences() {
+                const q = new Parse.Query('VibeARExperience').include('creator').descending('createdAt');
+                const exps = await q.find();
+                const container = document.getElementById('ar-list');
+                if (container) container.innerHTML = exps.map(e => `<div class="card"><h4>${e.get('experienceType')}</h4><p>By ${e.get('creator').get('username')}</p><button data-id="${e.id}" class="view-ar-btn">View</button></div>`).join('');
+                document.querySelectorAll('.view-ar-btn').forEach(b => b.onclick = () => this.viewExperience(b.dataset.id));
+            }
+            async viewExperience(id) {
+                const exp = await new Parse.Query('VibeARExperience').get(id);
+                alert(`Viewing AR: ${exp.get('experienceType')}`);
+            }
+        }
+
+        class QAService {
+            constructor(app) { this.app = app; }
+            async askQuestion(data) {
+                const QA = Parse.Object.extend('VibeQA');
+                const q = new QA();
+                q.set('question', data.question);
+                q.set('asker', this.app.currentUser);
+                q.set('topic', data.topic);
+                q.set('tags', data.tags || []);
+                q.set('views', 0);
+                q.set('votes', 0);
+                await q.save();
+                showNotification('Question posted');
+                await this.loadQuestions();
+            }
+            async loadQuestions() {
+                const q = new Parse.Query('VibeQA').include('asker').descending('createdAt');
+                const questions = await q.find();
+                const container = document.getElementById('qa-list');
+                if (container) container.innerHTML = questions.map(q => `<div class="card"><h4>${q.get('question')}</h4><p>Asked by ${q.get('asker').get('username')}</p><button data-id="${q.id}" class="answer-question-btn">Answer</button></div>`).join('');
+                document.querySelectorAll('.answer-question-btn').forEach(b => b.onclick = () => this.answerQuestion(b.dataset.id));
+            }
+            async answerQuestion(qId) {
+                const answer = prompt('Your answer:');
+                if (!answer) return;
+                const QA = Parse.Object.extend('VibeQA');
+                const q = await new Parse.Query(QA).get(qId);
+                const answers = q.get('answers') || [];
+                answers.push({ user: this.app.currentUser, text: answer, date: new Date() });
+                q.set('answers', answers);
+                await q.save();
+                showNotification('Answer posted');
+            }
+            async loadKnowledgeBase() {
+                const q = new Parse.Query('VibeKnowledgeArticle').equalTo('isPublished', true);
+                const articles = await q.find();
+                const container = document.getElementById('knowledge-base-list');
+                if (container) container.innerHTML = articles.map(a => `<div class="card"><h4>${a.get('title')}</h4><p>${a.get('excerpt')}</p></div>`).join('');
+            }
+        }
+
+        class AIService {
+            constructor(app) { this.app = app; }
+            async trackBehavior(action, data) {
+                const Behavior = Parse.Object.extend('VibeUserBehavior');
+                const b = new Behavior();
+                b.set('user', this.app.currentUser);
+                b.set('action', action);
+                b.set('data', data);
+                await b.save();
+            }
+            async getSuggestions() {
+                const q = new Parse.Query('Post').descending('engagementScore').limit(5);
+                const posts = await q.find();
+                const container = document.getElementById('ai-suggestions');
+                if (container) container.innerHTML = posts.map(p => `<div class="card"><p>${p.get('content')}</p></div>`).join('');
+            }
+        }
+
+        class RealtimeManager {
+            constructor(app) { this.app = app; }
+            async initialize() { console.log('Realtime Manager ready'); }
+            subscribeToClass(className, query, callback) {
+                return query.subscribe().then(sub => { sub.on('create', callback); sub.on('update', callback); return sub; });
+            }
+        }
 
         // ==================== MAIN APP ====================
-        class VibeLink0372 {
+        class VibeLinkApp {
             constructor() {
                 this.currentUser = null;
                 this.services = {};
@@ -1143,156 +1315,203 @@
                 this.services.posts = new PostService(this);
                 this.services.chat = new ChatService(this);
                 this.services.wallet = new WalletService(this);
-                // ... initialize all other services
+                this.services.communities = new CommunityService(this);
+                this.services.events = new EventService(this);
+                this.services.marketplace = new MarketplaceService(this);
+                this.services.learning = new LearningService(this);
+                this.services.gaming = new GamingService(this);
+                this.services.discovery = new DiscoveryService(this);
+                this.services.settings = new SettingsService(this);
+                this.services.ar = new ARService(this);
+                this.services.qa = new QAService(this);
+                this.services.ai = new AIService(this);
+                this.services.realtime = new RealtimeManager(this);
+                this.services.encryption = window.vibeSecurity;
 
                 await this.services.auth.checkAuthentication();
+                this.setupNavigation();
                 this.setupEventListeners();
                 if (this.currentUser) await this.loadInitialData();
-                console.log('✅ VibeLink 0372 ready');
+                console.log('✅ VibeLink 0372 fully loaded');
             }
             async loadInitialData() {
                 await Promise.all([
-                    this.services.wallet.ensureWalletExists(),
-                    this.services.wallet.ensureLoyaltyProgramExists(),
-                    this.services.profile.ensureProfileExists(),
-                    this.services.posts.loadFeedPosts(5),
+                    this.services.wallet.displayWalletInfo(),
+                    this.services.posts.loadFeed(),
                     this.services.chat.loadChatRooms(),
-                    // ... load other data
+                    this.services.profile.loadProfileData(),
+                    this.services.communities.loadCommunities(),
+                    this.services.events.loadEvents(),
+                    this.services.marketplace.loadItems(),
+                    this.services.marketplace.loadGigs(),
+                    this.services.learning.loadCourses(),
+                    this.services.gaming.loadSessions(),
+                    this.services.discovery.loadRecommendations(),
+                    this.services.discovery.loadChallenges(),
+                    this.services.settings.displaySettings(),
+                    this.services.ar.loadExperiences(),
+                    this.services.qa.loadQuestions(),
+                    this.services.qa.loadKnowledgeBase(),
+                    this.services.ai.getSuggestions()
                 ]);
             }
-            setupEventListeners() {
-                document.getElementById('loginForm')?.addEventListener('submit', (e) => this.services.auth.handleLogin(e));
-                document.getElementById('signupForm')?.addEventListener('submit', (e) => this.services.auth.handleSignup(e));
-                document.getElementById('logout-btn')?.addEventListener('click', () => this.services.auth.handleLogout());
-                document.getElementById('create-post')?.addEventListener('click', async () => {
-                    const content = document.getElementById('post-content').value;
-                    if (content) {
-                        await this.services.posts.createPost(content);
-                        document.getElementById('post-content').value = '';
-                    }
-                });
-                document.getElementById('send-message')?.addEventListener('click', async () => {
-                    const input = document.getElementById('message-input');
-                    if (input.value && this.services.chat.activeChatRoom) {
-                        await this.services.chat.sendMessage(this.services.chat.activeChatRoom, input.value);
-                        input.value = '';
-                    }
-                });
-                document.getElementById('create-chat-room')?.addEventListener('click', async () => {
-                    const name = prompt('Room name');
-                    if (name) await this.services.chat.createChatRoom({ name });
-                });
-                document.getElementById('create-audio-room')?.addEventListener('click', async () => {
-                    const name = prompt('Audio room name');
-                    if (name) await this.services.chat.createAudioRoom(name);
-                });
-                document.getElementById('create-secure-chat')?.addEventListener('click', async () => {
-                    const receiverId = prompt('User ID to chat securely');
-                    if (receiverId) await this.services.chat.createSecureChat(receiverId);
-                });
-                document.getElementById('add-funds-btn')?.addEventListener('click', async () => {
-                    const amount = parseInt(prompt('Amount to add (VIBE)'),10);
-                    if (amount) await this.services.wallet.addFunds(amount);
-                });
-                document.getElementById('send-money-btn')?.addEventListener('click', async () => {
-                    const toUserId = prompt('Recipient user ID');
-                    const amount = parseInt(prompt('Amount'),10);
-                    if (toUserId && amount) await this.services.wallet.sendMoney(toUserId, amount);
-                });
-                document.getElementById('send-tip-btn')?.addEventListener('click', async () => {
-                    const creatorId = prompt('Creator user ID');
-                    const amount = parseInt(prompt('Tip amount'),10);
-                    const msg = prompt('Message (optional)');
-                    if (creatorId && amount) await this.services.wallet.sendTip(creatorId, amount, msg);
-                });
-                // Navigation
+            setupNavigation() {
                 document.querySelectorAll('.nav-link').forEach(link => {
                     link.addEventListener('click', (e) => {
                         e.preventDefault();
                         const section = link.dataset.section;
-                        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-                        document.getElementById(section)?.classList.add('active');
-                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                        link.classList.add('active');
-                        if (section === 'profile') this.services.profile.loadProfileData();
-                        if (section === 'wallet') this.services.wallet.displayWalletInfo();
-                        if (section === 'chat') this.services.chat.loadChatRooms();
-                        if (section === 'feed') this.services.posts.loadFeedPosts();
-                        if (section === 'home') this.services.posts.loadFeedPosts(5);
-                        // ... load other sections
+                        this.switchSection(section);
                     });
                 });
-                document.getElementById('show-signup')?.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.getElementById('login-form').classList.remove('active');
-                    document.getElementById('signup-form').classList.add('active');
+                document.getElementById('menu-btn').onclick = () => document.getElementById('slide-menu')?.classList.toggle('hidden');
+                document.getElementById('close-menu')?.addEventListener('click', () => document.getElementById('slide-menu')?.classList.add('hidden'));
+                document.querySelectorAll('[data-section]').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.switchSection(link.dataset.section);
+                        document.getElementById('slide-menu')?.classList.add('hidden');
+                    });
                 });
-                document.getElementById('show-login')?.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.getElementById('signup-form').classList.remove('active');
-                    document.getElementById('login-form').classList.add('active');
+                document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const section = item.dataset.section;
+                        if (section) this.switchSection(section);
+                    });
                 });
-                // Theme toggle
-                const themeToggle = document.createElement('div');
-                themeToggle.className = 'nav-icon';
-                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-                themeToggle.onclick = () => {
-                    const current = document.body.getAttribute('data-theme');
-                    const newTheme = current === 'light' ? 'dark' : 'light';
-                    document.body.setAttribute('data-theme', newTheme);
-                    themeToggle.innerHTML = newTheme === 'light' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-                    localStorage.setItem('theme', newTheme);
+            }
+            switchSection(sectionId) {
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`${sectionId}-section`)?.classList.add('active');
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelector(`.nav-link[data-section="${sectionId}"]`)?.classList.add('active');
+                document.querySelectorAll('.bottom-nav .nav-item').forEach(i => i.classList.remove('active'));
+                document.querySelector(`.bottom-nav .nav-item[data-section="${sectionId}"]`)?.classList.add('active');
+
+                const loaders = {
+                    home: () => this.services.posts.loadFeed(),
+                    feed: () => this.services.posts.loadFeedPosts(),
+                    profile: () => this.services.profile.loadProfileData(),
+                    communities: () => this.services.communities.loadCommunities(),
+                    events: () => this.services.events.loadEvents(),
+                    discovery: () => { this.services.discovery.loadRecommendations(); this.services.discovery.loadTrendingTags(); },
+                    chat: () => this.services.chat.loadChatRooms(),
+                    wallet: () => this.services.wallet.displayWalletInfo(),
+                    marketplace: () => { this.services.marketplace.loadItems(); this.services.marketplace.loadGigs(); },
+                    learning: () => this.services.learning.loadCourses(),
+                    gaming: () => this.services.gaming.loadSessions(),
+                    settings: () => this.services.settings.displaySettings(),
+                    ar: () => this.services.ar.loadExperiences(),
+                    qa: () => this.services.qa.loadQuestions()
                 };
-                document.querySelector('.nav-actions')?.prepend(themeToggle);
-                const savedTheme = localStorage.getItem('theme');
-                if (savedTheme) {
-                    document.body.setAttribute('data-theme', savedTheme);
-                    themeToggle.innerHTML = savedTheme === 'light' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-                }
-                // Story creation
-                const addStoryBtn = document.createElement('button');
-                addStoryBtn.textContent = '+ Add Story';
-                addStoryBtn.className = 'vibe-button';
-                document.getElementById('stories-container')?.parentNode?.insertBefore(addStoryBtn, document.getElementById('stories-container'));
-                addStoryBtn.onclick = async () => {
-                    const content = prompt('Story text');
-                    if (content) await this.services.profile.createStory(content, null);
-                };
-                // Gallery upload
-                const uploadGalleryBtn = document.createElement('button');
-                uploadGalleryBtn.textContent = 'Upload to Gallery';
-                uploadGalleryBtn.className = 'vibe-button';
-                document.getElementById('gallery-grid')?.parentNode?.insertBefore(uploadGalleryBtn, document.getElementById('gallery-grid'));
-                uploadGalleryBtn.onclick = () => {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*,video/*';
-                    input.onchange = async (e) => {
-                        const file = e.target.files[0];
-                        const caption = prompt('Caption');
-                        if (file && caption) await this.services.profile.uploadToGallery(file, caption);
-                    };
-                    input.click();
-                };
+                if (loaders[sectionId]) loaders[sectionId]();
             }
-            showAuthSection() {
-                document.getElementById('auth-section').classList.add('active');
-                document.getElementById('main-section').classList.remove('active');
+            setupEventListeners() {
+                document.getElementById('loginForm')?.addEventListener('submit', e => this.services.auth.handleLogin(e));
+                document.getElementById('signupForm')?.addEventListener('submit', e => this.services.auth.handleSignup(e));
+                document.getElementById('logout-btn')?.addEventListener('click', () => this.services.auth.handleLogout());
+                document.getElementById('logout-menu-btn')?.addEventListener('click', () => this.services.auth.handleLogout());
+                document.getElementById('show-signup')?.addEventListener('click', e => { e.preventDefault(); document.getElementById('login-form').classList.remove('active'); document.getElementById('signup-form').classList.add('active'); });
+                document.getElementById('show-login')?.addEventListener('click', e => { e.preventDefault(); document.getElementById('signup-form').classList.remove('active'); document.getElementById('login-form').classList.add('active'); });
+
+                document.getElementById('home-post-btn')?.addEventListener('click', async () => {
+                    const content = document.getElementById('home-post-input').value;
+                    if (content) { await this.services.posts.createPost(content); document.getElementById('home-post-input').value = ''; }
+                });
+                document.getElementById('feed-create-post')?.addEventListener('click', async () => {
+                    const content = document.getElementById('feed-post-content').value;
+                    if (content) { await this.services.posts.createPost(content); document.getElementById('feed-post-content').value = ''; }
+                });
+                document.getElementById('floating-create-btn')?.addEventListener('click', () => {
+                    const content = prompt('What\'s on your mind?');
+                    if (content) this.services.posts.createPost(content);
+                });
+
+                document.getElementById('send-message')?.addEventListener('click', async () => {
+                    const input = document.getElementById('message-input');
+                    await this.services.chat.sendMessage(input.value);
+                    input.value = '';
+                });
+                document.getElementById('send-chat-message')?.addEventListener('click', async () => {
+                    const input = document.getElementById('chat-message-input');
+                    await this.services.chat.sendMessage(input.value);
+                    input.value = '';
+                });
+                document.getElementById('create-chat-room')?.addEventListener('click', async () => {
+                    const name = prompt('Room name:'); if (name) await this.services.chat.createRoom(name);
+                });
+                document.getElementById('create-audio-room')?.addEventListener('click', async () => {
+                    const name = prompt('Audio room name:'); if (name) await this.services.chat.createAudioRoom(name);
+                });
+                document.getElementById('create-secure-chat')?.addEventListener('click', async () => {
+                    const id = prompt('User ID:'); if (id) await this.services.chat.createSecureChat(id);
+                });
+                document.getElementById('close-chat')?.addEventListener('click', () => {
+                    document.getElementById('chat-window')?.classList.add('hidden');
+                    if (this.services.chat.subscription) this.services.chat.subscription.unsubscribe();
+                });
+
+                const addFunds = () => { const amt = parseFloat(prompt('Amount:')); if (amt) this.services.wallet.addFunds(amt); };
+                document.getElementById('add-funds-btn')?.addEventListener('click', addFunds);
+                document.getElementById('add-funds-btn-wallet')?.addEventListener('click', addFunds);
+                const sendMoney = () => { const id = prompt('Recipient ID:'); const amt = parseFloat(prompt('Amount:')); if (id && amt) this.services.wallet.sendMoney(id, amt); };
+                document.getElementById('send-money-btn')?.addEventListener('click', sendMoney);
+                document.getElementById('send-money-btn-wallet')?.addEventListener('click', sendMoney);
+                const sendTip = () => { const id = prompt('Creator ID:'); const amt = parseFloat(prompt('Amount:')); const msg = prompt('Message:'); if (id && amt) this.services.wallet.sendTip(id, amt, msg); };
+                document.getElementById('send-tip-btn')?.addEventListener('click', sendTip);
+                document.getElementById('send-tip-btn-wallet')?.addEventListener('click', sendTip);
+
+                document.getElementById('create-community-btn')?.addEventListener('click', async () => {
+                    const name = prompt('Community name:'); const desc = prompt('Description:'); if (name) await this.services.communities.createCommunity({ name, description: desc });
+                });
+                document.getElementById('create-event-btn')?.addEventListener('click', async () => {
+                    const title = prompt('Event title:'); const desc = prompt('Description:'); const date = prompt('Date (YYYY-MM-DD HH:MM):'); const tix = prompt('Tickets:'); if (title && date) await this.services.events.createEvent({ title, description: desc, date, tickets: parseInt(tix) || 0, location: 'Online' });
+                });
+                document.getElementById('start-live-stream-btn')?.addEventListener('click', async () => {
+                    const title = prompt('Stream title:'); if (title) await this.services.events.startLiveStream(title);
+                });
+                document.getElementById('create-listing-btn')?.addEventListener('click', async () => {
+                    const title = prompt('Title:'); const desc = prompt('Description:'); const price = parseFloat(prompt('Price:')); if (title && price) await this.services.marketplace.createItem({ title, description: desc, price });
+                });
+                document.getElementById('create-gig-btn')?.addEventListener('click', async () => {
+                    const skill = prompt('Skill needed:'); const desc = prompt('Description:'); const pay = parseFloat(prompt('Payment:')); if (skill && pay) await this.services.marketplace.createGig({ skill, desc, payment: pay });
+                });
+                document.getElementById('checkout-cart')?.addEventListener('click', () => showNotification('Checkout coming soon'));
+                document.getElementById('create-course-btn')?.addEventListener('click', async () => {
+                    const title = prompt('Course title:'); const desc = prompt('Description:'); const price = parseFloat(prompt('Price:')); if (title) await this.services.learning.createCourse({ title, description: desc, price });
+                });
+                document.getElementById('create-quiz-btn')?.addEventListener('click', async () => {
+                    const title = prompt('Quiz title:'); const questions = prompt('Questions (JSON array):'); if (title && questions) await this.services.learning.createQuiz({ title, questions: JSON.parse(questions), courseId: null });
+                });
+                document.getElementById('create-game-session-btn')?.addEventListener('click', async () => {
+                    const title = prompt('Session title:'); const type = prompt('Game type:'); if (title && type) await this.services.gaming.createSession({ title, gameType: type });
+                });
+                document.getElementById('create-tournament-btn')?.addEventListener('click', async () => {
+                    const title = prompt('Tournament title:'); const type = prompt('Game type:'); const max = parseInt(prompt('Max participants:')); if (title && type && max) await this.services.gaming.createTournament({ title, gameType: type, max });
+                });
+                document.getElementById('create-ar-btn')?.addEventListener('click', async () => {
+                    const type = prompt('AR experience type:'); if (type) await this.services.ar.createExperience({ type });
+                });
+                document.getElementById('ask-question-btn')?.addEventListener('click', async () => {
+                    const question = prompt('Your question:'); const topic = prompt('Topic:'); if (question && topic) await this.services.qa.askQuestion({ question, topic });
+                });
+                document.getElementById('export-data-btn')?.addEventListener('click', () => this.services.settings.exportUserData());
+                document.getElementById('profile-settings-btn')?.addEventListener('click', () => this.switchSection('settings'));
+                document.getElementById('edit-profile-btn')?.addEventListener('click', async () => {
+                    const bio = prompt('New bio:'); if (bio) { this.app.currentUser.set('bio', bio); await this.app.currentUser.save(); this.services.profile.loadProfileData(); }
+                });
+                document.getElementById('close-story')?.addEventListener('click', () => document.getElementById('story-viewer').classList.add('hidden'));
+                document.getElementById('search-btn')?.addEventListener('click', () => {
+                    const query = prompt('Search:'); if (query) this.services.discovery.search(query).then(posts => alert(`Found ${posts.length} posts`));
+                });
             }
-            hideAuthSection() {
-                document.getElementById('auth-section').classList.remove('active');
-            }
-            showMainSection() {
-                document.getElementById('main-section').classList.add('active');
-            }
-            hideMainSection() {
-                document.getElementById('main-section').classList.remove('active');
-            }
+            showAuthSection() { document.getElementById('auth-section').classList.add('active'); document.getElementById('main-section').classList.remove('active'); }
+            hideAuthSection() { document.getElementById('auth-section').classList.remove('active'); }
+            showMainSection() { document.getElementById('main-section').classList.add('active'); }
+            hideMainSection() { document.getElementById('main-section').classList.remove('active'); }
         }
 
-        // Start the app
         window.addEventListener('DOMContentLoaded', () => {
-            window.vibeApp = new VibeLink0372();
+            window.vibeApp = new VibeLinkApp();
             window.vibeApp.init();
         });
     </script>
