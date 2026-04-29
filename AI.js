@@ -6,16 +6,12 @@ class AI {
                 user: { type: 'Pointer', targetClass: '_User', required: true },
                 aiData: { type: 'Object', default: {} },
                 preferences: { type: 'Object', default: {} },
-                learningPattern: { type: 'Object', default: {} },
-                createdAt: { type: 'Date' },
-                updatedAt: { type: 'Date' }
+                learningPattern: { type: 'Object', default: {} }
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('AI');
     }
 }
-
-export default AI;
+window.AI = AI;
