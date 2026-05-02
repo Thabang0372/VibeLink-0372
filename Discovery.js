@@ -1,9 +1,9 @@
-class Discovery {
+class DiscoveryModel {
     static getSchema() {
         return {
             className: 'Discovery',
             fields: {
-                tag: { type: 'String', required: true },
+                tag: { type: 'String' },
                 trendScore: { type: 'Number', default: 0 },
                 aiTopicCluster: { type: 'Object', default: {} },
                 recommendedUsers: { type: 'Array', default: [] },
@@ -13,10 +13,8 @@ class Discovery {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('Discovery');
     }
 }
-
-export default Discovery;
+window.DiscoveryModel = DiscoveryModel;
