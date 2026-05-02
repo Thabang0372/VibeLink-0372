@@ -1,24 +1,19 @@
 class AuthService {
-    constructor(app) {
-        this.app = app;
-    }
+    constructor(app) { this.app = app; }
 
     async checkAuthentication() {
         try {
             this.app.currentUser = Parse.User.current();
-            
             if (this.app.currentUser) {
                 this.app.showMainSection();
                 this.app.hideAuthSection();
-                console.log('✅ User authenticated:', this.app.currentUser.get('username'));
+                await this.app.loadInitialData();   // ✅ FIX – loads all data on session resume
             } else {
                 this.app.showAuthSection();
                 this.app.hideMainSection();
             }
-            
             return this.app.currentUser;
         } catch (error) {
-            console.error('Auth check failed:', error);
             this.app.showAuthSection();
             return null;
         }
@@ -26,50 +21,40 @@ class AuthService {
 
     async handleLogin(e) {
         if (e) e.preventDefault();
-        
-        const username = document.getElementById('loginUsername')?.value;
+        const email = document.getElementById('loginEmail')?.value;
         const password = document.getElementById('loginPassword')?.value;
-
-        if (!username || !password) {
-            this.app.showError('Please enter both username and password');
+        if (!email || !password) {
+            showNotification('Please enter email and password', 'error');
             return;
         }
-
         try {
-            const user = await Parse.User.logIn(username, password);
+            const user = await Parse.User.logIn(email, password);
             await this.handleSuccessfulLogin(user);
-            this.app.showSuccess('Login successful! 🎉');
         } catch (error) {
-            this.app.showError('Login failed: ' + error.message);
+            showNotification(error.message, 'error');
         }
     }
 
     async handleSignup(e) {
         if (e) e.preventDefault();
-        
         const username = document.getElementById('signupUsername')?.value;
         const email = document.getElementById('signupEmail')?.value;
         const password = document.getElementById('signupPassword')?.value;
         const bio = document.getElementById('signupBio')?.value;
-
         if (!username || !email || !password) {
-            this.app.showError('Please fill all required fields');
+            showNotification('Please fill all required fields', 'error');
             return;
         }
-
         const user = new Parse.User();
         user.set('username', username);
         user.set('email', email);
         user.set('password', password);
         user.set('bio', bio || '');
-        user.set('emailVerified', false);
-
         try {
-            const newUser = await user.signUp();
-            await this.handleSuccessfulLogin(newUser);
-            this.app.showSuccess('Account created successfully! 🎉');
+            await user.signUp();
+            await this.handleSuccessfulLogin(user);
         } catch (error) {
-            this.app.showError('Signup failed: ' + error.message);
+            showNotification(error.message, 'error');
         }
     }
 
@@ -78,33 +63,25 @@ class AuthService {
         this.app.showMainSection();
         this.app.hideAuthSection();
 
-        // Initialize user-specific data
-        await this.app.services.wallet.initializeUserData();
-        await this.app.services.profile.ensureProfileExists();
-        
-        // Load user data
+        if (this.app.services.wallet) {
+            await this.app.services.wallet.ensureWalletExists();
+            await this.app.services.wallet.ensureLoyaltyProgramExists();
+        }
+        if (this.app.services.profile) {
+            await this.app.services.profile.ensureProfileExists();
+        }
+
         await this.app.loadInitialData();
+        showNotification('Welcome to VibeLink 0372! 🚀');
     }
 
     async handleLogout() {
-        try {
-            await Parse.User.logOut();
-            this.app.currentUser = null;
-            this.app.showAuthSection();
-            this.app.hideMainSection();
-            this.app.showSuccess('Logged out successfully');
-        } catch (error) {
-            this.app.showError('Logout error: ' + error.message);
-        }
-    }
-
-    getCurrentUser() {
-        return this.app.currentUser;
-    }
-
-    isAuthenticated() {
-        return this.app.currentUser !== null;
+        await Parse.User.logOut();
+        this.app.currentUser = null;
+        this.app.showAuthSection();
+        this.app.hideMainSection();
+        window.location.reload();
     }
 }
 
-export default AuthService;
+window.AuthService = AuthService;
