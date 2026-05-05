@@ -1,4 +1,4 @@
-class Message {
+class MessageModel {
     static getSchema() {
         return {
             className: 'Message',
@@ -9,16 +9,12 @@ class Message {
                 attachments: { type: 'Array', default: [] },
                 messageType: { type: 'String', default: 'text' },
                 paymentIncluded: { type: 'Boolean', default: false },
-                readBy: { type: 'Array', default: [] },
-                createdAt: { type: 'Date' },
-                updatedAt: { type: 'Date' }
+                readBy: { type: 'Array', default: [] }
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('Message');
     }
 }
-
-export default Message;
+window.MessageModel = MessageModel;
