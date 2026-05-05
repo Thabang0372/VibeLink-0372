@@ -1,71 +1,50 @@
 class EncryptionService {
     constructor() {
-        this.encryptionKey = null;
-        this.initialized = false;
+        this.masterKey = null;
+        this.ready = new Promise(r => this._resolveReady = r);
+        this.initialize();
     }
-
     async initialize() {
         try {
-            this.encryptionKey = await this.generateKey();
-            this.initialized = true;
-            console.log('✅ Encryption service initialized');
-        } catch (error) {
-            throw new Error(`Encryption service initialization failed: ${error.message}`);
+            if (!window.crypto || !window.crypto.subtle) throw new Error('Web Crypto API not supported');
+            await this.loadOrGenerateMasterKey();
+            this._resolveReady();
+        } catch(e) { console.error('Encryption init failed', e); }
+    }
+    async loadOrGenerateMasterKey() {
+        const stored = localStorage.getItem('vibe_master_key');
+        if (stored) this.masterKey = await crypto.subtle.importKey('raw', this.base64ToArrayBuffer(stored), { name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+        else {
+            this.masterKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+            const exported = await crypto.subtle.exportKey('raw', this.masterKey);
+            localStorage.setItem('vibe_master_key', this.arrayBufferToBase64(exported));
         }
     }
-
-    async generateKey() {
-        return await window.crypto.subtle.generateKey(
-            { name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']
-        );
-    }
-
     async encrypt(data) {
-        if (!this.initialized) throw new Error('Encryption service not initialized');
-        
-        const encoder = new TextEncoder();
-        const dataBuffer = encoder.encode(data);
-        const iv = window.crypto.getRandomValues(new Uint8Array(12));
-        
-        const encryptedBuffer = await window.crypto.subtle.encrypt(
-            { name: 'AES-GCM', iv: iv }, this.encryptionKey, dataBuffer
-        );
-
-        const encryptedArray = new Uint8Array(encryptedBuffer);
-        const result = new Uint8Array(iv.length + encryptedArray.length);
-        result.set(iv);
-        result.set(encryptedArray, iv.length);
-
-        return btoa(String.fromCharCode(...result));
+        await this.ready;
+        const enc = new TextEncoder().encode(JSON.stringify(data));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, this.masterKey, enc);
+        return { iv: this.arrayBufferToBase64(iv), data: this.arrayBufferToBase64(cipher), timestamp: Date.now() };
     }
-
-    async decrypt(encryptedData) {
-        if (!this.initialized) throw new Error('Encryption service not initialized');
-        
-        const encryptedArray = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
-        const iv = encryptedArray.slice(0, 12);
-        const data = encryptedArray.slice(12);
-        
-        const decryptedBuffer = await window.crypto.subtle.decrypt(
-            { name: 'AES-GCM', iv: iv }, this.encryptionKey, data
-        );
-
-        return new TextDecoder().decode(decryptedBuffer);
+    async decrypt(payload) {
+        await this.ready;
+        const iv = this.base64ToArrayBuffer(payload.iv);
+        const data = this.base64ToArrayBuffer(payload.data);
+        const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, this.masterKey, data);
+        return JSON.parse(new TextDecoder().decode(decrypted));
     }
-
-    async exportKey() {
-        return await window.crypto.subtle.exportKey('raw', this.encryptionKey);
+    arrayBufferToBase64(buffer) {
+        const bytes = new Uint8Array(buffer);
+        let bin = '';
+        for (let i = 0; i < bytes.byteLength; i++) bin += String.fromCharCode(bytes[i]);
+        return btoa(bin);
     }
-
-    async importKey(keyData) {
-        return await window.crypto.subtle.importKey(
-            'raw', keyData, 'AES-GCM', true, ['encrypt', 'decrypt']
-        );
-    }
-
-    isInitialized() {
-        return this.initialized;
+    base64ToArrayBuffer(base64) {
+        const bin = atob(base64);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return bytes.buffer;
     }
 }
-
-export default EncryptionService;
+window.EncryptionService = EncryptionService;
