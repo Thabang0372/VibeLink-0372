@@ -12,10 +12,8 @@ class Legacy {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('Legacy');
     }
 }
-
-export default Legacy;
+window.Legacy = Legacy;
