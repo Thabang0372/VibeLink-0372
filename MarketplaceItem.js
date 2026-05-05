@@ -17,10 +17,8 @@ class MarketplaceItem {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('MarketplaceItem');
     }
 }
-
-export default MarketplaceItem;
+window.MarketplaceItem = MarketplaceItem;
