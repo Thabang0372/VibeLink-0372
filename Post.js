@@ -1,4 +1,4 @@
-class Post {
+class PostModel {
     static getSchema() {
         return {
             className: 'Post',
@@ -14,16 +14,10 @@ class Post {
                 reactions: { type: 'Object', default: {} },
                 shares: { type: 'Number', default: 0 },
                 comments: { type: 'Relation', targetClass: 'Comment' },
-                createdAt: { type: 'Date' },
-                updatedAt: { type: 'Date' },
                 location: { type: 'GeoPoint' }
             }
         };
     }
-
-    static createParseClass() {
-        return Parse.Object.extend('Post');
-    }
+    static createParseClass() { return Parse.Object.extend('Post'); }
 }
-
-export default Post;
+window.PostModel = PostModel;
