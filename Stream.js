@@ -18,4 +18,4 @@ class Stream {
     }
 }
 
-export default Stream;
+window.Stream = Stream;
