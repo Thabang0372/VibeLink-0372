@@ -3,6 +3,98 @@ class ProfileService {
         this.app = app;
     }
 
+    async ensureProfileExists() {
+        const Profile = Parse.Object.extend('Profile');
+        let p = await new Parse.Query(Profile).equalTo('user', this.app.currentUser).first();
+        if (!p) {
+            p = new Profile();
+            p.set('user', this.app.currentUser);
+            p.set('avatar', 'assets/default-avatar.png');
+            p.set('bio', this.app.currentUser.get('bio') || 'Welcome!');
+            p.set('verified', false);
+            await p.save();
+        }
+        return p;
+    }
+
+    async loadProfileData() {
+        if (!this.app.currentUser) return;
+        document.getElementById('profile-username-display').innerText = this.app.currentUser.get('username');
+        document.getElementById('profile-bio-display').innerText = this.app.currentUser.get('bio') || 'No bio';
+        const stats = await this.getUserStats();
+        document.getElementById('profile-posts-count').innerText = `${stats.posts} posts`;
+        document.getElementById('profile-followers-count').innerText = `${stats.followers} followers`;
+        document.getElementById('profile-following-count').innerText = `${stats.following} following`;
+        await this.loadUserPosts();
+        await this.loadUserStories();
+        await this.loadUserGallery();
+    }
+
+    async getUserStats(userId = null) {
+        const target = userId ? { __type: 'Pointer', className: '_User', objectId: userId } : this.app.currentUser;
+        const posts = await new Parse.Query('Post').equalTo('author', target).count();
+        const followers = await new Parse.Query('VibeFollow').equalTo('following', target).count();
+        const following = await new Parse.Query('VibeFollow').equalTo('follower', target).count();
+        return { posts, followers, following };
+    }
+
+    async loadUserPosts() {
+        const posts = await new Parse.Query('Post').equalTo('author', this.app.currentUser).descending('createdAt').find();
+        const container = document.getElementById('user-posts-grid');
+        container.innerHTML = posts.map(p => `<div class="card"><p>${p.get('content')}</p><small>${new Date(p.createdAt).toLocaleString()}</small></div>`).join('');
+    }
+
+    async loadUserStories() {
+        const stories = await new Parse.Query('VibeStory').equalTo('author', this.app.currentUser).greaterThan('expiresAt', new Date()).find();
+        const container = document.getElementById('stories-container');
+        container.innerHTML = stories.map(s => `<div class="story-item" onclick="vibeApp.services.profile.viewStory('${s.id}')"><div class="story-avatar"><img src="${s.get('media')?.url() || 'assets/default-avatar.png'}"></div><span>${s.get('content')}</span></div>`).join('');
+    }
+
+    async viewStory(storyId) {
+        const story = await new Parse.Query('VibeStory').get(storyId);
+        document.getElementById('story-viewer').classList.remove('hidden');
+        document.getElementById('story-username').innerText = story.get('author').get('username');
+        document.getElementById('story-content').innerHTML = story.get('media') ? `<img src="${story.get('media').url()}" style="max-width:100%">` : `<p>${story.get('content')}</p>`;
+    }
+
+    async createStory(content, file) {
+        const story = new Parse.Object('VibeStory');
+        story.set('author', this.app.currentUser);
+        story.set('content', content);
+        if (file) { const pf = new Parse.File('story.jpg', file); await pf.save(); story.set('media', pf); }
+        story.set('expiresAt', new Date(Date.now() + 24*60*60*1000));
+        await story.save();
+        showNotification('Story posted');
+        await this.loadUserStories();
+    }
+
+    async loadUserGallery() {
+        const items = await new Parse.Query('VibeGallery').equalTo('owner', this.app.currentUser).find();
+        const container = document.getElementById('user-gallery-grid');
+        container.innerHTML = items.map(i => `<div class="gallery-item"><img src="${i.get('file').url()}"><p>${i.get('caption')}</p></div>`).join('');
+    }
+
+    async uploadToGallery(file, caption) {
+        const item = new Parse.Object('VibeGallery');
+        const pf = new Parse.File('gallery.' + file.name.split('.').pop(), file);
+        await pf.save();
+        item.set('owner', this.app.currentUser);
+        item.set('file', pf);
+        item.set('caption', caption);
+        item.set('type', file.type.startsWith('image/') ? 'image' : 'video');
+        item.set('likes', []);
+        item.set('isPublic', true);
+        await item.save();
+        showNotification('Added to gallery');
+        await this.loadUserGallery();
+    }
+}
+
+window.ProfileService = ProfileService;class ProfileService {
+    constructor(app) {
+        this.app = app;
+    }
+
     async getUserProfile(userId = null) {
         const targetUserId = userId || this.app.currentUser.id;
         const User = this.app.services.parse.getClass('_User');
