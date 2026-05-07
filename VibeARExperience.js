@@ -8,15 +8,12 @@ class VibeARExperience {
                 mediaFile: { type: 'File' },
                 interactiveObjects: { type: 'Array', default: [] },
                 filters: { type: 'Array', default: [] },
-                usageStats: { type: 'Object', default: {} },
-                createdAt: { type: 'Date' }
+                usageStats: { type: 'Object', default: {} }
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeARExperience');
     }
 }
-
-export default VibeARExperience;
+window.VibeARExperience = VibeARExperience;
