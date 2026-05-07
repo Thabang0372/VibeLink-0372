@@ -1,4 +1,4 @@
-class Profile {
+class ProfileModel {
     static getSchema() {
         return {
             className: 'Profile',
@@ -19,10 +19,8 @@ class Profile {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('Profile');
     }
 }
-
-export default Profile;
+window.ProfileModel = ProfileModel;
