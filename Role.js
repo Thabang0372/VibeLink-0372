@@ -1,4 +1,4 @@
-class Role {
+class RoleModel {
     static getSchema() {
         return {
             className: '_Role',
@@ -9,10 +9,8 @@ class Role {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('_Role');
     }
 }
-
-export default Role;
+window.RoleModel = RoleModel;
