@@ -1,4 +1,4 @@
-class VibeChatRoom {
+class VibeChatRoomModel {
     static getSchema() {
         return {
             className: 'VibeChatRoom',
@@ -9,15 +9,10 @@ class VibeChatRoom {
                 lastMessage: { type: 'Pointer', targetClass: 'Message' },
                 mediaEnabled: { type: 'Boolean', default: true },
                 audioVibesEnabled: { type: 'Boolean', default: true },
-                createdAt: { type: 'Date' },
                 admin: { type: 'Pointer', targetClass: '_User', required: true }
             }
         };
     }
-
-    static createParseClass() {
-        return Parse.Object.extend('VibeChatRoom');
-    }
+    static createParseClass() { return Parse.Object.extend('VibeChatRoom'); }
 }
-
-export default VibeChatRoom;
+window.VibeChatRoomModel = VibeChatRoomModel;
