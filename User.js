@@ -1,4 +1,4 @@
-class User {
+class UserModel {
     static getSchema() {
         return {
             className: '_User',
@@ -8,12 +8,12 @@ class User {
                 password: { type: 'String', required: true },
                 avatar: { type: 'File' },
                 bio: { type: 'String' },
-                createdAt: { type: 'Date' },
-                updatedAt: { type: 'Date' },
                 emailVerified: { type: 'Boolean', default: false }
             }
         };
     }
+    static createParseClass() {
+        return Parse.Object.extend('_User');
+    }
 }
-
-export default User;
+window.UserModel = UserModel;
