@@ -15,10 +15,8 @@ class Settings {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('Settings');
     }
 }
-
-export default Settings;
+window.Settings = Settings;
