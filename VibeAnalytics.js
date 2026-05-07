@@ -21,4 +21,4 @@ class VibeAnalytics {
     }
 }
 
-export default VibeAnalytics;
+window.VibeAnalytics = VibeAnalytics;
