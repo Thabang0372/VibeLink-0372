@@ -9,15 +9,12 @@ class VibeCircle {
                 moderators: { type: 'Relation', targetClass: '_User' },
                 members: { type: 'Relation', targetClass: '_User' },
                 engagementScore: { type: 'Number', default: 0 },
-                isPrivate: { type: 'Boolean', default: false },
-                createdAt: { type: 'Date' }
+                isPrivate: { type: 'Boolean', default: false }
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeCircle');
     }
 }
-
-export default VibeCircle;
+window.VibeCircle = VibeCircle;
