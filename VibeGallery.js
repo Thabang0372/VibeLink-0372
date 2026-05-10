@@ -4,19 +4,18 @@ class VibeGallery {
             className: 'VibeGallery',
             fields: {
                 owner: { type: 'Pointer', targetClass: '_User', required: true },
-                albumTitle: { type: 'String', required: true },
-                mediaFiles: { type: 'Array', default: [] },
+                file: { type: 'File' },
+                caption: { type: 'String' },
+                type: { type: 'String', default: 'image' },
+                likes: { type: 'Array', default: [] },
+                comments: { type: 'Array', default: [] },
                 tags: { type: 'Array', default: [] },
-                isPublic: { type: 'Boolean', default: true },
-                createdAt: { type: 'Date' },
-                coverImage: { type: 'File' }
+                isPublic: { type: 'Boolean', default: true }
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeGallery');
     }
 }
-
-export default VibeGallery;
+window.VibeGallery = VibeGallery;
