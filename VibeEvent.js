@@ -1,4 +1,4 @@
-class VibeEvent {
+class VibeEventModel {
     static getSchema() {
         return {
             className: 'VibeEvent',
@@ -17,10 +17,8 @@ class VibeEvent {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeEvent');
     }
 }
-
-export default VibeEvent;
+window.VibeEventModel = VibeEventModel;
