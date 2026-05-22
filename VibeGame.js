@@ -14,10 +14,8 @@ class VibeGame {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeGame');
     }
 }
-
-export default VibeGame;
+window.VibeGame = VibeGame;
