@@ -16,10 +16,8 @@ class VibeLiveStream {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeLiveStream');
     }
 }
-
-export default VibeLiveStream;
+window.VibeLiveStream = VibeLiveStream;
