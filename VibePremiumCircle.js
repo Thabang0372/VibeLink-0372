@@ -9,15 +9,12 @@ class VibePremiumCircle {
                 members: { type: 'Relation', targetClass: '_User' },
                 moderators: { type: 'Relation', targetClass: '_User' },
                 accessLevel: { type: 'String', default: 'premium' },
-                content: { type: 'Relation', targetClass: 'Post' },
-                createdAt: { type: 'Date' }
+                content: { type: 'Relation', targetClass: 'Post' }
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibePremiumCircle');
     }
 }
-
-export default VibePremiumCircle;
+window.VibePremiumCircle = VibePremiumCircle;
