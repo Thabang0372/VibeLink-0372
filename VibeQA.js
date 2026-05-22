@@ -9,15 +9,12 @@ class VibeQA {
                 topic: { type: 'String' },
                 tags: { type: 'Array', default: [] },
                 views: { type: 'Number', default: 0 },
-                votes: { type: 'Number', default: 0 },
-                createdAt: { type: 'Date' }
+                votes: { type: 'Number', default: 0 }
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeQA');
     }
 }
-
-export default VibeQA;
+window.VibeQA = VibeQA;
