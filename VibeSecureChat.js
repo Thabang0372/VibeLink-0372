@@ -10,15 +10,12 @@ class VibeSecureChat {
                 verificationStatus: { type: 'Boolean', default: false },
                 killSwitchEnabled: { type: 'Boolean', default: false },
                 chatKey: { type: 'String' },
-                createdAt: { type: 'Date' },
                 expiresAt: { type: 'Date' }
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeSecureChat');
     }
 }
-
-export default VibeSecureChat;
+window.VibeSecureChat = VibeSecureChat;
