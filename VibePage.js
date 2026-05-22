@@ -16,10 +16,8 @@ class VibePage {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibePage');
     }
 }
-
-export default VibePage;
+window.VibePage = VibePage;
