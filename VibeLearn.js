@@ -15,10 +15,8 @@ class VibeLearn {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeLearn');
     }
 }
-
-export default VibeLearn;
+window.VibeLearn = VibeLearn;
