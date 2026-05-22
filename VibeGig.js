@@ -16,10 +16,8 @@ class VibeGig {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeGig');
     }
 }
-
-export default VibeGig;
+window.VibeGig = VibeGig;
