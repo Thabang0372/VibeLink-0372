@@ -7,15 +7,12 @@ class VibeShoppingCart {
                 items: { type: 'Array', default: [] },
                 totalPrice: { type: 'Number', default: 0 },
                 currency: { type: 'String', default: 'VIBE' },
-                status: { type: 'String', default: 'active' },
-                createdAt: { type: 'Date' }
+                status: { type: 'String', default: 'active' }
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeShoppingCart');
     }
 }
-
-export default VibeShoppingCart;
+window.VibeShoppingCart = VibeShoppingCart;
