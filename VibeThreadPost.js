@@ -9,16 +9,12 @@ class VibeThreadPost {
                 media: { type: 'Array', default: [] },
                 tags: { type: 'Array', default: [] },
                 reactions: { type: 'Object', default: {} },
-                shares: { type: 'Number', default: 0 },
-                createdAt: { type: 'Date' },
-                updatedAt: { type: 'Date' }
+                shares: { type: 'Number', default: 0 }
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeThreadPost');
     }
 }
-
-export default VibeThreadPost;
+window.VibeThreadPost = VibeThreadPost;
