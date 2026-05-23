@@ -1,4 +1,4 @@
-class VibeWallet {
+class VibeWalletModel {
     static getSchema() {
         return {
             className: 'VibeWallet',
@@ -12,10 +12,8 @@ class VibeWallet {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('VibeWallet');
     }
 }
-
-export default VibeWallet;
+window.VibeWalletModel = VibeWalletModel;
