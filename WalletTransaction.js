@@ -1,4 +1,4 @@
-class WalletTransaction {
+class WalletTransactionModel {
     static getSchema() {
         return {
             className: 'WalletTransaction',
@@ -13,10 +13,8 @@ class WalletTransaction {
             }
         };
     }
-
     static createParseClass() {
         return Parse.Object.extend('WalletTransaction');
     }
 }
-
-export default WalletTransaction;
+window.WalletTransactionModel = WalletTransactionModel;
