@@ -288,6 +288,7 @@
 </div>
 <div id="notification" class="notification"></div>
 
+<!-- ==================== SCRIPT BLOCK 1: Globals & VibeSecurity ==================== -->
 <script>
 // ==================== GLOBALS & HELPERS ====================
 Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
@@ -335,7 +336,10 @@ class VibeSecurity {
     base64ToArrayBuffer(b) { const bin=atob(b); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); return bytes.buffer; }
     async importKey(keyData) { return crypto.subtle.importKey('raw', keyData, {name:'AES-GCM',length:256}, true, ['encrypt','decrypt']); }
 }
-window.vibeSecurity = new VibeSecurity()
+window.vibeSecurity = new VibeSecurity();
+</script>
+
+<!-- ==================== SCRIPT BLOCK 2: All Model Classes ==================== -->
 <script>
 // ==================== ALL MODEL CLASSES (46+ schemas) ====================
 class AI { static getSchema() { return { className:'AI', fields:{ user:'Pointer<_User>', aiData:'Object', preferences:'Object', learningPattern:'Object' } }; } static createParseClass(){return Parse.Object.extend('AI');} }
@@ -462,6 +466,9 @@ class Session { static getSchema() { return { className:'_Session', fields:{ ses
 window.Session = Session;
 class User { static getSchema() { return { className:'_User', fields:{ username:'String', email:'String', password:'String', avatar:'File', bio:'String', emailVerified:'Boolean' } }; } static createParseClass(){return Parse.Object.extend('_User');} }
 window.User = User;
+</script>
+
+<!-- ==================== SCRIPT BLOCK 3: Services ==================== -->
 <script>
 // ==================== AuthService ====================
 class AuthService {
@@ -815,8 +822,7 @@ class WalletService {
     }
 }
 window.WalletService = WalletService;
-</script>
-<script>
+
 // ==================== MarketplaceService ====================
 class MarketplaceService {
     constructor(app) { this.app = app; }
@@ -1174,7 +1180,10 @@ class RealtimeManager {
     broadcastUpdate() {}
 }
 window.RealtimeManager = RealtimeManager;
+</script>
 
+<!-- ==================== SCRIPT BLOCK 4: Main App Class ==================== -->
+<script>
 // ==================== MAIN APP CLASS ====================
 class VibeLink0372 {
     constructor() {
@@ -1387,6 +1396,9 @@ class VibeLink0372 {
     hideMainSection() { document.getElementById('main-section').classList.remove('active'); }
 }
 window.VibeLink0372 = VibeLink0372;
+</script>
+
+<!-- ==================== SCRIPT BLOCK 5: Start App ==================== -->
 <script>
 // ==================== START APP ====================
 window.addEventListener('DOMContentLoaded', () => {
@@ -1394,5 +1406,6 @@ window.addEventListener('DOMContentLoaded', () => {
     window.vibeApp.init();
 });
 </script>
+
 </body>
 </html>
