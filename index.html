@@ -470,42 +470,72 @@ window.User = User;
 
 <!-- ==================== SCRIPT BLOCK 3: Services ==================== -->
 <script>
-// ==================== AuthService ====================
+// ==================== AuthService (FIXED) ====================
 class AuthService {
     constructor(app) { this.app = app; }
     async checkAuthentication() {
         try {
             this.app.currentUser = Parse.User.current();
-            if (this.app.currentUser) { this.app.showMainSection(); this.app.hideAuthSection(); }
-            else { this.app.showAuthSection(); this.app.hideMainSection(); }
+            if (this.app.currentUser) {
+                this.app.showMainSection();
+                this.app.hideAuthSection();
+                await this.app.loadInitialData();
+            } else {
+                this.app.showAuthSection();
+                this.app.hideMainSection();
+            }
             return this.app.currentUser;
         } catch(e) { this.app.showAuthSection(); return null; }
     }
+    // ======== FIXED LOGIN ========
     async handleLogin(e) {
         e.preventDefault();
         const email = document.getElementById('loginEmail')?.value;
         const password = document.getElementById('loginPassword')?.value;
         if (!email || !password) return showNotification('Enter email and password','error');
         try {
-            await Parse.User.logIn(email, password);
-            location.reload();
-        } catch(e) { showNotification(e.message,'error'); }
+            // 1. Find user by email
+            const query = new Parse.Query(Parse.User);
+            query.equalTo('email', email);
+            const foundUser = await query.first({ useMasterKey: false });
+            if (!foundUser) return showNotification('No account with that email', 'error');
+            // 2. Login with the found username
+            const user = await Parse.User.logIn(foundUser.get('username'), password);
+            this.app.currentUser = user;
+            this.app.showMainSection();
+            this.app.hideAuthSection();
+            await this.app.loadInitialData();
+            showNotification('Login successful!');
+        } catch(e) { showNotification(e.message, 'error'); }
     }
+    // =============================
     async handleSignup(e) {
         e.preventDefault();
+        const username = document.getElementById('signupUsername')?.value;
+        const email = document.getElementById('signupEmail')?.value;
+        const password = document.getElementById('signupPassword')?.value;
+        const bio = document.getElementById('signupBio')?.value;
+        if (!username || !email || !password) return showNotification('Fill all fields', 'error');
         const user = new Parse.User();
-        user.set('username', document.getElementById('signupUsername').value);
-        user.set('email', document.getElementById('signupEmail').value);
-        user.set('password', document.getElementById('signupPassword').value);
-        user.set('bio', document.getElementById('signupBio').value);
+        user.set('username', username);
+        user.set('email', email);
+        user.set('password', password);
+        user.set('bio', bio || '');
         try {
             await user.signUp();
-            location.reload();
-        } catch(e) { showNotification(e.message,'error'); }
+            this.app.currentUser = user;
+            this.app.showMainSection();
+            this.app.hideAuthSection();
+            await this.app.loadInitialData();
+            showNotification('Account created!');
+        } catch(e) { showNotification(e.message, 'error'); }
     }
     async handleLogout() {
         await Parse.User.logOut();
-        location.reload();
+        this.app.currentUser = null;
+        this.app.showAuthSection();
+        this.app.hideMainSection();
+        showNotification('Logged out');
     }
 }
 window.AuthService = AuthService;
