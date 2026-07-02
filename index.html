@@ -87,22 +87,17 @@
         .story-progress-bar { flex:1; height:3px; background:rgba(255,255,255,0.3); border-radius:3px; overflow:hidden; }
         .story-progress-fill { height:100%; width:0%; background:white; animation:fillProgress 5s linear forwards; }
         @keyframes fillProgress { from { width:0%; } to { width:100%; } }
-        .main-nav { display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.8); padding:12px 16px; flex-wrap:wrap; position:sticky; top:0; z-index:999; backdrop-filter:blur(10px); }
-        .main-nav .app-title { font-size:1.2rem; font-weight:bold; background:var(--solar-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:center; flex:1; }
+        .main-nav { display:flex; justify-content:space-between; background:rgba(0,0,0,0.8); padding:12px 16px; flex-wrap:wrap; position:sticky; top:0; z-index:999; backdrop-filter:blur(10px); }
         .nav-links { display:flex; flex-wrap:wrap; gap:8px; }
         .nav-link { color:white; text-decoration:none; padding:6px 12px; border-radius:20px; transition:background 0.2s; }
         .nav-link.active { background:var(--solar-flame-orange); }
-        .main-content { padding:16px; max-width:1200px; margin:0 auto; padding-bottom:80px; }
-        @media (max-width:768px) { .nav-links { display:none; } .bottom-nav { display:flex; } .main-nav .app-title { font-size:1rem; } }
+        .main-content { padding:16px; max-width:1200px; margin:0 auto; }
+        @media (max-width:768px) { .nav-links { display:none; } .bottom-nav { display:flex; } }
         @media (min-width:769px) { .bottom-nav { display:none; } }
         .notification { position:fixed; bottom:20px; left:20px; right:20px; background:var(--solar-flame-orange); color:black; padding:12px; border-radius:30px; text-align:center; z-index:9999; display:none; animation:slideIn 0.3s ease; }
         @keyframes slideIn { from { transform:translateY(100px); opacity:0; } to { transform:translateY(0); opacity:1; } }
         .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:10000; display:flex; align-items:center; justify-content:center; }
         .modal-content { background:var(--vibe-black); border-radius:24px; max-width:90%; max-height:90%; overflow:auto; padding:1.5rem; border:1px solid var(--electric-cyan); }
-        /* Footer styles */
-        .app-footer { text-align:center; padding:20px 16px; color:rgba(255,255,255,0.6); font-size:0.9rem; border-top:1px solid var(--glass-border); margin-top:20px; }
-        .app-footer a { color:var(--electric-cyan); text-decoration:none; }
-        .app-footer .footer-credit { margin-top:6px; font-size:0.8rem; opacity:0.7; }
     </style>
 </head>
 <body>
@@ -159,8 +154,7 @@
                 <a href="#" class="nav-link" data-section="ar">🕶️ AR</a>
                 <a href="#" class="nav-link" data-section="qa">❓ Q&A</a>
             </div>
-            <span class="app-title">VibeLink 0372®</span>
-            <button id="logout-btn" class="vibe-button" style="width:auto; padding:8px 16px;">🚪 Logout</button>
+            <button id="logout-btn" class="vibe-button" style="width:auto">🚪 Logout</button>
         </nav>
         <main class="main-content">
             <!-- HOME SECTION -->
@@ -277,12 +271,6 @@
                 <button id="ask-question-btn" class="vibe-button">Ask a Question</button>
                 <div id="qa-list" class="grid-2col"></div>
             </div>
-
-            <!-- FOOTER -->
-            <footer class="app-footer">
-                <p>© 2025 VibeLink 0372® — Built by Thabang Agondo</p>
-                <p class="footer-credit">Created by: Kasi Vibe Foundation &amp; Projects NPC 🧠 Powered by Unity. ✊ Driven by You.</p>
-            </footer>
         </main>
         <div class="bottom-nav">
             <div class="nav-item" data-section="home"><i class="fas fa-home"></i><span>Home</span></div>
@@ -480,7 +468,7 @@ class User { static getSchema() { return { className:'_User', fields:{ username:
 window.User = User;
 </script>
 
-<!-- ==================== SCRIPT BLOCK 3: Services ==================== -->
+<!-- ==================== SCRIPT BLOCK 3: Services (FIXED) ==================== -->
 <script>
 // ==================== AuthService (FIXED) ====================
 class AuthService {
