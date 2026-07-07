@@ -118,7 +118,7 @@ class AuthService {
             return this.app.currentUser;
         } catch(e) { this.app.showAuthSection(); return null; }
     }
-    // ========== FIXED LOGIN ==========
+    // ======== FIXED LOGIN ========
     async handleLogin(e) {
         e.preventDefault();
         const email = document.getElementById('loginEmail')?.value;
@@ -129,14 +129,14 @@ class AuthService {
             const query = new Parse.Query(Parse.User);
             query.equalTo('email', email);
             const foundUser = await query.first({ useMasterKey: false });
-            if (!foundUser) return this.app.showError('No account found with that email');
-            // 2. Log in using the found username
+            if (!foundUser) return this.app.showError('No account with that email');
+            // 2. Login with the found username
             const user = await Parse.User.logIn(foundUser.get('username'), password);
             await this.handleSuccessfulLogin(user);
             this.app.showSuccess('Login successful!');
         } catch(e) { this.app.showError(e.message); }
     }
-    // =================================
+    // =============================
     async handleSignup(e) {
         e.preventDefault();
         const username = document.getElementById('signupUsername')?.value;
