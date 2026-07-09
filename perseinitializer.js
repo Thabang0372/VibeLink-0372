@@ -59,6 +59,14 @@ class VibeLink0372 {
             console.log('🔧 Step 1: Initializing Parse...');
             await this.services.parse.initialize();
             
+            // ✅ FIX: Override with the correct keys and server URL
+            // (in case ParseInitializer uses wrong ones)
+            Parse.initialize(
+                "HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA",
+                "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU"
+            );
+            Parse.serverURL = 'https://vibelink0372.b4a.io';
+            
             console.log('🔧 Step 2: Initializing encryption...');
             await this.services.encryption.initialize();
             
