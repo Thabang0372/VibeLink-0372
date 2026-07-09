@@ -19,6 +19,7 @@ class AuthService {
         }
     }
 
+    // ========== FIXED: email-first login ==========
     async handleLogin(e) {
         if (e) e.preventDefault();
         const email = document.getElementById('loginEmail')?.value;
@@ -28,7 +29,16 @@ class AuthService {
             return;
         }
         try {
-            const user = await Parse.User.logIn(email, password);
+            // 1. Find user by email
+            const query = new Parse.Query(Parse.User);
+            query.equalTo('email', email);
+            const foundUser = await query.first({ useMasterKey: false });
+            if (!foundUser) {
+                showNotification('No account found with that email', 'error');
+                return;
+            }
+            // 2. Log in using the found username
+            const user = await Parse.User.logIn(foundUser.get('username'), password);
             await this.handleSuccessfulLogin(user);
         } catch (error) {
             showNotification(error.message, 'error');
