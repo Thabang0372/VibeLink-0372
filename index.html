@@ -292,7 +292,8 @@
 <script>
 // ==================== GLOBALS & HELPERS ====================
 Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
-Parse.serverURL = 'https://parseapi.back4app.com/';
+// ✅ FIXED: Use your custom Back4App subdomain
+Parse.serverURL = 'https://vibelink0372.b4a.io/parse';
 
 function showNotification(msg, type='success') {
     const n = document.getElementById('notification');
@@ -494,10 +495,12 @@ class AuthService {
         const password = document.getElementById('loginPassword')?.value;
         if (!email || !password) return showNotification('Enter email and password','error');
         try {
+            // 1. Find user by email
             const query = new Parse.Query(Parse.User);
             query.equalTo('email', email);
             const foundUser = await query.first({ useMasterKey: false });
             if (!foundUser) return showNotification('No account with that email', 'error');
+            // 2. Login with the found username
             const user = await Parse.User.logIn(foundUser.get('username'), password);
             this.app.currentUser = user;
             this.app.showMainSection();
