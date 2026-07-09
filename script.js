@@ -6,7 +6,8 @@
 
 // -------------------- Parse Initialization --------------------
 Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
-Parse.serverURL = 'https://parseapi.back4app.com/';
+// ✅ CHANGE: Set to your custom subdomain
+Parse.serverURL = 'https://vibelink0372.b4a.io/parse';
 
 // -------------------- Global Helpers --------------------
 const Helpers = {
