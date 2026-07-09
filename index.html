@@ -291,9 +291,10 @@
 <!-- ==================== SCRIPT BLOCK 1: Globals & VibeSecurity ==================== -->
 <script>
 // ==================== GLOBALS & HELPERS ====================
-Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
-// ✅ FIXED: Use your custom Back4App subdomain
-Parse.serverURL = 'https://vibelink0372.b4a.io/parse';
+// ✅ FIXED: Use the correct JavaScript Key (not Client Key)
+Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU");
+// ✅ FIXED: Use the base URL (without /parse)
+Parse.serverURL = 'https://vibelink0372.b4a.io';
 
 function showNotification(msg, type='success') {
     const n = document.getElementById('notification');
@@ -477,18 +478,12 @@ class AuthService {
     async checkAuthentication() {
         try {
             this.app.currentUser = Parse.User.current();
-            if (this.app.currentUser) {
-                this.app.showMainSection();
-                this.app.hideAuthSection();
-                await this.app.loadInitialData();
-            } else {
-                this.app.showAuthSection();
-                this.app.hideMainSection();
-            }
+            if (this.app.currentUser) { this.app.showMainSection(); this.app.hideAuthSection(); }
+            else { this.app.showAuthSection(); this.app.hideMainSection(); }
             return this.app.currentUser;
         } catch(e) { this.app.showAuthSection(); return null; }
     }
-    // ======== FIXED LOGIN ========
+    // ======== FIXED LOGIN (email-first) ========
     async handleLogin(e) {
         e.preventDefault();
         const email = document.getElementById('loginEmail')?.value;
@@ -512,31 +507,19 @@ class AuthService {
     // =============================
     async handleSignup(e) {
         e.preventDefault();
-        const username = document.getElementById('signupUsername')?.value;
-        const email = document.getElementById('signupEmail')?.value;
-        const password = document.getElementById('signupPassword')?.value;
-        const bio = document.getElementById('signupBio')?.value;
-        if (!username || !email || !password) return showNotification('Fill all fields', 'error');
         const user = new Parse.User();
-        user.set('username', username);
-        user.set('email', email);
-        user.set('password', password);
-        user.set('bio', bio || '');
+        user.set('username', document.getElementById('signupUsername').value);
+        user.set('email', document.getElementById('signupEmail').value);
+        user.set('password', document.getElementById('signupPassword').value);
+        user.set('bio', document.getElementById('signupBio').value);
         try {
             await user.signUp();
-            this.app.currentUser = user;
-            this.app.showMainSection();
-            this.app.hideAuthSection();
-            await this.app.loadInitialData();
-            showNotification('Account created!');
-        } catch(e) { showNotification(e.message, 'error'); }
+            location.reload();
+        } catch(e) { showNotification(e.message,'error'); }
     }
     async handleLogout() {
         await Parse.User.logOut();
-        this.app.currentUser = null;
-        this.app.showAuthSection();
-        this.app.hideMainSection();
-        showNotification('Logged out');
+        location.reload();
     }
 }
 window.AuthService = AuthService;
