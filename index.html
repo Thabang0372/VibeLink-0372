@@ -9,10 +9,8 @@
     <link rel="icon" href="assets/logo.svg">
     <link rel="apple-touch-icon" href="assets/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- ✅ FIX 1: Use local parse.min.js -->
-    <script src="parse.min.js"></script>
+    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
     <style>
-        /* ========== YOUR FULL CSS (EMBEDDED) ========== */
         :root {
             --vibe-black: #0D0D0D;
             --solar-flame-orange: #FF5A1F;
@@ -100,7 +98,6 @@
         .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:10000; display:flex; align-items:center; justify-content:center; }
         .modal-content { background:var(--vibe-black); border-radius:24px; max-width:90%; max-height:90%; overflow:auto; padding:1.5rem; border:1px solid var(--electric-cyan); }
 
-        /* ----- ADDED: Password toggle and footer styles ----- */
         .password-wrapper { position: relative; }
         .password-wrapper input { padding-right: 45px; }
         .password-toggle {
@@ -111,17 +108,16 @@
             cursor: pointer; opacity: 0.7;
         }
         .password-toggle:hover { opacity: 1; }
-
         .auth-footer {
             text-align: center; margin-top: 2rem;
             font-size: 8px; opacity: 0.7;
             max-width: 400px; width: 100%;
         }
         .auth-footer p { margin: 0; line-height: 1.6; }
-        /* ------------------------------------------------- */
     </style>
 </head>
 <body>
+
 <div id="app">
     <!-- AUTH SECTION -->
     <div id="auth-section" class="section active">
@@ -163,7 +159,6 @@
                     <p class="auth-switch">Already have an account? <a href="#" id="show-login">Sign In</a></p>
                 </div>
             </div>
-            <!-- ADDED FOOTER -->
             <div class="auth-footer">
                 <p>© 2025 VibeLink 0372® — Built by Thabang Agondo<br>
                 Created by: Kasi Vibe Foundation &amp; Projects NPC 🧠<br>
@@ -190,25 +185,31 @@
                 <a href="#" class="nav-link" data-section="settings">⚙️ Settings</a>
                 <a href="#" class="nav-link" data-section="ar">🕶️ AR</a>
                 <a href="#" class="nav-link" data-section="qa">❓ Q&A</a>
+                <a href="#" class="nav-link" data-section="admin">🛡️ Admin</a>
             </div>
             <button id="logout-btn" class="vibe-button" style="width:auto">🚪 Logout</button>
         </nav>
         <main class="main-content">
-            <!-- HOME SECTION -->
+            <!-- HOME -->
             <div id="home-section" class="content-section active">
                 <div class="stories-container" id="stories-container"></div>
-                <div style="display:flex; gap:10px; margin:10px 0;"><input type="text" id="home-post-input" placeholder="What's vibing today? 🎵" style="flex:1;"><button id="home-post-btn" class="vibe-button" style="width:auto">Post</button></div>
+                <div style="display:flex; gap:10px; margin:10px 0;">
+                    <input type="text" id="home-post-input" placeholder="What's vibing today? 🎵" style="flex:1;">
+                    <button id="home-post-btn" class="vibe-button" style="width:auto">Post</button>
+                </div>
                 <div id="home-feed" class="posts-container"></div>
                 <div id="ai-suggestions" class="grid-2col"></div>
             </div>
-            <!-- FEED SECTION -->
+
+            <!-- FEED -->
             <div id="feed-section" class="content-section">
                 <h2>VibeWall Feed</h2>
-                <textarea id="feed-post-content" placeholder="Share your vibe..."></textarea>
+                <textarea id="feed-post-content" placeholder="Share your vibe..." style="width:100%;padding:12px;border-radius:16px;border:1px solid var(--royal-purple);background:rgba(255,255,255,0.1);color:white;"></textarea>
                 <button id="feed-create-post" class="vibe-button">Post</button>
                 <div id="feed-posts" class="posts-container"></div>
             </div>
-            <!-- PROFILE SECTION -->
+
+            <!-- PROFILE -->
             <div id="profile-section" class="content-section">
                 <div class="profile-header">
                     <img id="profile-avatar-img" src="assets/default-avatar.png" class="profile-avatar-large">
@@ -228,17 +229,28 @@
                     <button class="profile-tab" data-tab="wallet">Wallet</button>
                 </div>
                 <div id="profile-posts-tab" class="profile-pane active"><div id="user-posts-grid" class="grid-2col"></div></div>
-                <div id="profile-gallery-tab" class="profile-pane hidden"><div id="user-gallery-grid" class="gallery-grid"></div><button id="upload-gallery-btn" class="vibe-button">Upload</button></div>
-                <div id="profile-wallet-tab" class="profile-pane hidden"><div class="wallet-balance">Balance: <span id="wallet-balance-display">0</span> VIBE</div><div class="wallet-actions"><button id="send-money-btn" class="vibe-button">Send</button><button id="add-funds-btn" class="vibe-button">Add Funds</button><button id="send-tip-btn" class="vibe-button">Send Tip</button></div><div id="transactions-list"></div><div><p>Loyalty Points: <span id="loyalty-points-display">0</span></p><p>Level: <span id="loyalty-level-display">Bronze</span></p></div></div>
+                <div id="profile-gallery-tab" class="profile-pane hidden"><div id="user-gallery-grid" class="grid-2col"></div><button id="upload-gallery-btn" class="vibe-button">Upload</button></div>
+                <div id="profile-wallet-tab" class="profile-pane hidden">
+                    <div class="wallet-balance">Balance: <span id="wallet-balance-display">0</span> VIBE</div>
+                    <div class="wallet-actions">
+                        <button id="send-money-btn" class="vibe-button">Send</button>
+                        <button id="add-funds-btn" class="vibe-button">Add Funds</button>
+                        <button id="send-tip-btn" class="vibe-button">Send Tip</button>
+                    </div>
+                    <div id="transactions-list"></div>
+                    <div><p>Loyalty Points: <span id="loyalty-points-display">0</span></p><p>Level: <span id="loyalty-level-display">Bronze</span></p></div>
+                </div>
             </div>
-            <!-- COMMUNITIES SECTION -->
+
+            <!-- COMMUNITIES -->
             <div id="communities-section" class="content-section">
                 <h2>Communities</h2>
                 <button id="create-community-btn" class="vibe-button">Create Community</button>
                 <div id="communities-grid" class="grid-2col"></div>
                 <div id="selected-community-view" class="hidden"><button id="back-to-communities">Back</button><h3 id="community-name"></h3><div id="community-posts"></div></div>
             </div>
-            <!-- EVENTS SECTION -->
+
+            <!-- EVENTS -->
             <div id="events-section" class="content-section">
                 <h2>Events</h2>
                 <button id="create-event-btn" class="vibe-button">Create Event</button>
@@ -246,27 +258,52 @@
                 <button id="start-live-stream-btn" class="vibe-button">Go Live</button>
                 <div id="live-streams-list" class="grid-2col"></div>
             </div>
-            <!-- DISCOVERY SECTION -->
+
+            <!-- DISCOVERY -->
             <div id="discovery-section" class="content-section">
                 <h2>Discover</h2>
                 <div id="recommendations-grid" class="grid-2col"></div>
                 <div id="trending-tags"></div>
                 <div id="challenges-list" class="grid-2col"></div>
             </div>
-            <!-- CHAT SECTION -->
+
+            <!-- CHAT -->
             <div id="chat-section" class="content-section">
-                <div><div id="chat-rooms-list"></div><button id="create-chat-room" class="vibe-button">New Chat</button><button id="create-audio-room" class="vibe-button">Audio Room</button><button id="create-secure-chat" class="vibe-button">Secure Chat</button><div id="chat-messages" class="chat-messages"></div><div><input type="text" id="message-input" placeholder="Type a message..."><button id="send-message">Send</button></div></div>
-                <div id="chat-window" class="chat-window-overlay hidden"><div class="chat-header"><button id="close-chat">←</button><h3 id="chat-title">Chat</h3></div><div id="chat-messages-overlay" class="chat-messages"></div><div><input type="text" id="chat-message-input" placeholder="Message..."><button id="send-chat-message">Send</button></div></div>
+                <div>
+                    <div id="chat-rooms-list"></div>
+                    <button id="create-chat-room" class="vibe-button">New Chat</button>
+                    <button id="create-audio-room" class="vibe-button">Audio Room</button>
+                    <button id="create-secure-chat" class="vibe-button">Secure Chat</button>
+                    <div id="chat-messages" class="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="message-input" placeholder="Type a message...">
+                        <button id="send-message" class="vibe-button" style="width:auto">Send</button>
+                    </div>
+                </div>
+                <div id="chat-window" class="chat-window-overlay hidden">
+                    <div class="chat-header"><button id="close-chat">←</button><h3 id="chat-title">Chat</h3></div>
+                    <div id="chat-messages-overlay" class="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-message-input" placeholder="Message...">
+                        <button id="send-chat-message" class="vibe-button" style="width:auto">Send</button>
+                    </div>
+                </div>
             </div>
-            <!-- WALLET SECTION -->
+
+            <!-- WALLET -->
             <div id="wallet-section" class="content-section">
                 <h2>Wallet</h2>
                 <div class="wallet-balance">Balance: <span id="wallet-balance">0</span> VIBE</div>
-                <div class="wallet-actions"><button id="add-funds-btn-wallet" class="vibe-button">Add Funds</button><button id="send-money-btn-wallet" class="vibe-button">Send</button><button id="send-tip-btn-wallet" class="vibe-button">Send Tip</button></div>
+                <div class="wallet-actions">
+                    <button id="add-funds-btn-wallet" class="vibe-button">Add Funds</button>
+                    <button id="send-money-btn-wallet" class="vibe-button">Send</button>
+                    <button id="send-tip-btn-wallet" class="vibe-button">Send Tip</button>
+                </div>
                 <div id="transactions-list-wallet"></div>
                 <div><p>Loyalty Points: <span id="loyalty-points">0</span></p><p>Level: <span id="loyalty-level">Bronze</span></p></div>
             </div>
-            <!-- MARKETPLACE SECTION -->
+
+            <!-- MARKETPLACE -->
             <div id="marketplace-section" class="content-section">
                 <h2>Marketplace</h2>
                 <button id="create-listing-btn" class="vibe-button">List Item</button>
@@ -275,39 +312,57 @@
                 <button id="create-gig-btn" class="vibe-button">Post Gig</button>
                 <div id="vibe-gigs" class="grid-2col"></div>
             </div>
-            <!-- LEARNING SECTION -->
+
+            <!-- LEARNING -->
             <div id="learning-section" class="content-section">
                 <h2>Learning</h2>
                 <button id="create-course-btn" class="vibe-button">Create Course</button>
                 <div id="courses-list" class="grid-2col"></div>
                 <button id="create-quiz-btn" class="vibe-button">Create Quiz</button>
             </div>
-            <!-- GAMING SECTION -->
+
+            <!-- GAMING -->
             <div id="gaming-section" class="content-section">
                 <h2>Gaming</h2>
                 <button id="create-game-session-btn" class="vibe-button">Create Session</button>
                 <div id="game-sessions-list" class="grid-2col"></div>
                 <button id="create-tournament-btn" class="vibe-button">Create Tournament</button>
             </div>
-            <!-- SETTINGS SECTION -->
+
+            <!-- SETTINGS -->
             <div id="settings-section" class="content-section">
                 <h2>Settings</h2>
                 <div id="user-settings-container"></div>
                 <button id="export-data-btn" class="vibe-button">Export My Data</button>
                 <div id="knowledge-base-list"></div>
             </div>
-            <!-- AR SECTION -->
+
+            <!-- AR -->
             <div id="ar-section" class="content-section">
                 <h2>AR Experiences</h2>
                 <button id="create-ar-btn" class="vibe-button">Create AR Experience</button>
                 <div id="ar-list" class="grid-2col"></div>
             </div>
-            <!-- Q&A SECTION -->
+
+            <!-- Q&A -->
             <div id="qa-section" class="content-section">
                 <h2>Q&A</h2>
                 <button id="ask-question-btn" class="vibe-button">Ask a Question</button>
                 <div id="qa-list" class="grid-2col"></div>
             </div>
+
+            <!-- ADMIN -->
+            <div id="admin-section" class="content-section">
+                <h2>Admin Dashboard</h2>
+                <div class="grid-2col">
+                    <div class="card"><h3>👥 Users</h3><p id="admin-user-count">0</p><button onclick="window.vibeApp.services.admin.loadUsers()" class="vibe-button">Load Users</button></div>
+                    <div class="card"><h3>📊 Posts</h3><p id="admin-post-count">0</p><button onclick="window.vibeApp.services.admin.loadPosts()" class="vibe-button">Load Posts</button></div>
+                    <div class="card"><h3>💰 Revenue</h3><p id="admin-revenue">0 VIBE</p><button onclick="window.vibeApp.services.admin.loadRevenue()" class="vibe-button">Load Revenue</button></div>
+                    <div class="card"><h3>📈 Analytics</h3><p id="admin-analytics">Ready</p><button onclick="window.vibeApp.services.admin.loadAnalytics()" class="vibe-button">Refresh</button></div>
+                </div>
+                <div id="admin-user-list"></div>
+            </div>
+
         </main>
         <div class="bottom-nav">
             <div class="nav-item" data-section="home"><i class="fas fa-home"></i><span>Home</span></div>
@@ -325,12 +380,11 @@
 </div>
 <div id="notification" class="notification"></div>
 
-<!-- ==================== SCRIPT BLOCK 1: Globals & VibeSecurity ==================== -->
 <script>
-// ==================== GLOBALS & HELPERS ====================
-// ✅ FIX 2: Use the correct JavaScript Key (not Client Key)
+// ============================================================
+// GLOBALS & HELPERS
+// ============================================================
 Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU");
-// ✅ FIX 3: Use the base URL (without /parse)
 Parse.serverURL = 'https://vibelink0372.b4a.io';
 
 function showNotification(msg, type='success') {
@@ -342,7 +396,9 @@ function showNotification(msg, type='success') {
 }
 function formatTime(date) { return new Date(date).toLocaleString(); }
 
-// ==================== VibeSecurity (AES‑256‑GCM) ====================
+// ============================================================
+// VibeSecurity – AES‑256‑GCM encryption
+// ============================================================
 class VibeSecurity {
     constructor() {
         this.masterKey = null;
@@ -376,11 +432,10 @@ class VibeSecurity {
     async importKey(keyData) { return crypto.subtle.importKey('raw', keyData, {name:'AES-GCM',length:256}, true, ['encrypt','decrypt']); }
 }
 window.vibeSecurity = new VibeSecurity();
-</script>
 
-<!-- ==================== SCRIPT BLOCK 2: All Model Classes ==================== -->
-<script>
-// ==================== ALL MODEL CLASSES (46+ schemas) ====================
+// ============================================================
+// ALL 46+ MODEL CLASSES
+// ============================================================
 class AI { static getSchema() { return { className:'AI', fields:{ user:'Pointer<_User>', aiData:'Object', preferences:'Object', learningPattern:'Object' } }; } static createParseClass(){return Parse.Object.extend('AI');} }
 window.AI = AI;
 class VibeAnalytics { static getSchema() { return { className:'VibeAnalytics', fields:{ user:'Pointer<_User>', post:'Pointer<Post>', reach:'Number', engagement:'Number', locationData:'Object', boostLevel:'Number', adConsent:'Boolean', actionType:'String', date:'Date' } }; } static createParseClass(){return Parse.Object.extend('VibeAnalytics');} }
@@ -505,63 +560,107 @@ class Session { static getSchema() { return { className:'_Session', fields:{ ses
 window.Session = Session;
 class User { static getSchema() { return { className:'_User', fields:{ username:'String', email:'String', password:'String', avatar:'File', bio:'String', emailVerified:'Boolean' } }; } static createParseClass(){return Parse.Object.extend('_User');} }
 window.User = User;
-</script>
 
-<!-- ==================== SCRIPT BLOCK 3: Services (FIXED) ==================== -->
-<script>
-// ==================== AuthService (FIXED) ====================
+// ============================================================
+// AUTH SERVICE (FIXED)
+// ============================================================
 class AuthService {
     constructor(app) { this.app = app; }
+
     async checkAuthentication() {
         try {
             this.app.currentUser = Parse.User.current();
-            if (this.app.currentUser) { this.app.showMainSection(); this.app.hideAuthSection(); }
-            else { this.app.showAuthSection(); this.app.hideMainSection(); }
+            if (this.app.currentUser) {
+                this.app.showMainSection();
+                this.app.hideAuthSection();
+                await this.app.loadInitialData();
+            } else {
+                this.app.showAuthSection();
+                this.app.hideMainSection();
+            }
             return this.app.currentUser;
-        } catch(e) { this.app.showAuthSection(); return null; }
+        } catch (error) {
+            this.app.showAuthSection();
+            return null;
+        }
     }
-    // ======== FIXED LOGIN (email-first) ========
+
     async handleLogin(e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
         const email = document.getElementById('loginEmail')?.value;
         const password = document.getElementById('loginPassword')?.value;
-        if (!email || !password) return showNotification('Enter email and password','error');
+        if (!email || !password) {
+            showNotification('Please enter email and password', 'error');
+            return;
+        }
         try {
-            // ✅ FIX 4: Find user by email first
             const query = new Parse.Query(Parse.User);
             query.equalTo('email', email);
             const foundUser = await query.first({ useMasterKey: false });
-            if (!foundUser) return showNotification('No account with that email', 'error');
-            // Then login with the found username
+            if (!foundUser) {
+                showNotification('No account found with that email', 'error');
+                return;
+            }
             const user = await Parse.User.logIn(foundUser.get('username'), password);
-            this.app.currentUser = user;
-            this.app.showMainSection();
-            this.app.hideAuthSection();
-            await this.app.loadInitialData();
-            showNotification('Login successful!');
-        } catch(e) { showNotification(e.message, 'error'); }
+            await this.handleSuccessfulLogin(user);
+        } catch (error) {
+            showNotification(error.message, 'error');
+        }
     }
-    // =============================
+
     async handleSignup(e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
+        const username = document.getElementById('signupUsername')?.value;
+        const email = document.getElementById('signupEmail')?.value;
+        const password = document.getElementById('signupPassword')?.value;
+        const bio = document.getElementById('signupBio')?.value;
+        if (!username || !email || !password) {
+            showNotification('Please fill all required fields', 'error');
+            return;
+        }
         const user = new Parse.User();
-        user.set('username', document.getElementById('signupUsername').value);
-        user.set('email', document.getElementById('signupEmail').value);
-        user.set('password', document.getElementById('signupPassword').value);
-        user.set('bio', document.getElementById('signupBio').value);
+        user.set('username', username);
+        user.set('email', email);
+        user.set('password', password);
+        user.set('bio', bio || '');
         try {
             await user.signUp();
-            location.reload();
-        } catch(e) { showNotification(e.message,'error'); }
+            await this.handleSuccessfulLogin(user);
+        } catch (error) {
+            showNotification(error.message, 'error');
+        }
     }
+
+    async handleSuccessfulLogin(user) {
+        this.app.currentUser = user;
+        this.app.showMainSection();
+        this.app.hideAuthSection();
+
+        if (this.app.services.wallet) {
+            await this.app.services.wallet.ensureWalletExists();
+            await this.app.services.wallet.ensureLoyaltyProgramExists();
+        }
+        if (this.app.services.profile) {
+            await this.app.services.profile.ensureProfileExists();
+        }
+
+        await this.app.loadInitialData();
+        showNotification('Welcome to VibeLink 0372! 🚀');
+    }
+
     async handleLogout() {
         await Parse.User.logOut();
-        location.reload();
+        this.app.currentUser = null;
+        this.app.showAuthSection();
+        this.app.hideMainSection();
+        window.location.reload();
     }
 }
 window.AuthService = AuthService;
 
-// ==================== ProfileService ====================
+// ============================================================
+// PROFILE SERVICE
+// ============================================================
 class ProfileService {
     constructor(app) { this.app = app; }
     async ensureProfileExists() {
@@ -634,7 +733,9 @@ class ProfileService {
 }
 window.ProfileService = ProfileService;
 
-// ==================== PostService ====================
+// ============================================================
+// POST SERVICE
+// ============================================================
 class PostService {
     constructor(app) { this.app = app; }
     async createPost(content, media = null) {
@@ -706,7 +807,9 @@ class PostService {
 }
 window.PostService = PostService;
 
-// ==================== ChatService ====================
+// ============================================================
+// CHAT SERVICE
+// ============================================================
 class ChatService {
     constructor(app) { this.app = app; this.activeRoom = null; this.subscription = null; }
     async loadChatRooms() {
@@ -786,7 +889,9 @@ class ChatService {
 }
 window.ChatService = ChatService;
 
-// ==================== WalletService ====================
+// ============================================================
+// WALLET SERVICE
+// ============================================================
 class WalletService {
     constructor(app) { this.app = app; }
     async ensureWalletExists() {
@@ -874,7 +979,9 @@ class WalletService {
 }
 window.WalletService = WalletService;
 
-// ==================== MarketplaceService ====================
+// ============================================================
+// MARKETPLACE SERVICE
+// ============================================================
 class MarketplaceService {
     constructor(app) { this.app = app; }
     async createItem(data) {
@@ -925,7 +1032,9 @@ class MarketplaceService {
 }
 window.MarketplaceService = MarketplaceService;
 
-// ==================== LearningService ====================
+// ============================================================
+// LEARNING SERVICE
+// ============================================================
 class LearningService {
     constructor(app) { this.app = app; }
     async createCourse(data) {
@@ -958,7 +1067,9 @@ class LearningService {
 }
 window.LearningService = LearningService;
 
-// ==================== GamingService ====================
+// ============================================================
+// GAMING SERVICE
+// ============================================================
 class GamingService {
     constructor(app) { this.app = app; }
     async createSession(data) {
@@ -992,7 +1103,9 @@ class GamingService {
 }
 window.GamingService = GamingService;
 
-// ==================== EventService ====================
+// ============================================================
+// EVENT SERVICE
+// ============================================================
 class EventService {
     constructor(app) { this.app = app; }
     async createEvent(data) {
@@ -1027,12 +1140,27 @@ class EventService {
         const q = new Parse.Query('VibeLiveStream').equalTo('isLive', true).include('host');
         const streams = await q.find();
         const container = document.getElementById('live-streams-list');
-        if(container) container.innerHTML = streams.map(s => `<div class="card"><h4>${s.get('title')}</h4><button onclick="alert('Watch stream ${s.id}')">Watch</button></div>`).join('');
+        if(container) container.innerHTML = streams.map(s => `<div class="card"><h4>${s.get('title')}</h4><button onclick="window.vibeApp.services.events.watchStream('${s.id}')">Watch</button></div>`).join('');
+    }
+    async watchStream(streamId) {
+        const s = await new Parse.Query('VibeLiveStream').get(streamId);
+        const viewer = document.createElement('div');
+        viewer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+        viewer.innerHTML = `
+            <div style="color:#fff;font-size:2rem;margin-bottom:1rem;">🔴 LIVE: ${s.get('title')}</div>
+            <div style="background:#222;width:80%;max-width:800px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;border-radius:16px;border:2px solid #FF5A1F;">
+                <div style="color:#666;font-size:1.5rem;">🎥 Stream Player</div>
+            </div>
+            <button onclick="this.parentElement.remove()" style="margin-top:1rem;padding:12px 24px;background:#FF5A1F;border:none;border-radius:30px;color:#fff;font-weight:bold;">Close Stream</button>
+        `;
+        document.body.appendChild(viewer);
     }
 }
 window.EventService = EventService;
 
-// ==================== DiscoveryService ====================
+// ============================================================
+// DISCOVERY SERVICE
+// ============================================================
 class DiscoveryService {
     constructor(app) { this.app = app; }
     async loadRecommendations() {
@@ -1052,7 +1180,9 @@ class DiscoveryService {
 }
 window.DiscoveryService = DiscoveryService;
 
-// ==================== CommunityService ====================
+// ============================================================
+// COMMUNITY SERVICE
+// ============================================================
 class CommunityService {
     constructor(app) { this.app = app; }
     async createCommunity(data) {
@@ -1078,7 +1208,9 @@ class CommunityService {
 }
 window.CommunityService = CommunityService;
 
-// ==================== SettingsService ====================
+// ============================================================
+// SETTINGS SERVICE
+// ============================================================
 class SettingsService {
     constructor(app) { this.app = app; }
     async displaySettings() {
@@ -1135,7 +1267,9 @@ class SettingsService {
 }
 window.SettingsService = SettingsService;
 
-// ==================== ARService ====================
+// ============================================================
+// AR SERVICE
+// ============================================================
 class ARService {
     constructor(app) { this.app = app; }
     async createExperience(data) {
@@ -1158,12 +1292,27 @@ class ARService {
         const q = new Parse.Query('VibeARExperience').include('creator').descending('createdAt');
         const exps = await q.find();
         const container = document.getElementById('ar-list');
-        if(container) container.innerHTML = exps.map(e => `<div class="card"><h4>${e.get('experienceType')}</h4><p>By ${e.get('creator').get('username')}</p><button onclick="alert('AR viewer coming')">View</button></div>`).join('');
+        if(container) container.innerHTML = exps.map(e => `<div class="card"><h4>${e.get('experienceType')}</h4><p>By ${e.get('creator').get('username')}</p><button onclick="window.vibeApp.services.ar.viewExperience('${e.id}')">View</button></div>`).join('');
+    }
+    async viewExperience(experienceId) {
+        const exp = await new Parse.Query('VibeARExperience').get(experienceId);
+        const viewer = document.createElement('div');
+        viewer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+        viewer.innerHTML = `
+            <div style="color:#fff;font-size:2rem;margin-bottom:1rem;">🕶️ ${exp.get('experienceType')}</div>
+            <div style="background:#111;width:80%;max-width:800px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;border-radius:16px;border:2px solid #8E3AFF;">
+                <div style="color:#666;font-size:1.5rem;">🎯 AR Experience</div>
+            </div>
+            <button onclick="this.parentElement.remove()" style="margin-top:1rem;padding:12px 24px;background:#8E3AFF;border:none;border-radius:30px;color:#fff;font-weight:bold;">Close AR</button>
+        `;
+        document.body.appendChild(viewer);
     }
 }
 window.ARService = ARService;
 
-// ==================== QAService ====================
+// ============================================================
+// QA SERVICE
+// ============================================================
 class QAService {
     constructor(app) { this.app = app; }
     async askQuestion(data) {
@@ -1203,7 +1352,9 @@ class QAService {
 }
 window.QAService = QAService;
 
-// ==================== AIService ====================
+// ============================================================
+// AI SERVICE
+// ============================================================
 class AIService {
     constructor(app) { this.app = app; }
     async trackUserBehavior(action, data) {
@@ -1224,23 +1375,62 @@ class AIService {
 }
 window.AIService = AIService;
 
-// ==================== RealtimeManager ====================
+// ============================================================
+// ADMIN SERVICE
+// ============================================================
+class AdminService {
+    constructor(app) { this.app = app; }
+    async loadUsers() {
+        const users = await new Parse.Query(Parse.User).limit(100).find();
+        document.getElementById('admin-user-count').innerText = users.length;
+        const container = document.getElementById('admin-user-list');
+        if(container) container.innerHTML = users.map(u => `<div>${u.get('username')} (${u.get('email')})</div>`).join('');
+        showNotification(`Loaded ${users.length} users`);
+    }
+    async loadPosts() {
+        const posts = await new Parse.Query('Post').count();
+        document.getElementById('admin-post-count').innerText = posts;
+        showNotification(`Loaded ${posts} posts`);
+    }
+    async loadRevenue() {
+        const transactions = await new Parse.Query('WalletTransaction').find();
+        const total = transactions.reduce((sum, t) => sum + t.get('amount'), 0);
+        document.getElementById('admin-revenue').innerText = total + ' VIBE';
+        showNotification(`Total revenue: ${total} VIBE`);
+    }
+    async loadAnalytics() {
+        const users = await new Parse.Query(Parse.User).count();
+        const posts = await new Parse.Query('Post').count();
+        const events = await new Parse.Query('VibeEvent').count();
+        document.getElementById('admin-analytics').innerHTML = `
+            Users: ${users}<br>
+            Posts: ${posts}<br>
+            Events: ${events}
+        `;
+        showNotification('Analytics refreshed');
+    }
+}
+window.AdminService = AdminService;
+
+// ============================================================
+// REALTIME MANAGER
+// ============================================================
 class RealtimeManager {
     constructor(app) { this.app = app; }
     async initialize() { console.log('Realtime Manager ready'); }
-    broadcastUpdate() {}
+    broadcastUpdate(type, data) { console.log('Broadcast:', type, data); }
 }
 window.RealtimeManager = RealtimeManager;
-</script>
 
-<!-- ==================== SCRIPT BLOCK 4: Main App Class ==================== -->
-<script>
-// ==================== MAIN APP CLASS ====================
+// ============================================================
+// MAIN APP CLASS
+// ============================================================
 class VibeLink0372 {
     constructor() {
         this.currentUser = null;
         this.services = {};
     }
+
     async init() {
         this.services.auth = new AuthService(this);
         this.services.profile = new ProfileService(this);
@@ -1257,6 +1447,7 @@ class VibeLink0372 {
         this.services.ar = new ARService(this);
         this.services.qa = new QAService(this);
         this.services.ai = new AIService(this);
+        this.services.admin = new AdminService(this);
         this.services.realtime = new RealtimeManager(this);
         this.services.encryption = window.vibeSecurity;
 
@@ -1265,6 +1456,7 @@ class VibeLink0372 {
         this.setupEventListeners();
         console.log('✅ VibeLink 0372 ready');
     }
+
     async loadInitialData() {
         await Promise.all([
             this.services.wallet.ensureWalletExists(),
@@ -1286,113 +1478,159 @@ class VibeLink0372 {
             this.services.ai.getSuggestions()
         ]);
     }
+
     setupEventListeners() {
         document.getElementById('loginForm')?.addEventListener('submit', (e) => this.services.auth.handleLogin(e));
         document.getElementById('signupForm')?.addEventListener('submit', (e) => this.services.auth.handleSignup(e));
         document.getElementById('logout-btn')?.addEventListener('click', () => this.services.auth.handleLogout());
-        document.getElementById('show-signup')?.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('login-form').classList.remove('active'); document.getElementById('signup-form').classList.add('active'); });
-        document.getElementById('show-login')?.addEventListener('click', (e) => { e.preventDefault(); document.getElementById('signup-form').classList.remove('active'); document.getElementById('login-form').classList.add('active'); });
+
+        document.getElementById('show-signup')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('login-form').classList.remove('active');
+            document.getElementById('signup-form').classList.add('active');
+        });
+        document.getElementById('show-login')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('signup-form').classList.remove('active');
+            document.getElementById('login-form').classList.add('active');
+        });
+
         document.getElementById('home-post-btn')?.addEventListener('click', async () => {
-            const content = document.getElementById('home-post-input').value;
-            if(content) { await this.services.posts.createPost(content); document.getElementById('home-post-input').value = ''; }
+            const input = document.getElementById('home-post-input');
+            if (input.value) {
+                await this.services.posts.createPost(input.value);
+                input.value = '';
+            }
         });
         document.getElementById('feed-create-post')?.addEventListener('click', async () => {
-            const content = document.getElementById('feed-post-content').value;
-            if(content) { await this.services.posts.createPost(content); document.getElementById('feed-post-content').value = ''; }
+            const input = document.getElementById('feed-post-content');
+            if (input.value) {
+                await this.services.posts.createPost(input.value);
+                input.value = '';
+            }
         });
         document.getElementById('floating-create-btn')?.addEventListener('click', async () => {
-            const content = prompt('What\'s on your mind?');
-            if(content) await this.services.posts.createPost(content);
+            const content = prompt("What's on your mind?");
+            if (content) await this.services.posts.createPost(content);
         });
+
         document.getElementById('send-message')?.addEventListener('click', async () => {
             const input = document.getElementById('message-input');
-            await this.services.chat.sendMessage(input.value);
-            input.value = '';
+            if (input.value) {
+                await this.services.chat.sendMessage(input.value);
+                input.value = '';
+            }
         });
         document.getElementById('send-chat-message')?.addEventListener('click', async () => {
             const input = document.getElementById('chat-message-input');
-            await this.services.chat.sendMessage(input.value);
-            input.value = '';
+            if (input.value) {
+                await this.services.chat.sendMessage(input.value);
+                input.value = '';
+            }
         });
         document.getElementById('create-chat-room')?.addEventListener('click', async () => {
-            const name = prompt('Room name:'); if(name) await this.services.chat.createRoom(name);
+            const name = prompt('Room name:');
+            if (name) await this.services.chat.createRoom(name);
         });
         document.getElementById('create-audio-room')?.addEventListener('click', async () => {
-            const name = prompt('Audio room name:'); if(name) await this.services.chat.createAudioRoom(name);
+            const name = prompt('Audio room name:');
+            if (name) await this.services.chat.createAudioRoom(name);
         });
         document.getElementById('create-secure-chat')?.addEventListener('click', async () => {
-            const id = prompt('User ID:'); if(id) await this.services.chat.createSecureChat(id);
+            const id = prompt('User ID:');
+            if (id) await this.services.chat.createSecureChat(id);
         });
         document.getElementById('close-chat')?.addEventListener('click', () => {
             document.getElementById('chat-window')?.classList.add('hidden');
-            if(this.services.chat.subscription) this.services.chat.subscription.unsubscribe();
+            if (this.services.chat.subscription) this.services.chat.subscription.unsubscribe();
         });
-        const addFunds = () => { const amt = parseFloat(prompt('Amount:')); if(amt) this.services.wallet.addFunds(amt); };
+
+        const addFunds = () => { const amt = parseFloat(prompt('Amount:')); if (amt) this.services.wallet.addFunds(amt); };
         document.getElementById('add-funds-btn')?.addEventListener('click', addFunds);
         document.getElementById('add-funds-btn-wallet')?.addEventListener('click', addFunds);
-        const sendMoney = () => { const id = prompt('Recipient ID:'); const amt = parseFloat(prompt('Amount:')); if(id && amt) this.services.wallet.sendMoney(id, amt); };
+        const sendMoney = () => { const id = prompt('Recipient ID:'); const amt = parseFloat(prompt('Amount:')); if (id && amt) this.services.wallet.sendMoney(id, amt); };
         document.getElementById('send-money-btn')?.addEventListener('click', sendMoney);
         document.getElementById('send-money-btn-wallet')?.addEventListener('click', sendMoney);
-        const sendTip = () => { const id = prompt('Creator ID:'); const amt = parseFloat(prompt('Amount:')); const msg = prompt('Message:'); if(id && amt) this.services.wallet.sendTip(id, amt, msg); };
+        const sendTip = () => { const id = prompt('Creator ID:'); const amt = parseFloat(prompt('Amount:')); const msg = prompt('Message:'); if (id && amt) this.services.wallet.sendTip(id, amt, msg); };
         document.getElementById('send-tip-btn')?.addEventListener('click', sendTip);
         document.getElementById('send-tip-btn-wallet')?.addEventListener('click', sendTip);
+
         document.getElementById('create-community-btn')?.addEventListener('click', async () => {
-            const name = prompt('Community name:'); const desc = prompt('Description:'); if(name) await this.services.communities.createCommunity({ name, description: desc });
+            const name = prompt('Community name:');
+            const desc = prompt('Description:');
+            if (name) await this.services.communities.createCommunity({ name, description: desc });
         });
+        document.getElementById('back-to-communities')?.addEventListener('click', () => {
+            document.getElementById('selected-community-view').classList.add('hidden');
+            document.getElementById('communities-grid').classList.remove('hidden');
+        });
+
         document.getElementById('create-event-btn')?.addEventListener('click', async () => {
-            const title = prompt('Event title:'); const desc = prompt('Description:'); const date = prompt('Date (YYYY-MM-DD HH:MM):'); const tix = prompt('Tickets:'); if(title && date) await this.services.events.createEvent({ title, description: desc, date, tickets: parseInt(tix) || 0, location: 'Online' });
+            const title = prompt('Event title:');
+            const desc = prompt('Description:');
+            const date = prompt('Date (YYYY-MM-DD):');
+            if (title) await this.services.events.createEvent({ title, description: desc, date });
         });
         document.getElementById('start-live-stream-btn')?.addEventListener('click', async () => {
-            const title = prompt('Stream title:'); if(title) await this.services.events.startLiveStream(title);
+            const title = prompt('Stream title:');
+            if (title) await this.services.events.startLiveStream(title);
         });
+
         document.getElementById('create-listing-btn')?.addEventListener('click', async () => {
-            const title = prompt('Title:'); const desc = prompt('Description:'); const price = parseFloat(prompt('Price:')); if(title && price) await this.services.marketplace.createItem({ title, description: desc, price });
+            const title = prompt('Title:');
+            const desc = prompt('Description:');
+            const price = parseFloat(prompt('Price:'));
+            if (title && price) await this.services.marketplace.createItem({ title, description: desc, price });
         });
         document.getElementById('create-gig-btn')?.addEventListener('click', async () => {
-            const skill = prompt('Skill needed:'); const desc = prompt('Description:'); const pay = parseFloat(prompt('Payment:')); if(skill && pay) await this.services.marketplace.createGig({ skill, desc, payment: pay });
+            const skill = prompt('Skill needed:');
+            const desc = prompt('Description:');
+            const pay = parseFloat(prompt('Payment:'));
+            if (skill && pay) await this.services.marketplace.createGig({ skill, description: desc, payment: pay });
         });
-        document.getElementById('checkout-cart')?.addEventListener('click', () => showNotification('Checkout coming soon'));
+
         document.getElementById('create-course-btn')?.addEventListener('click', async () => {
-            const title = prompt('Course title:'); const desc = prompt('Description:'); const price = parseFloat(prompt('Price:')); if(title) await this.services.learning.createCourse({ title, description: desc, price });
+            const title = prompt('Course title:');
+            const desc = prompt('Description:');
+            if (title) await this.services.learning.createCourse({ title, description: desc });
         });
         document.getElementById('create-quiz-btn')?.addEventListener('click', async () => {
-            const title = prompt('Quiz title:'); const questions = prompt('Questions (JSON array):'); if(title && questions) await this.services.learning.createQuiz({ title, questions: JSON.parse(questions), courseId: null });
+            const title = prompt('Quiz title:');
+            if (title) await this.services.learning.createQuiz({ title });
         });
+
         document.getElementById('create-game-session-btn')?.addEventListener('click', async () => {
-            const title = prompt('Session title:'); const type = prompt('Game type:'); if(title && type) await this.services.gaming.createSession({ title, gameType: type });
+            const title = prompt('Session title:');
+            const type = prompt('Game type:');
+            if (title && type) await this.services.gaming.createSession({ title, gameType: type });
         });
         document.getElementById('create-tournament-btn')?.addEventListener('click', async () => {
-            const title = prompt('Tournament title:'); const type = prompt('Game type:'); const max = parseInt(prompt('Max participants:')); if(title && type && max) await this.services.gaming.createTournament({ title, gameType: type, max });
+            const title = prompt('Tournament title:');
+            if (title) await this.services.gaming.createTournament({ title });
         });
+
         document.getElementById('create-ar-btn')?.addEventListener('click', async () => {
-            const type = prompt('AR experience type:'); if(type) await this.services.ar.createExperience({ type });
+            const type = prompt('AR experience type:');
+            if (type) await this.services.ar.createExperience({ type });
         });
+
         document.getElementById('ask-question-btn')?.addEventListener('click', async () => {
-            const question = prompt('Your question:'); const topic = prompt('Topic:'); if(question && topic) await this.services.qa.askQuestion({ question, topic });
+            const question = prompt('Your question:');
+            if (question) await this.services.qa.askQuestion({ question });
         });
+
         document.getElementById('export-data-btn')?.addEventListener('click', () => this.services.settings.exportUserData());
-        document.getElementById('profile-settings-btn')?.addEventListener('click', () => this.switchSection('settings'));
-        document.getElementById('edit-profile-btn')?.addEventListener('click', async () => {
-            const bio = prompt('New bio:'); if(bio) { this.currentUser.set('bio', bio); await this.currentUser.save(); this.services.profile.loadProfileData(); }
-        });
-        document.getElementById('close-story')?.addEventListener('click', () => document.getElementById('story-viewer').classList.add('hidden'));
-        document.getElementById('search-btn')?.addEventListener('click', () => {
-            const query = prompt('Search:'); if(query) this.services.discovery.search(query).then(posts => alert(`Found ${posts.length} posts`));
-        });
+
         document.getElementById('upload-gallery-btn')?.addEventListener('click', () => {
-            const inp = document.createElement('input'); inp.type='file'; inp.accept='image/*,video/*';
-            inp.onchange = async e => { const file = e.target.files[0]; const caption = prompt('Caption:'); if(file && caption) await this.services.profile.uploadToGallery(file, caption); };
-            inp.click();
+            const caption = prompt('Caption:');
+            const file = null;
+            this.services.profile.uploadToGallery(file, caption);
         });
-        document.querySelectorAll('.profile-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                document.querySelectorAll('.profile-pane').forEach(p => p.classList.remove('active'));
-                document.getElementById(`profile-${tab.dataset.tab}-tab`).classList.add('active');
-                if(tab.dataset.tab === 'wallet') this.services.wallet.displayWalletInfo();
-            });
+
+        document.getElementById('close-story')?.addEventListener('click', () => {
+            document.getElementById('story-viewer').classList.add('hidden');
         });
+
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -1403,28 +1641,32 @@ class VibeLink0372 {
         document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 const section = item.dataset.section;
-                if(section) this.switchSection(section);
+                if (section) this.switchSection(section);
             });
         });
-        document.getElementById('menu-btn')?.addEventListener('click', () => {
-            document.getElementById('slide-menu')?.classList.toggle('hidden');
-        });
-        document.getElementById('close-menu')?.addEventListener('click', () => {
-            document.getElementById('slide-menu')?.classList.add('hidden');
+
+        document.querySelectorAll('.profile-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.profile-pane').forEach(p => p.classList.remove('active'));
+                document.getElementById(`profile-${tab.dataset.tab}-tab`).classList.add('active');
+                if (tab.dataset.tab === 'wallet') this.services.wallet.displayWalletInfo();
+            });
         });
     }
+
     switchSection(sectionId) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         const target = document.getElementById(`${sectionId}-section`);
-        if(target) target.classList.add('active');
+        if (target) target.classList.add('active');
+
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         const activeLink = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
-        if(activeLink) activeLink.classList.add('active');
-        document.querySelectorAll('.bottom-nav .nav-item').forEach(i => i.classList.remove('active'));
-        const bottomItem = document.querySelector(`.bottom-nav .nav-item[data-section="${sectionId}"]`);
-        if(bottomItem) bottomItem.classList.add('active');
+        if (activeLink) activeLink.classList.add('active');
+
         const loaders = {
-            home: () => this.services.posts.loadFeed(),
+            home: () => { this.services.posts.loadFeed(); },
             feed: () => this.services.posts.loadFeed(),
             profile: () => this.services.profile.loadProfileData(),
             communities: () => this.services.communities.loadCommunities(),
@@ -1437,26 +1679,36 @@ class VibeLink0372 {
             gaming: () => this.services.gaming.loadSessions(),
             settings: () => this.services.settings.displaySettings(),
             ar: () => this.services.ar.loadExperiences(),
-            qa: () => this.services.qa.loadQuestions()
+            qa: () => this.services.qa.loadQuestions(),
+            admin: () => {}
         };
-        if(loaders[sectionId]) loaders[sectionId]();
+        if (loaders[sectionId]) loaders[sectionId]();
     }
-    showAuthSection() { document.getElementById('auth-section').classList.add('active'); document.getElementById('main-section').classList.remove('active'); }
-    hideAuthSection() { document.getElementById('auth-section').classList.remove('active'); }
-    showMainSection() { document.getElementById('main-section').classList.add('active'); }
-    hideMainSection() { document.getElementById('main-section').classList.remove('active'); }
+
+    showAuthSection() {
+        document.getElementById('auth-section').classList.add('active');
+        document.getElementById('main-section').classList.remove('active');
+    }
+    hideAuthSection() {
+        document.getElementById('auth-section').classList.remove('active');
+    }
+    showMainSection() {
+        document.getElementById('auth-section').classList.remove('active');
+        document.getElementById('main-section').classList.add('active');
+    }
+    hideMainSection() {
+        document.getElementById('main-section').classList.remove('active');
+    }
 }
 window.VibeLink0372 = VibeLink0372;
-</script>
 
-<!-- ==================== SCRIPT BLOCK 5: Start App ==================== -->
-<script>
-// ==================== START APP ====================
+// ============================================================
+// START APP
+// ============================================================
 window.addEventListener('DOMContentLoaded', () => {
     window.vibeApp = new VibeLink0372();
     window.vibeApp.init();
 });
 </script>
-
 </body>
 </html>
