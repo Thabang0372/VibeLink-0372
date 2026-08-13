@@ -3,103 +3,11 @@ class ProfileService {
         this.app = app;
     }
 
-    async ensureProfileExists() {
-        const Profile = Parse.Object.extend('Profile');
-        let p = await new Parse.Query(Profile).equalTo('user', this.app.currentUser).first();
-        if (!p) {
-            p = new Profile();
-            p.set('user', this.app.currentUser);
-            p.set('avatar', 'assets/default-avatar.png');
-            p.set('bio', this.app.currentUser.get('bio') || 'Welcome!');
-            p.set('verified', false);
-            await p.save();
-        }
-        return p;
-    }
-
-    async loadProfileData() {
-        if (!this.app.currentUser) return;
-        document.getElementById('profile-username-display').innerText = this.app.currentUser.get('username');
-        document.getElementById('profile-bio-display').innerText = this.app.currentUser.get('bio') || 'No bio';
-        const stats = await this.getUserStats();
-        document.getElementById('profile-posts-count').innerText = `${stats.posts} posts`;
-        document.getElementById('profile-followers-count').innerText = `${stats.followers} followers`;
-        document.getElementById('profile-following-count').innerText = `${stats.following} following`;
-        await this.loadUserPosts();
-        await this.loadUserStories();
-        await this.loadUserGallery();
-    }
-
-    async getUserStats(userId = null) {
-        const target = userId ? { __type: 'Pointer', className: '_User', objectId: userId } : this.app.currentUser;
-        const posts = await new Parse.Query('Post').equalTo('author', target).count();
-        const followers = await new Parse.Query('VibeFollow').equalTo('following', target).count();
-        const following = await new Parse.Query('VibeFollow').equalTo('follower', target).count();
-        return { posts, followers, following };
-    }
-
-    async loadUserPosts() {
-        const posts = await new Parse.Query('Post').equalTo('author', this.app.currentUser).descending('createdAt').find();
-        const container = document.getElementById('user-posts-grid');
-        container.innerHTML = posts.map(p => `<div class="card"><p>${p.get('content')}</p><small>${new Date(p.createdAt).toLocaleString()}</small></div>`).join('');
-    }
-
-    async loadUserStories() {
-        const stories = await new Parse.Query('VibeStory').equalTo('author', this.app.currentUser).greaterThan('expiresAt', new Date()).find();
-        const container = document.getElementById('stories-container');
-        container.innerHTML = stories.map(s => `<div class="story-item" onclick="vibeApp.services.profile.viewStory('${s.id}')"><div class="story-avatar"><img src="${s.get('media')?.url() || 'assets/default-avatar.png'}"></div><span>${s.get('content')}</span></div>`).join('');
-    }
-
-    async viewStory(storyId) {
-        const story = await new Parse.Query('VibeStory').get(storyId);
-        document.getElementById('story-viewer').classList.remove('hidden');
-        document.getElementById('story-username').innerText = story.get('author').get('username');
-        document.getElementById('story-content').innerHTML = story.get('media') ? `<img src="${story.get('media').url()}" style="max-width:100%">` : `<p>${story.get('content')}</p>`;
-    }
-
-    async createStory(content, file) {
-        const story = new Parse.Object('VibeStory');
-        story.set('author', this.app.currentUser);
-        story.set('content', content);
-        if (file) { const pf = new Parse.File('story.jpg', file); await pf.save(); story.set('media', pf); }
-        story.set('expiresAt', new Date(Date.now() + 24*60*60*1000));
-        await story.save();
-        showNotification('Story posted');
-        await this.loadUserStories();
-    }
-
-    async loadUserGallery() {
-        const items = await new Parse.Query('VibeGallery').equalTo('owner', this.app.currentUser).find();
-        const container = document.getElementById('user-gallery-grid');
-        container.innerHTML = items.map(i => `<div class="gallery-item"><img src="${i.get('file').url()}"><p>${i.get('caption')}</p></div>`).join('');
-    }
-
-    async uploadToGallery(file, caption) {
-        const item = new Parse.Object('VibeGallery');
-        const pf = new Parse.File('gallery.' + file.name.split('.').pop(), file);
-        await pf.save();
-        item.set('owner', this.app.currentUser);
-        item.set('file', pf);
-        item.set('caption', caption);
-        item.set('type', file.type.startsWith('image/') ? 'image' : 'video');
-        item.set('likes', []);
-        item.set('isPublic', true);
-        await item.save();
-        showNotification('Added to gallery');
-        await this.loadUserGallery();
-    }
-}
-
-window.ProfileService = ProfileService;class ProfileService {
-    constructor(app) {
-        this.app = app;
-    }
-
+    // ---------- Core Profile ----------
     async getUserProfile(userId = null) {
         const targetUserId = userId || this.app.currentUser.id;
-        const User = this.app.services.parse.getClass('_User');
+        const User = Parse.Object.extend('_User');
         const query = new Parse.Query(User);
-        
         try {
             const user = await query.get(targetUserId);
             return this.formatUserProfile(user);
@@ -111,94 +19,68 @@ window.ProfileService = ProfileService;class ProfileService {
 
     async updateUserProfile(profileData) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
         const user = this.app.currentUser;
-        
-        // Update basic profile fields
         if (profileData.username) user.set('username', profileData.username);
         if (profileData.email) user.set('email', profileData.email);
         if (profileData.bio) user.set('bio', profileData.bio);
         if (profileData.location) user.set('location', profileData.location);
         if (profileData.website) user.set('website', profileData.website);
-        
-        // Update social links
-        if (profileData.socialLinks) {
-            user.set('socialLinks', profileData.socialLinks);
-        }
-        
-        // Update profile completion
+        if (profileData.socialLinks) user.set('socialLinks', profileData.socialLinks);
         user.set('profileCompleted', this.calculateProfileCompletion(user));
-        
         await user.save();
-        
         this.app.showSuccess('Profile updated successfully! ✨');
         return this.formatUserProfile(user);
     }
 
     async uploadProfilePicture(file) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
         const parseFile = new Parse.File('profile-picture.jpg', file);
         await parseFile.save();
-        
         this.app.currentUser.set('profilePicture', parseFile);
         await this.app.currentUser.save();
-        
         this.app.showSuccess('Profile picture updated! 📸');
         return parseFile;
     }
 
     async uploadCoverPhoto(file) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
         const parseFile = new Parse.File('cover-photo.jpg', file);
         await parseFile.save();
-        
         this.app.currentUser.set('coverPhoto', parseFile);
         await this.app.currentUser.save();
-        
         this.app.showSuccess('Cover photo updated! 🖼️');
         return parseFile;
     }
 
+    // ---------- Stories ----------
     async createStory(storyData) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
-        const VibeStory = this.app.services.parse.getClass('VibeStory');
+        const VibeStory = Parse.Object.extend('VibeStory');
         const story = new VibeStory();
-        
         story.set('author', this.app.currentUser);
         story.set('content', storyData.content);
         story.set('media', storyData.media || null);
-        story.set('type', storyData.type || 'text'); // text, image, video
+        story.set('type', storyData.type || 'text');
         story.set('backgroundColor', storyData.backgroundColor || '#667eea');
         story.set('textColor', storyData.textColor || '#ffffff');
-        story.set('expiresAt', new Date(Date.now() + 24 * 60 * 60 * 1000)); // 24 hours
+        story.set('expiresAt', new Date(Date.now() + 24 * 60 * 60 * 1000));
         story.set('views', []);
         story.set('reactions', []);
         story.set('isActive', true);
-
         await story.save();
-        
-        // Notify followers about new story
         await this.app.services.notifications.notifyFollowers(
             `${this.app.currentUser.get('username')} posted a new story`
         );
-
         this.app.showSuccess('Story posted! It will expire in 24 hours. 📖');
         return story;
     }
 
     async viewStory(storyId) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
-        const VibeStory = this.app.services.parse.getClass('VibeStory');
+        const VibeStory = Parse.Object.extend('VibeStory');
         const query = new Parse.Query(VibeStory);
         const story = await query.get(storyId);
-        
         const views = story.get('views') || [];
-        
-        // Check if already viewed
         if (!views.some(view => view.viewer.id === this.app.currentUser.id)) {
             views.push({
                 viewer: this.app.currentUser,
@@ -207,35 +89,25 @@ window.ProfileService = ProfileService;class ProfileService {
             story.set('views', views);
             await story.save();
         }
-
         return story;
     }
 
     async reactToStory(storyId, reactionType) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
-        const VibeStory = this.app.services.parse.getClass('VibeStory');
+        const VibeStory = Parse.Object.extend('VibeStory');
         const query = new Parse.Query(VibeStory);
         const story = await query.get(storyId);
-        
         const reactions = story.get('reactions') || [];
-        
-        // Remove existing reaction from same user
         const filteredReactions = reactions.filter(
             reaction => reaction.user.id !== this.app.currentUser.id
         );
-        
-        // Add new reaction
         filteredReactions.push({
             user: this.app.currentUser,
             type: reactionType,
             reactedAt: new Date()
         });
-        
         story.set('reactions', filteredReactions);
         await story.save();
-
-        // Notify story author
         if (story.get('author').id !== this.app.currentUser.id) {
             await this.app.services.notifications.createNotification(
                 story.get('author').id,
@@ -243,19 +115,16 @@ window.ProfileService = ProfileService;class ProfileService {
                 `${this.app.currentUser.get('username')} reacted to your story`
             );
         }
-
         return story;
     }
 
+    // ---------- Gallery ----------
     async uploadToGallery(file, caption = '') {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
-        const VibeGallery = this.app.services.parse.getClass('VibeGallery');
+        const VibeGallery = Parse.Object.extend('VibeGallery');
         const galleryItem = new VibeGallery();
-        
         const parseFile = new Parse.File('gallery-item.jpg', file);
         await parseFile.save();
-        
         galleryItem.set('owner', this.app.currentUser);
         galleryItem.set('file', parseFile);
         galleryItem.set('caption', caption);
@@ -264,35 +133,25 @@ window.ProfileService = ProfileService;class ProfileService {
         galleryItem.set('comments', []);
         galleryItem.set('tags', []);
         galleryItem.set('isPublic', true);
-
         await galleryItem.save();
-        
         this.app.showSuccess('Added to your gallery! 🎨');
         return galleryItem;
     }
 
     async likeGalleryItem(itemId) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
-        const VibeGallery = this.app.services.parse.getClass('VibeGallery');
+        const VibeGallery = Parse.Object.extend('VibeGallery');
         const query = new Parse.Query(VibeGallery);
         const item = await query.get(itemId);
-        
         const likes = item.get('likes') || [];
-        
-        // Check if already liked
         if (likes.some(like => like.user.id === this.app.currentUser.id)) {
-            // Unlike
             item.set('likes', likes.filter(like => like.user.id !== this.app.currentUser.id));
         } else {
-            // Like
             likes.push({
                 user: this.app.currentUser,
                 likedAt: new Date()
             });
             item.set('likes', likes);
-            
-            // Notify owner
             if (item.get('owner').id !== this.app.currentUser.id) {
                 await this.app.services.notifications.createNotification(
                     item.get('owner').id,
@@ -301,31 +160,24 @@ window.ProfileService = ProfileService;class ProfileService {
                 );
             }
         }
-
         await item.save();
         return item;
     }
 
     async commentOnGalleryItem(itemId, comment) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
-        const VibeGallery = this.app.services.parse.getClass('VibeGallery');
+        const VibeGallery = Parse.Object.extend('VibeGallery');
         const query = new Parse.Query(VibeGallery);
         const item = await query.get(itemId);
-        
         const comments = item.get('comments') || [];
-        
         comments.push({
             user: this.app.currentUser,
             comment: comment,
             commentedAt: new Date(),
             likes: []
         });
-        
         item.set('comments', comments);
         await item.save();
-
-        // Notify owner
         if (item.get('owner').id !== this.app.currentUser.id) {
             await this.app.services.notifications.createNotification(
                 item.get('owner').id,
@@ -333,66 +185,52 @@ window.ProfileService = ProfileService;class ProfileService {
                 `${this.app.currentUser.get('username')} commented on your gallery item`
             );
         }
-
         return item;
     }
 
+    // ---------- Follows ----------
     async followUser(userId) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
-        const VibeFollow = this.app.services.parse.getClass('VibeFollow');
-        
-        // Check if already following
+        const VibeFollow = Parse.Object.extend('VibeFollow');
         const existingFollow = await this.getFollowRelationship(userId);
         if (existingFollow) {
             throw new Error('Already following this user');
         }
-
         const follow = new VibeFollow();
         follow.set('follower', this.app.currentUser);
-        follow.set('following', this.app.services.parse.createPointer('_User', userId));
+        follow.set('following', { __type: 'Pointer', className: '_User', objectId: userId });
         follow.set('followedAt', new Date());
-        
         await follow.save();
-
-        // Notify the user being followed
         await this.app.services.notifications.createNotification(
             userId,
             'new_follower',
             `${this.app.currentUser.get('username')} started following you`
         );
-
-        // Add loyalty points
         await this.app.services.wallet.addLoyaltyPoints(2, 'social_follow');
-
         this.app.showSuccess('User followed successfully! 👥');
         return follow;
     }
 
     async unfollowUser(userId) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
         const follow = await this.getFollowRelationship(userId);
         if (follow) {
             await follow.destroy();
             this.app.showSuccess('User unfollowed');
         }
-        
         return true;
     }
 
     async getFollowRelationship(userId) {
-        const VibeFollow = this.app.services.parse.getClass('VibeFollow');
+        const VibeFollow = Parse.Object.extend('VibeFollow');
         const query = new Parse.Query(VibeFollow);
         query.equalTo('follower', this.app.currentUser);
-        query.equalTo('following', this.app.services.parse.createPointer('_User', userId));
-        
+        query.equalTo('following', { __type: 'Pointer', className: '_User', objectId: userId });
         return await query.first();
     }
 
     async getUserStats(userId = null) {
         const targetUserId = userId || this.app.currentUser.id;
-        
         const [
             followersCount,
             followingCount,
@@ -408,7 +246,6 @@ window.ProfileService = ProfileService;class ProfileService {
             this.getEventsHostedCount(targetUserId),
             this.getStreamsHostedCount(targetUserId)
         ]);
-
         return {
             followers: followersCount,
             following: followingCount,
@@ -421,72 +258,62 @@ window.ProfileService = ProfileService;class ProfileService {
     }
 
     async getFollowersCount(userId) {
-        const VibeFollow = this.app.services.parse.getClass('VibeFollow');
+        const VibeFollow = Parse.Object.extend('VibeFollow');
         const query = new Parse.Query(VibeFollow);
-        query.equalTo('following', this.app.services.parse.createPointer('_User', userId));
-        
+        query.equalTo('following', { __type: 'Pointer', className: '_User', objectId: userId });
         return await query.count();
     }
 
     async getFollowingCount(userId) {
-        const VibeFollow = this.app.services.parse.getClass('VibeFollow');
+        const VibeFollow = Parse.Object.extend('VibeFollow');
         const query = new Parse.Query(VibeFollow);
-        query.equalTo('follower', this.app.services.parse.createPointer('_User', userId));
-        
+        query.equalTo('follower', { __type: 'Pointer', className: '_User', objectId: userId });
         return await query.count();
     }
 
     async getStoriesCount(userId) {
-        const VibeStory = this.app.services.parse.getClass('VibeStory');
+        const VibeStory = Parse.Object.extend('VibeStory');
         const query = new Parse.Query(VibeStory);
-        query.equalTo('author', this.app.services.parse.createPointer('_User', userId));
+        query.equalTo('author', { __type: 'Pointer', className: '_User', objectId: userId });
         query.greaterThan('expiresAt', new Date());
-        
         return await query.count();
     }
 
     async getGalleryItemsCount(userId) {
-        const VibeGallery = this.app.services.parse.getClass('VibeGallery');
+        const VibeGallery = Parse.Object.extend('VibeGallery');
         const query = new Parse.Query(VibeGallery);
-        query.equalTo('owner', this.app.services.parse.createPointer('_User', userId));
-        
+        query.equalTo('owner', { __type: 'Pointer', className: '_User', objectId: userId });
         return await query.count();
     }
 
     async getEventsHostedCount(userId) {
-        const VibeEvent = this.app.services.parse.getClass('VibeEvent');
+        const VibeEvent = Parse.Object.extend('VibeEvent');
         const query = new Parse.Query(VibeEvent);
-        query.equalTo('host', this.app.services.parse.createPointer('_User', userId));
-        
+        query.equalTo('host', { __type: 'Pointer', className: '_User', objectId: userId });
         return await query.count();
     }
 
     async getStreamsHostedCount(userId) {
-        const VibeLiveStream = this.app.services.parse.getClass('VibeLiveStream');
+        const VibeLiveStream = Parse.Object.extend('VibeLiveStream');
         const query = new Parse.Query(VibeLiveStream);
-        query.equalTo('host', this.app.services.parse.createPointer('_User', userId));
-        
+        query.equalTo('host', { __type: 'Pointer', className: '_User', objectId: userId });
         return await query.count();
     }
 
     calculateEngagementRate(userId) {
-        // This would calculate based on likes, comments, shares, etc.
-        // Simplified for demo
         return Math.random() * 100;
     }
 
     async loadUserStories(userId = null) {
         const targetUserId = userId || this.app.currentUser.id;
-        const VibeStory = this.app.services.parse.getClass('VibeStory');
+        const VibeStory = Parse.Object.extend('VibeStory');
         const query = new Parse.Query(VibeStory);
-        
-        query.equalTo('author', this.app.services.parse.createPointer('_User', targetUserId));
+        query.equalTo('author', { __type: 'Pointer', className: '_User', objectId: targetUserId });
         query.greaterThan('expiresAt', new Date());
         query.equalTo('isActive', true);
         query.include('author');
         query.descending('createdAt');
         query.limit(50);
-
         try {
             const stories = await query.find();
             this.displayStories(stories);
@@ -499,23 +326,14 @@ window.ProfileService = ProfileService;class ProfileService {
 
     async loadUserGallery(userId = null, filters = {}) {
         const targetUserId = userId || this.app.currentUser.id;
-        const VibeGallery = this.app.services.parse.getClass('VibeGallery');
+        const VibeGallery = Parse.Object.extend('VibeGallery');
         const query = new Parse.Query(VibeGallery);
-        
-        query.equalTo('owner', this.app.services.parse.createPointer('_User', targetUserId));
-        
-        if (filters.type) {
-            query.equalTo('type', filters.type);
-        }
-        
-        if (filters.tags && filters.tags.length > 0) {
-            query.containsAll('tags', filters.tags);
-        }
-        
+        query.equalTo('owner', { __type: 'Pointer', className: '_User', objectId: targetUserId });
+        if (filters.type) query.equalTo('type', filters.type);
+        if (filters.tags && filters.tags.length > 0) query.containsAll('tags', filters.tags);
         query.include('owner');
         query.descending('createdAt');
         query.limit(filters.limit || 30);
-
         try {
             const galleryItems = await query.find();
             this.displayGallery(galleryItems);
@@ -528,14 +346,12 @@ window.ProfileService = ProfileService;class ProfileService {
 
     async loadFollowers(userId = null) {
         const targetUserId = userId || this.app.currentUser.id;
-        const VibeFollow = this.app.services.parse.getClass('VibeFollow');
+        const VibeFollow = Parse.Object.extend('VibeFollow');
         const query = new Parse.Query(VibeFollow);
-        
-        query.equalTo('following', this.app.services.parse.createPointer('_User', targetUserId));
+        query.equalTo('following', { __type: 'Pointer', className: '_User', objectId: targetUserId });
         query.include('follower');
         query.descending('followedAt');
         query.limit(100);
-
         try {
             const followers = await query.find();
             return followers.map(follow => follow.get('follower'));
@@ -547,14 +363,12 @@ window.ProfileService = ProfileService;class ProfileService {
 
     async loadFollowing(userId = null) {
         const targetUserId = userId || this.app.currentUser.id;
-        const VibeFollow = this.app.services.parse.getClass('VibeFollow');
+        const VibeFollow = Parse.Object.extend('VibeFollow');
         const query = new Parse.Query(VibeFollow);
-        
-        query.equalTo('follower', this.app.services.parse.createPointer('_User', targetUserId));
+        query.equalTo('follower', { __type: 'Pointer', className: '_User', objectId: targetUserId });
         query.include('following');
         query.descending('followedAt');
         query.limit(100);
-
         try {
             const following = await query.find();
             return following.map(follow => follow.get('following'));
@@ -567,20 +381,14 @@ window.ProfileService = ProfileService;class ProfileService {
     displayStories(stories) {
         const container = document.getElementById('stories-container');
         if (!container) return;
-
-        // Group stories by user
         const storiesByUser = {};
         stories.forEach(story => {
             const userId = story.get('author').id;
             if (!storiesByUser[userId]) {
-                storiesByUser[userId] = {
-                    user: story.get('author'),
-                    stories: []
-                };
+                storiesByUser[userId] = { user: story.get('author'), stories: [] };
             }
             storiesByUser[userId].stories.push(story);
         });
-
         container.innerHTML = Object.values(storiesByUser).map(userStories => `
             <div class="story-user" data-user-id="${userStories.user.id}">
                 <div class="story-avatar">
@@ -593,8 +401,6 @@ window.ProfileService = ProfileService;class ProfileService {
                 <div class="story-username">${userStories.user.get('username')}</div>
             </div>
         `).join('');
-
-        // Add click handlers for stories
         container.querySelectorAll('.story-user').forEach(element => {
             element.addEventListener('click', () => {
                 this.openStoryViewer(userStories.stories);
@@ -605,7 +411,6 @@ window.ProfileService = ProfileService;class ProfileService {
     displayGallery(galleryItems) {
         const container = document.getElementById('gallery-grid');
         if (!container) return;
-
         container.innerHTML = galleryItems.map(item => `
             <div class="gallery-item" data-item-id="${item.id}">
                 <div class="gallery-media">
@@ -635,7 +440,6 @@ window.ProfileService = ProfileService;class ProfileService {
     }
 
     async openStoryViewer(stories) {
-        // Implementation for story viewer
         const viewer = document.createElement('div');
         viewer.className = 'story-viewer';
         viewer.innerHTML = `
@@ -671,13 +475,8 @@ window.ProfileService = ProfileService;class ProfileService {
                 </div>
             </div>
         `;
-
         document.body.appendChild(viewer);
-        
-        // Mark as viewed
         await this.viewStory(stories[0].id);
-
-        // Add close handler
         viewer.querySelector('.close-viewer').addEventListener('click', () => {
             document.body.removeChild(viewer);
         });
@@ -685,15 +484,10 @@ window.ProfileService = ProfileService;class ProfileService {
 
     calculateProfileCompletion(user) {
         let completion = 0;
-        const fields = [
-            'username', 'email', 'profilePicture', 'coverPhoto', 
-            'bio', 'location', 'website', 'socialLinks'
-        ];
-
+        const fields = ['username', 'email', 'profilePicture', 'coverPhoto', 'bio', 'location', 'website', 'socialLinks'];
         fields.forEach(field => {
             if (user.get(field)) completion += 100 / fields.length;
         });
-
         return Math.round(completion);
     }
 
@@ -724,23 +518,12 @@ window.ProfileService = ProfileService;class ProfileService {
     }
 
     async searchUsers(query, filters = {}) {
-        const User = this.app.services.parse.getClass('_User');
+        const User = Parse.Object.extend('_User');
         const queryObj = new Parse.Query(User);
-        
-        if (query) {
-            queryObj.contains('username', query);
-        }
-        
-        if (filters.location) {
-            queryObj.equalTo('location', filters.location);
-        }
-        
-        if (filters.verified) {
-            queryObj.equalTo('isVerified', true);
-        }
-        
+        if (query) queryObj.contains('username', query);
+        if (filters.location) queryObj.equalTo('location', filters.location);
+        if (filters.verified) queryObj.equalTo('isVerified', true);
         queryObj.limit(filters.limit || 20);
-
         try {
             const users = await queryObj.find();
             return users.map(user => this.formatUserProfile(user));
@@ -752,17 +535,14 @@ window.ProfileService = ProfileService;class ProfileService {
 
     async updateSocialLinks(links) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
         this.app.currentUser.set('socialLinks', links);
         await this.app.currentUser.save();
-        
         this.app.showSuccess('Social links updated! 🔗');
         return this.formatUserProfile(this.app.currentUser);
     }
 
     async setOnlineStatus(isOnline = true) {
         if (!this.app.currentUser) return;
-
         this.app.currentUser.set('isOnline', isOnline);
         this.app.currentUser.set('lastSeen', new Date());
         await this.app.currentUser.save();
@@ -770,18 +550,14 @@ window.ProfileService = ProfileService;class ProfileService {
 
     async verifyUser(verificationData) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
-
-        const VibeVerification = this.app.services.parse.getClass('VibeVerification');
+        const VibeVerification = Parse.Object.extend('VibeVerification');
         const verification = new VibeVerification();
-        
         verification.set('user', this.app.currentUser);
-        verification.set('type', verificationData.type); // identity, email, phone
+        verification.set('type', verificationData.type);
         verification.set('status', 'pending');
         verification.set('submittedData', verificationData.data);
         verification.set('submittedAt', new Date());
-
         await verification.save();
-
         this.app.showSuccess('Verification submitted! We will review your application. ✅');
         return verification;
     }
@@ -791,24 +567,80 @@ window.ProfileService = ProfileService;class ProfileService {
             this.loadFollowers(userId),
             this.loadFollowing(userId)
         ]);
-
         const currentUserFollowers = await this.loadFollowers();
         const currentUserFollowing = await this.loadFollowing();
-
         const mutualFollowers = userFollowers.filter(follower =>
             currentUserFollowers.some(f => f.id === follower.id)
         );
-
         const mutualFollowing = userFollowing.filter(following =>
             currentUserFollowing.some(f => f.id === following.id)
         );
-
         return {
             mutualFollowers: mutualFollowers.length,
             mutualFollowing: mutualFollowing.length,
             connections: [...new Set([...mutualFollowers, ...mutualFollowing])]
         };
     }
+
+    // ---------- Existing methods from original (keep) ----------
+    async ensureProfileExists() {
+        const Profile = Parse.Object.extend('Profile');
+        let p = await new Parse.Query(Profile).equalTo('user', this.app.currentUser).first();
+        if (!p) {
+            p = new Profile();
+            p.set('user', this.app.currentUser);
+            p.set('avatar', 'assets/default-avatar.png');
+            p.set('bio', this.app.currentUser.get('bio') || 'Welcome!');
+            p.set('verified', false);
+            await p.save();
+        }
+        return p;
+    }
+
+    async loadProfileData() {
+        if (!this.app.currentUser) return;
+        document.getElementById('profile-username-display').innerText = this.app.currentUser.get('username');
+        document.getElementById('profile-bio-display').innerText = this.app.currentUser.get('bio') || 'No bio';
+        const stats = await this.getUserStats();
+        document.getElementById('profile-posts-count').innerText = `${stats.posts} posts`;
+        document.getElementById('profile-followers-count').innerText = `${stats.followers} followers`;
+        document.getElementById('profile-following-count').innerText = `${stats.following} following`;
+        await this.loadUserPosts();
+        await this.loadUserStories();
+        await this.loadUserGallery();
+    }
+
+    async loadUserPosts() {
+        const posts = await new Parse.Query('Post').equalTo('author', this.app.currentUser).descending('createdAt').find();
+        const container = document.getElementById('user-posts-grid');
+        container.innerHTML = posts.map(p => `<div class="card"><p>${p.get('content')}</p><small>${new Date(p.createdAt).toLocaleString()}</small></div>`).join('');
+    }
+
+    async createStory(content, file) {
+        const story = new Parse.Object('VibeStory');
+        story.set('author', this.app.currentUser);
+        story.set('content', content);
+        if (file) { const pf = new Parse.File('story.jpg', file); await pf.save(); story.set('media', pf); }
+        story.set('expiresAt', new Date(Date.now() + 24*60*60*1000));
+        await story.save();
+        showNotification('Story posted');
+        await this.loadUserStories();
+    }
+
+    async uploadToGallerySimple(file, caption) {
+        const item = new Parse.Object('VibeGallery');
+        const pf = new Parse.File('gallery.' + file.name.split('.').pop(), file);
+        await pf.save();
+        item.set('owner', this.app.currentUser);
+        item.set('file', pf);
+        item.set('caption', caption);
+        item.set('type', file.type.startsWith('image/') ? 'image' : 'video');
+        item.set('likes', []);
+        item.set('isPublic', true);
+        await item.save();
+        showNotification('Added to gallery');
+        await this.loadUserGallery();
+    }
 }
 
-export default ProfileService;
+window.ProfileService = ProfileService;
