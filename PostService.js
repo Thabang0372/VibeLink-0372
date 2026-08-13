@@ -42,7 +42,6 @@ class PostService {
         this.displayPosts(posts);
     }
 
-    // Alias for the "Feed" tab
     async loadFeedPosts() {
         await this.loadFeed();
     }
