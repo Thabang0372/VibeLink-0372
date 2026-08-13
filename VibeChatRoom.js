@@ -4,7 +4,7 @@ class VibeChatRoomModel {
             className: 'VibeChatRoom',
             fields: {
                 name: { type: 'String', required: true },
-                members: { type: 'Relation', targetClass: '_User', required: true },
+                members: { type: 'Array', default: [] },           // changed from Relation to Array
                 isGroup: { type: 'Boolean', default: true },
                 lastMessage: { type: 'Pointer', targetClass: 'Message' },
                 mediaEnabled: { type: 'Boolean', default: true },
