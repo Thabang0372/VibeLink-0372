@@ -3,7 +3,6 @@ class SettingsService {
         this.app = app;
     }
 
-    // ---------- Core Settings CRUD ----------
     async getUserSettings() {
         if (!this.app.currentUser) throw new Error('User must be logged in');
         const VibeUserSettings = Parse.Object.extend('VibeUserSettings');
@@ -65,17 +64,14 @@ class SettingsService {
         return this.formatSettings(settings);
     }
 
-    // ---------- Privacy ----------
     async updatePrivacySettings(privacySettings) {
         return this.updateUserSettings({ privacy: privacySettings });
     }
 
-    // ---------- Notifications ----------
     async updateNotificationSettings(notificationSettings) {
         return this.updateUserSettings({ notifications: notificationSettings });
     }
 
-    // ---------- Appearance ----------
     async updateAppearanceSettings(appearanceSettings) {
         const settings = await this.getUserSettingsObject();
         settings.set('appearance', { ...settings.get('appearance'), ...appearanceSettings });
@@ -94,17 +90,14 @@ class SettingsService {
         }
     }
 
-    // ---------- Content ----------
     async updateContentSettings(contentData) {
         return this.updateUserSettings({ content: contentData });
     }
 
-    // ---------- Security ----------
     async updateSecuritySettings(securityData) {
         return this.updateUserSettings({ security: securityData });
     }
 
-    // ---------- Connected Accounts ----------
     async manageConnectedAccounts(accountData) {
         const settings = await this.getUserSettingsObject();
         const connected = settings.get('connectedAccounts') || {};
@@ -120,7 +113,6 @@ class SettingsService {
         return this.formatSettings(settings);
     }
 
-    // ---------- Parental Controls ----------
     async setParentalControls(controls) {
         const settings = await this.getUserSettingsObject();
         settings.set('parentalControls', {
@@ -133,7 +125,6 @@ class SettingsService {
         return this.formatSettings(settings);
     }
 
-    // ---------- Data Export ----------
     async exportUserData() {
         if (!this.app.currentUser) throw new Error('User must be logged in');
         showNotification('Preparing your data export...');
@@ -180,7 +171,6 @@ class SettingsService {
         };
     }
 
-    // ---------- Import Legacy Data ----------
     async importLegacyData(legacyData) {
         if (!this.app.currentUser) throw new Error('User must be logged in');
         try {
@@ -197,20 +187,16 @@ class SettingsService {
         }
     }
 
-    // ---------- Knowledge Base ----------
     async searchKnowledgeBase(query, filters = {}) {
         const VibeKnowledgeArticle = Parse.Object.extend('VibeKnowledgeArticle');
         const q = new Parse.Query(VibeKnowledgeArticle);
-        if (query) {
-            q.contains('title', query);
-        }
+        if (query) q.contains('title', query);
         q.equalTo('isPublished', true);
         q.descending('helpfulCount');
         q.limit(filters.limit || 20);
         return await q.find();
     }
 
-    // ---------- Q&A / Support ----------
     async submitQuestion(questionData) {
         const VibeQuestion = Parse.Object.extend('VibeQuestion');
         const q = new VibeQuestion();
@@ -243,11 +229,9 @@ class SettingsService {
         return question;
     }
 
-    // ---------- Account Deletion ----------
     async deleteAccount() {
         if (!confirm('Delete your entire account? This cannot be undone!')) return;
         try {
-            // Delete all user data (simplified)
             const posts = await new Parse.Query('Post').equalTo('author', this.app.currentUser).find();
             await Parse.Object.destroyAll(posts);
             await this.app.currentUser.destroy();
@@ -259,7 +243,6 @@ class SettingsService {
         }
     }
 
-    // ---------- System Status ----------
     async getSystemStatus() {
         return {
             overallStatus: 'operational',
@@ -274,7 +257,6 @@ class SettingsService {
         showNotification('Cache cleared! 🧹');
     }
 
-    // ---------- Default values ----------
     getDefaultPrivacySettings() {
         return {
             profileVisibility: 'public',
