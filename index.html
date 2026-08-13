@@ -10,6 +10,7 @@
     <link rel="apple-touch-icon" href="assets/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/6.1.1/parse.min.js"></script>
+    <!-- REMOVED: <script src="security.js"></script> -->
     <style>
         :root {
             --vibe-black: #0D0D0D;
@@ -358,7 +359,7 @@
     // GLOBALS & HELPERS
     // ============================================================
     Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU");
-    Parse.serverURL = 'https://vibelink0372.b4a.io/parse'; // YOUR ORIGINAL URL
+    Parse.serverURL = 'https://vibelink0372.b4a.app/parse';
 
     function showNotification(msg, type='success') {
         const n = document.getElementById('notification');
@@ -472,39 +473,61 @@
         }
     }
 
-    // Encryption
+    // Encryption (password-derived)
     class VibeSecurity {
         constructor() {
-            this.masterKey = null;
+            this.encryptionKey = null;
             this.initialized = false;
             this.ready = new Promise(resolve => { this._resolveReady = resolve; });
-            this.initializeSecurity();
         }
-        async initializeSecurity() {
-            if (!window.crypto?.subtle) return;
-            const stored = localStorage.getItem('vibe_master_key');
-            if (stored) {
-                this.masterKey = await this.importKey(this.base64ToArrayBuffer(stored));
-            } else {
-                this.masterKey = await crypto.subtle.generateKey({ name:'AES-GCM', length:256 }, true, ['encrypt','decrypt']);
-                const exported = await crypto.subtle.exportKey('raw', this.masterKey);
-                localStorage.setItem('vibe_master_key', this.arrayBufferToBase64(exported));
-            }
+        async deriveKey(password, salt = 'vibelink-salt-0372') {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+            return crypto.subtle.deriveKey(
+                { name: 'PBKDF2', salt: enc.encode(salt), iterations: 100000, hash: 'SHA-256' },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['encrypt', 'decrypt']
+            );
+        }
+        async setPassword(password) {
+            this.encryptionKey = await this.deriveKey(password);
             this.initialized = true;
             this._resolveReady();
+            // Store key in sessionStorage for persistence across refreshes
+            const exported = await this.exportKey(this.encryptionKey);
+            sessionStorage.setItem('vibe_encryption_key', this.arrayBufferToBase64(exported));
+        }
+        async loadKeyFromSession() {
+            const stored = sessionStorage.getItem('vibe_encryption_key');
+            if (stored) {
+                const keyData = this.base64ToArrayBuffer(stored);
+                this.encryptionKey = await this.importKey(keyData);
+                this.initialized = true;
+                this._resolveReady();
+                return true;
+            }
+            return false;
+        }
+        async importKey(keyData) {
+            return crypto.subtle.importKey('raw', keyData, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+        }
+        async exportKey(key) {
+            return crypto.subtle.exportKey('raw', key);
         }
         async encrypt(data) {
             await this.ready;
             const enc = new TextEncoder().encode(JSON.stringify(data));
             const iv = crypto.getRandomValues(new Uint8Array(12));
-            const encrypted = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, this.masterKey, enc);
+            const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, this.encryptionKey, enc);
             return { iv: this.arrayBufferToBase64(iv), data: this.arrayBufferToBase64(encrypted) };
         }
         async decrypt(payload) {
             await this.ready;
             const iv = this.base64ToArrayBuffer(payload.iv);
             const data = this.base64ToArrayBuffer(payload.data);
-            const decrypted = await crypto.subtle.decrypt({ name:'AES-GCM', iv }, this.masterKey, data);
+            const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, this.encryptionKey, data);
             return JSON.parse(new TextDecoder().decode(decrypted));
         }
         arrayBufferToBase64(buffer) {
@@ -518,9 +541,6 @@
             const bytes = new Uint8Array(bin.length);
             for (let i=0; i<bin.length; i++) bytes[i] = bin.charCodeAt(i);
             return bytes.buffer;
-        }
-        async importKey(keyData) {
-            return crypto.subtle.importKey('raw', keyData, { name:'AES-GCM', length:256 }, true, ['encrypt','decrypt']);
         }
     }
     window.vibeSecurity = new VibeSecurity();
@@ -537,6 +557,9 @@
             try {
                 this.app.currentUser = Parse.User.current();
                 if (this.app.currentUser) {
+                    if (!window.vibeSecurity.initialized) {
+                        await window.vibeSecurity.loadKeyFromSession();
+                    }
                     this.app.showMainSection();
                     this.app.hideAuthSection();
                     await this.app.loadInitialData();
@@ -564,6 +587,7 @@
                 if (!found) throw new Error('No account found with that email.');
                 const user = await Parse.User.logIn(found.get('username'), password);
                 this.app.currentUser = user;
+                await window.vibeSecurity.setPassword(password);
                 this.app.showMainSection();
                 this.app.hideAuthSection();
                 await this.app.services.wallet?.ensureWalletExists();
@@ -587,13 +611,15 @@
             showLoading();
             try {
                 const user = new Parse.User();
-                user.set('username', email);
+                const uniqueId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+                user.set('username', uniqueId);
                 user.set('email', email);
                 user.set('password', password);
                 user.set('displayName', username);
                 user.set('bio', bio || '');
                 await user.signUp();
                 this.app.currentUser = user;
+                await window.vibeSecurity.setPassword(password);
                 this.app.showMainSection();
                 this.app.hideAuthSection();
                 await this.app.services.wallet?.ensureWalletExists();
@@ -610,6 +636,9 @@
         async handleLogout() {
             await Parse.User.logOut();
             this.app.currentUser = null;
+            window.vibeSecurity.encryptionKey = null;
+            window.vibeSecurity.initialized = false;
+            sessionStorage.removeItem('vibe_encryption_key');
             this.app.showAuthSection();
             this.app.hideMainSection();
             showNotification('Logged out');
@@ -1503,38 +1532,33 @@
     }
 
     // ============================================================
-    // MAIN APP - FIXED
+    // MAIN APP
     // ============================================================
     class VibeLink0372 {
         constructor() {
             this.currentUser = null;
-            this.services = {};  // FIXED
+            this.services = {};
         }
 
-        // FIXED: added these 4 methods
         showAuthSection() {
             const auth = document.getElementById('auth-section');
             const main = document.getElementById('main-section');
-            try {
-                if (auth) auth.classList.add('active');
-                if (main) main.classList.remove('active');
-            } catch(e) { console.warn(e); }
+            if (auth) auth.classList.add('active');
+            if (main) main.classList.remove('active');
         }
         hideAuthSection() {
             const auth = document.getElementById('auth-section');
-            try { if (auth) auth.classList.remove('active'); } catch(e) {}
+            if (auth) auth.classList.remove('active');
         }
         showMainSection() {
             const auth = document.getElementById('auth-section');
             const main = document.getElementById('main-section');
-            try {
-                if (auth) auth.classList.remove('active');
-                if (main) main.classList.add('active');
-            } catch(e) {}
+            if (auth) auth.classList.remove('active');
+            if (main) main.classList.add('active');
         }
         hideMainSection() {
             const main = document.getElementById('main-section');
-            try { if (main) main.classList.remove('active'); } catch(e) {}
+            if (main) main.classList.remove('active');
         }
 
         initServices() {
@@ -1631,32 +1655,6 @@
             document.getElementById('loginForm')?.addEventListener('submit', (e) => this.services.auth.handleLogin(e));
             document.getElementById('signupForm')?.addEventListener('submit', (e) => this.services.auth.handleSignup(e));
             document.getElementById('logout-btn')?.addEventListener('click', () => this.services.auth.handleLogout());
-            document.getElementById('show-signup')?.addEventListener('click', e => {
-                e.preventDefault();
-                document.getElementById('login-form').classList.remove('active');
-                document.getElementById('signup-form').classList.add('active');
-            });
-            document.getElementById('show-login')?.addEventListener('click', e => {
-                e.preventDefault();
-                document.getElementById('signup-form').classList.remove('active');
-                document.getElementById('login-form').classList.add('active');
-            });
-            document.querySelectorAll('.password-toggle').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const wrapper = this.closest('.password-wrapper');
-                    if (!wrapper) return;
-                    const input = wrapper.querySelector('input');
-                    const icon = this.querySelector('i');
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        icon.className = 'fas fa-eye-slash';
-                    } else {
-                        input.type = 'password';
-                        icon.className = 'fas fa-eye';
-                    }
-                });
-            });
-
             document.getElementById('home-post-btn')?.addEventListener('click', () => {
                 const input = document.getElementById('home-post-input');
                 if (input && input.value) this.services.posts.createPost(input.value).then(() => input.value = '');
@@ -1689,7 +1687,7 @@
             });
             document.getElementById('close-chat')?.addEventListener('click', () => {
                 document.getElementById('chat-window')?.classList.add('hidden');
-                if (this.services.chat.subscription) this.services.chat.subscription.unsubscribe();
+                this.services.chat.subscription?.unsubscribe();
             });
 
             const addFunds = () => { const amt = parseFloat(prompt('Amount:')); if (amt) this.services.wallet.addFunds(amt); };
