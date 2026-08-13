@@ -6,7 +6,7 @@ class VibeLink0372 {
 
     async init() {
         Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU");
-        Parse.serverURL = 'https://parseapi.back4app.com/';
+        Parse.serverURL = 'https://vibelink0372.b4a.app/parse'; // corrected
 
         // All services
         this.services.encryption = new EncryptionService();
