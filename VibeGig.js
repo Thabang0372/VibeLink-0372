@@ -9,7 +9,7 @@ class VibeGig {
                 payment: { type: 'Number', required: true },
                 currency: { type: 'String', default: 'VIBE' },
                 status: { type: 'String', default: 'open' },
-                applicants: { type: 'Relation', targetClass: '_User' },
+                applicants: { type: 'Array', default: [] },          // changed from Relation to Array
                 verifiedProfessionals: { type: 'Boolean', default: false },
                 deadline: { type: 'Date', required: true },
                 location: { type: 'GeoPoint' }
