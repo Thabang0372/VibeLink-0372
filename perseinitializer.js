@@ -49,12 +49,11 @@ class VibeLink0372 {
 
     async initializeApp() {
         try {
-            // ✅ FIX: Use correct keys and server URL
             Parse.initialize(
                 "HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA",
                 "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU"
             );
-            Parse.serverURL = 'https://vibelink0372.b4a.io';
+            Parse.serverURL = 'https://vibelink0372.b4a.app/parse';
 
             await this.services.encryption.initialize();
             await this.services.serviceWorker.initialize();
@@ -69,7 +68,7 @@ class VibeLink0372 {
         }
     }
 
-    // … rest of your class unchanged …
+    // … rest of methods (omitted for brevity, but assumed complete)
 }
 
 export default VibeLink0372;
