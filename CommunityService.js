@@ -33,7 +33,6 @@ class CommunityService {
         view.classList.remove('hidden');
         document.getElementById('community-name').innerText = c.get('name');
         document.getElementById('community-description').innerText = c.get('description');
-        // Load actual posts for this community
         const posts = await new Parse.Query('Post').equalTo('community', c).include('author').descending('createdAt').find();
         document.getElementById('community-posts').innerHTML = posts.length
             ? posts.map(p => `<div class="post"><strong>${p.get('author').get('username')}</strong>: ${p.get('content')}</div>`).join('')
@@ -43,7 +42,6 @@ class CommunityService {
             view.classList.add('hidden');
             document.getElementById('communities-grid').classList.remove('hidden');
         };
-        // Wire up "Post in Community" button
         document.getElementById('post-in-community').onclick = async () => {
             const content = prompt('What would you like to share?');
             if (content) {
