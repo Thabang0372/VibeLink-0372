@@ -11,7 +11,7 @@ class VibeEventModel {
                 ticketsAvailable: { type: 'Number', required: true },
                 qrEntry: { type: 'String' },
                 promoted: { type: 'Boolean', default: false },
-                attendees: { type: 'Relation', targetClass: '_User' },
+                attendees: { type: 'Array', default: [] },          // changed from Relation to Array
                 coverImage: { type: 'File' },
                 price: { type: 'Number', default: 0 }
             }
