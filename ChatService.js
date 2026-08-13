@@ -4,10 +4,14 @@ class ChatService {
         this.activeRoom = null;
         this.subscription = null;
         this.typingTimers = new Map();
+        this.roomPollIntervals = new Map();
     }
 
     async loadChatRooms() {
-        const q = new Parse.Query('VibeChatRoom').containedIn('members', [this.app.currentUser]);
+        const q = new Parse.Query('VibeChatRoom')
+            .containedIn('members', [this.app.currentUser])
+            .include('lastMessage')
+            .descending('updatedAt');
         const rooms = await q.find();
         const container = document.getElementById('chat-rooms-list');
         if (!container) return;
@@ -27,6 +31,10 @@ class ChatService {
     }
 
     async openRoom(roomId) {
+        if (this.roomPollIntervals.has(roomId)) {
+            clearInterval(this.roomPollIntervals.get(roomId));
+            this.roomPollIntervals.delete(roomId);
+        }
         this.activeRoom = roomId;
         const win = document.getElementById('chat-window');
         if (win) win.classList.remove('hidden');
@@ -56,7 +64,9 @@ class ChatService {
                 this.updateMessageStatus(msg);
             });
         } catch (e) {
-            console.warn('LiveQuery subscription failed', e);
+            console.warn('LiveQuery subscription failed, using polling', e);
+            const interval = setInterval(() => this.loadMessages(roomId), 3000);
+            this.roomPollIntervals.set(roomId, interval);
         }
     }
 
@@ -68,9 +78,12 @@ class ChatService {
         const msgs = await q.find();
         const container = document.getElementById('chat-messages') || document.getElementById('chat-messages-overlay');
         if (!container) return;
+        const currentIds = Array.from(container.querySelectorAll('.message')).map(el => el.dataset.id);
+        const newIds = msgs.map(m => m.id);
+        if (currentIds.join(',') === newIds.join(',')) return;
         container.innerHTML = msgs.map(m => {
             const sender = m.get('sender');
-            const username = sender ? sender.get('username') : 'Unknown';
+            const username = sender ? sender.get('displayName') || sender.get('username') : 'Unknown';
             const isSent = sender && sender.id === this.app.currentUser.id;
             const readBy = m.get('readBy') || [];
             const readIndicator = isSent && readBy.length > 0 ? ' ✓✓' : isSent ? ' ✓' : '';
@@ -82,13 +95,24 @@ class ChatService {
         container.scrollTop = container.scrollHeight;
     }
 
+    updateMessageStatus(msg) {
+        const el = document.querySelector(`.message[data-id="${msg.id}"]`);
+        if (el) {
+            const readBy = msg.get('readBy') || [];
+            const timeSpan = el.querySelector('.message-time');
+            if (timeSpan) timeSpan.textContent = `${formatTime(msg.createdAt)} ${readBy.length > 0 ? '✓✓' : '✓'}`;
+        }
+    }
+
     appendMessage(msg) {
         const container = document.getElementById('chat-messages') || document.getElementById('chat-messages-overlay');
         if (!container) return;
         const div = document.createElement('div');
         const sender = msg.get('sender');
-        const username = sender ? sender.get('username') : 'Unknown';
-        div.className = `message ${sender && sender.id === this.app.currentUser.id ? 'sent' : 'received'}`;
+        const username = sender ? sender.get('displayName') || sender.get('username') : 'Unknown';
+        const isSent = sender && sender.id === this.app.currentUser.id;
+        div.className = `message ${isSent ? 'sent' : 'received'}`;
+        div.dataset.id = msg.id;
         div.innerHTML = `<strong>${username}</strong>: ${msg.get('text')}
                          <span class="message-time">${formatTime(msg.createdAt)}</span>`;
         container.appendChild(div);
@@ -102,15 +126,6 @@ class ChatService {
             readBy.push(this.app.currentUser.id);
             msg.set('readBy', readBy);
             await msg.save();
-        }
-    }
-
-    updateMessageStatus(msg) {
-        const el = document.querySelector(`.message[data-id="${msg.id}"]`);
-        if (el) {
-            const readBy = msg.get('readBy') || [];
-            const timeSpan = el.querySelector('.message-time');
-            if (timeSpan) timeSpan.textContent = `${formatTime(msg.createdAt)} ${readBy.length > 0 ? '✓✓' : '✓'}`;
         }
     }
 
@@ -159,6 +174,15 @@ class ChatService {
         s.set('encryptionLevel', 'high');
         await s.save();
         showNotification('Secure chat initiated');
+    }
+
+    cleanup() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+            this.subscription = null;
+        }
+        this.roomPollIntervals.forEach(interval => clearInterval(interval));
+        this.roomPollIntervals.clear();
     }
 }
 
