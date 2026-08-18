@@ -9,8 +9,10 @@
     <link rel="icon" href="assets/logo.svg">
     <link rel="apple-touch-icon" href="assets/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/6.1.1/parse.min.js"></script>
-    <!-- REMOVED: <script src="security.js"></script> -->
+    <!-- FIX: Load Parse from local file with CDN fallback -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/6.1.1/parse.min.js"
+            onerror="this.src='parse.min.js'"></script>
+    <!-- REMOVED: <script src="security.js"></script> to avoid duplicate VibeSecurity -->
     <style>
         :root {
             --vibe-black: #0D0D0D;
@@ -358,8 +360,8 @@
     // ============================================================
     // GLOBALS & HELPERS
     // ============================================================
-    Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU");
-    Parse.serverURL = 'https://vibelink0372.b4a.app/parse';
+    Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "u5GO2TsZzgeShi55nk16lyCRMht5G3fPdmE2jkPn");
+    Parse.serverURL = 'https://parseapi.back4app.com/';
 
     function showNotification(msg, type='success') {
         const n = document.getElementById('notification');
@@ -495,7 +497,6 @@
             this.encryptionKey = await this.deriveKey(password);
             this.initialized = true;
             this._resolveReady();
-            // Store key in sessionStorage for persistence across refreshes
             const exported = await this.exportKey(this.encryptionKey);
             sessionStorage.setItem('vibe_encryption_key', this.arrayBufferToBase64(exported));
         }
@@ -581,11 +582,10 @@
             if (!email || !password) return showNotification('Enter email and password', 'error');
             showLoading();
             try {
-                const q = new Parse.Query(Parse.User);
-                q.equalTo('email', email);
-                const found = await q.first({ useMasterKey: false });
-                if (!found) throw new Error('No account found with that email.');
-                const user = await Parse.User.logIn(found.get('username'), password);
+                // Log in directly with email as the Parse username.
+                // (No pre-query on _User needed — avoids Back4App CLP "find"
+                // permission requirements that previously blocked login.)
+                const user = await Parse.User.logIn(email.trim().toLowerCase(), password);
                 this.app.currentUser = user;
                 await window.vibeSecurity.setPassword(password);
                 this.app.showMainSection();
@@ -611,9 +611,11 @@
             showLoading();
             try {
                 const user = new Parse.User();
-                const uniqueId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
-                user.set('username', uniqueId);
-                user.set('email', email);
+                const normalizedEmail = email.trim().toLowerCase();
+                // Use email as the Parse username so login never needs a
+                // separate _User lookup query (see handleLogin note above).
+                user.set('username', normalizedEmail);
+                user.set('email', normalizedEmail);
                 user.set('password', password);
                 user.set('displayName', username);
                 user.set('bio', bio || '');
@@ -1585,6 +1587,7 @@
             await this.services.auth.checkAuthentication();
             await this.services.realtime.initialize();
             this.setupNavigation();
+            this.setupEventListeners();   // FIX: added missing call
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/service-worker.js')
                     .then(() => console.log('SW registered'))
