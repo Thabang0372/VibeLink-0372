@@ -1027,7 +1027,8 @@
                 if (!p) {
                     p = new Profile();
                     p.set('user', this.app.currentUser);
-                    p.set('avatar', 'assets/default-avatar.png');
+                    // FIXED: Do NOT set avatar to a string. Let it be null so the schema accepts it.
+                    // The frontend will automatically display 'assets/default-avatar.png' as fallback.
                     p.set('bio', this.app.currentUser.get('bio') || 'Welcome!');
                     p.set('verified', false);
                     await p.save();
