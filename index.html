@@ -306,7 +306,7 @@
 
         // -------------------- Parse Init --------------------
         Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU");
-        Parse.serverURL = 'https://vibelink0372.b4a.io';
+        Parse.serverURL = 'https://parseapi.back4app.com/';   // ✅ CORRECT URL
 
         // -------------------- Helpers --------------------
         function showNotification(msg, type = 'success') {
@@ -533,6 +533,7 @@
                 const password = document.getElementById('loginPassword')?.value;
                 if (!email || !password) return showNotification('Enter email and password', 'error');
                 try {
+                    // Log in with email as username (we set username = email on signup)
                     const user = await Parse.User.logIn(email.trim().toLowerCase(), password);
                     this.app.currentUser = user;
                     this.app.showMainSection();
@@ -551,6 +552,7 @@
                 if (!username || !email || !password) return showNotification('Fill all fields', 'error');
                 try {
                     const user = new Parse.User();
+                    // Use email as username to simplify login
                     user.set('username', email.trim().toLowerCase());
                     user.set('email', email.trim().toLowerCase());
                     user.set('password', password);
