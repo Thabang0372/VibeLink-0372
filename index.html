@@ -1791,4 +1791,1361 @@
     });
     </script>
 </body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeLink 0372® – Complete Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/6.1.1/parse.min.js"></script>
+    <style>
+        /* ── Full CSS from your style.css ── */
+        :root {
+            --vibe-black: #0D0D0D;
+            --solar-flame-orange: #FF5A1F;
+            --electric-cyan: #00E6E6;
+            --earth-green: #009966;
+            --sunrise-yellow: #FFD733;
+            --royal-purple: #8E3AFF;
+            --cloud-white: #F9F9F9;
+            --solar-gradient: linear-gradient(135deg, #FF5A1F, #FFD733);
+            --glass-bg: rgba(20,20,30,0.7);
+            --glass-border: rgba(255,255,255,0.1);
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(circle at top left, #1a1a2e, var(--vibe-black));
+            color: var(--cloud-white);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        .hidden { display:none !important; }
+
+        /* ── Auth Page (exact branding) ── */
+        .auth-container {
+            min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+            background:linear-gradient(135deg, var(--electric-cyan), var(--royal-purple), var(--vibe-black));
+            padding:2rem;
+        }
+        .logo-header { text-align:center; margin-bottom:2rem; }
+        .logo-header h1 {
+            font-size:2.8rem; font-weight:900;
+            background:var(--solar-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+        }
+        .logo-header .slogan { font-size:1.3rem; color:var(--cloud-white); opacity:0.9; margin-top:0.3rem; }
+        .auth-forms {
+            background:rgba(13,13,13,0.95); padding:2.5rem 2rem; border-radius:24px;
+            border:1px solid var(--electric-cyan); max-width:400px; width:100%; box-shadow:0 10px 40px rgba(0,230,230,0.15);
+        }
+        .auth-form { display:none; }
+        .auth-form.active { display:block; }
+        .auth-form h2 { margin-bottom:1.2rem; font-size:1.5rem; }
+        .auth-form input {
+            width:100%; padding:12px; margin:8px 0; border:1px solid var(--royal-purple); border-radius:16px;
+            background:rgba(255,255,255,0.08); color:white; font-size:1rem;
+        }
+        .vibe-button {
+            background:var(--solar-gradient); border:none; padding:14px 24px; border-radius:30px;
+            font-weight:bold; cursor:pointer; width:100%; transition:0.2s; color:var(--vibe-black); font-size:1.1rem;
+        }
+        .vibe-button:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,90,31,0.4); }
+        .auth-switch { margin-top:1rem; font-size:0.9rem; color:#ccc; }
+        .auth-switch a { color:var(--electric-cyan); cursor:pointer; text-decoration:underline; }
+        .auth-footer {
+            margin-top:2.5rem; text-align:center; font-size:8px; opacity:0.7;
+            max-width:400px; width:100%; line-height:1.6; color:var(--cloud-white);
+        }
+        .auth-footer p { margin:0; }
+
+        /* ── Main App ── */
+        .main-section { display:none; flex-direction:column; min-height:100vh; }
+        .main-section.active { display:flex; }
+        .main-nav {
+            display:flex; justify-content:space-between; align-items:center;
+            background:rgba(0,0,0,0.85); padding:12px 20px; backdrop-filter:blur(10px);
+            border-bottom:1px solid var(--glass-border); position:sticky; top:0; z-index:999;
+        }
+        .nav-links { display:flex; flex-wrap:wrap; gap:8px; }
+        .nav-link { color:white; text-decoration:none; padding:6px 14px; border-radius:20px; transition:0.2s; }
+        .nav-link.active { background:var(--solar-flame-orange); font-weight:600; }
+        .logout-btn { background:var(--solar-flame-orange); border:none; padding:8px 20px; border-radius:30px; font-weight:bold; cursor:pointer; color:var(--vibe-black); }
+        .bottom-nav {
+            position:fixed; bottom:0; left:0; right:0; height:75px;
+            background:var(--glass-bg); backdrop-filter:blur(20px); border-top:1px solid var(--glass-border);
+            display:flex; justify-content:space-around; align-items:center; z-index:1000;
+        }
+        .nav-item { display:flex; flex-direction:column; align-items:center; color:#ccc; opacity:0.7; cursor:pointer; transition:0.2s; }
+        .nav-item.active { opacity:1; color:var(--electric-cyan); }
+        .nav-item i { font-size:24px; }
+        .nav-item span { font-size:11px; margin-top:4px; }
+        .create-button {
+            width:55px; height:55px; background:var(--solar-gradient); border-radius:30px;
+            display:flex; align-items:center; justify-content:center; margin-top:-25px;
+            box-shadow:0 4px 20px rgba(255,90,31,0.5); border:3px solid var(--vibe-black); cursor:pointer;
+        }
+        .content-section { display:none; padding:20px; max-width:1100px; margin:0 auto; }
+        .content-section.active { display:block; }
+        .card {
+            background:rgba(255,255,255,0.06); border:1px solid var(--glass-border); border-radius:16px;
+            padding:16px; margin-bottom:16px;
+        }
+        .post {
+            background:var(--glass-bg); backdrop-filter:blur(10px); border:1px solid var(--glass-border);
+            border-radius:24px; padding:16px; margin-bottom:16px; box-shadow:var(--card-shadow);
+        }
+        .post-header { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+        .post-avatar { width:44px; height:44px; border-radius:50%; border:2px solid var(--electric-cyan); }
+        .post-author { font-weight:700; color:var(--sunrise-yellow); }
+        .post-time { font-size:0.8rem; opacity:0.7; margin-left:auto; }
+        .post-content { margin-bottom:12px; word-break:break-word; }
+        .post-actions { display:flex; gap:20px; border-top:1px solid var(--glass-border); padding-top:12px; }
+        .post-action { background:none; border:none; color:var(--cloud-white); cursor:pointer; }
+        .chat-messages { height:300px; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; }
+        .message { max-width:80%; padding:10px 16px; border-radius:20px; }
+        .message.sent { align-self:flex-end; background:var(--solar-gradient); color:var(--vibe-black); }
+        .message.received { align-self:flex-start; background:rgba(255,255,255,0.12); }
+        .chat-input-container { display:flex; gap:10px; padding:12px 0; }
+        .chat-input-container input { flex:1; padding:12px; border-radius:30px; border:1px solid var(--royal-purple); background:rgba(0,0,0,0.4); color:white; }
+        .wallet-balance { font-size:2.5rem; color:var(--earth-green); margin:20px 0; }
+        .grid-2col { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+        .stories-container { display:flex; gap:16px; overflow-x:auto; padding:16px 0; margin-bottom:16px; }
+        .story-item { text-align:center; min-width:70px; cursor:pointer; }
+        .story-avatar { width:64px; height:64px; border-radius:50%; padding:3px; background:linear-gradient(45deg,var(--solar-flame-orange),var(--sunrise-yellow),var(--royal-purple)); }
+        .story-avatar img { width:100%; height:100%; border-radius:50%; border:2px solid var(--vibe-black); }
+        @media (max-width:768px) { .main-nav .nav-links { display:none; } .bottom-nav { display:flex; } }
+        @media (min-width:769px) { .bottom-nav { display:none; } }
+        .notification {
+            position:fixed; bottom:20px; left:20px; right:20px;
+            background:var(--earth-green); color:white; padding:12px; border-radius:30px;
+            text-align:center; z-index:9999; display:none;
+        }
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:10000; }
+        .modal-overlay.active { display:flex; }
+        .modal-content { background:var(--vibe-black); border-radius:24px; padding:2rem; max-width:500px; width:100%; border:1px solid var(--electric-cyan); }
+    </style>
+</head>
+<body>
+    <!-- ==================== AUTH SECTION ==================== -->
+    <div id="auth-section" class="auth-container">
+        <div class="logo-header">
+            <h1>VibeLink 0372®</h1>
+            <p class="slogan">Where the World Vibe Starts 🌍🔥</p>
+        </div>
+        <div class="auth-forms">
+            <div id="login-form" class="auth-form active">
+                <h2>Sign In</h2>
+                <form id="loginForm">
+                    <input type="email" id="loginEmail" placeholder="📧 Email" required>
+                    <input type="password" id="loginPassword" placeholder="🔒 Password" required>
+                    <button type="submit" class="vibe-button">🚀 Sign In</button>
+                </form>
+                <p class="auth-switch">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+            </div>
+            <div id="signup-form" class="auth-form">
+                <h2>Create Account</h2>
+                <form id="signupForm">
+                    <input type="text" id="signupUsername" placeholder="👤 Username" required>
+                    <input type="email" id="signupEmail" placeholder="📧 Email" required>
+                    <input type="password" id="signupPassword" placeholder="🔒 Password" required>
+                    <button type="submit" class="vibe-button">🌟 Create Account</button>
+                </form>
+                <p class="auth-switch">Already have an account? <a href="#" id="show-login">Sign In</a></p>
+            </div>
+        </div>
+        <div class="auth-footer">
+            <p>© 2025 VibeLink 0372® — Built by Thabang Agondo<br>
+            Created by: Kasi Vibe Foundation &amp; Projects NPC 🧠<br>
+            Powered by Unity. ✊ Driven by You.</p>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN APP ==================== -->
+    <div id="main-section" class="main-section">
+        <nav class="main-nav">
+            <div class="nav-links">
+                <a href="#" class="nav-link active" data-section="home">🏠 Home</a>
+                <a href="#" class="nav-link" data-section="profile">👤 Profile</a>
+                <a href="#" class="nav-link" data-section="chat">💬 Chat</a>
+                <a href="#" class="nav-link" data-section="wallet">💰 Wallet</a>
+                <a href="#" class="nav-link" data-section="marketplace">🛒 Market</a>
+                <a href="#" class="nav-link" data-section="learning">📚 Learn</a>
+                <a href="#" class="nav-link" data-section="gaming">🎮 Games</a>
+                <a href="#" class="nav-link" data-section="settings">⚙️ Settings</a>
+                <a href="#" class="nav-link" data-section="ar">🕶️ AR</a>
+                <a href="#" class="nav-link" data-section="qa">❓ Q&A</a>
+                <a href="#" class="nav-link" data-section="events">📅 Events</a>
+                <a href="#" class="nav-link" data-section="communities">👥 Communities</a>
+                <a href="#" class="nav-link" data-section="discovery">🔍 Discovery</a>
+            </div>
+            <button id="logout-btn" class="logout-btn">🚪 Logout</button>
+        </nav>
+        <main>
+            <!-- HOME -->
+            <div id="home-section" class="content-section active">
+                <div class="stories-container" id="stories-container"></div>
+                <div style="display:flex; gap:10px; margin-bottom:16px;">
+                    <input type="text" id="home-post-input" placeholder="What's vibing today? 🎵" style="flex:1; padding:12px; border-radius:30px; border:1px solid var(--royal-purple); background:rgba(0,0,0,0.4); color:white;">
+                    <button id="home-post-btn" class="vibe-button" style="width:auto; padding:10px 24px;">Post</button>
+                </div>
+                <div id="home-feed"></div>
+                <div id="ai-suggestions" class="grid-2col"></div>
+            </div>
+            <!-- PROFILE -->
+            <div id="profile-section" class="content-section">
+                <h2>👤 Profile</h2>
+                <div id="profile-info"></div>
+                <div id="profile-posts"></div>
+            </div>
+            <!-- CHAT -->
+            <div id="chat-section" class="content-section">
+                <h2>💬 Chat</h2>
+                <div id="chat-rooms-list"></div>
+                <div id="chat-messages" class="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input type="text" id="message-input" placeholder="Type a message...">
+                    <button id="send-message" class="vibe-button" style="width:auto; padding:10px 24px;">Send</button>
+                </div>
+            </div>
+            <!-- WALLET -->
+            <div id="wallet-section" class="content-section">
+                <h2>💰 Wallet</h2>
+                <div class="wallet-balance">Balance: <span id="wallet-balance">0</span> VIBE</div>
+                <button id="add-funds-btn" class="vibe-button" style="width:auto;">Add Funds</button>
+                <button id="send-money-btn" class="vibe-button" style="width:auto;">Send</button>
+                <button id="send-tip-btn" class="vibe-button" style="width:auto;">Send Tip</button>
+                <div id="transactions-list"></div>
+            </div>
+            <!-- MARKETPLACE -->
+            <div id="marketplace-section" class="content-section">
+                <h2>🛒 Marketplace</h2>
+                <button id="create-listing-btn" class="vibe-button" style="width:auto;">List Item</button>
+                <div id="marketplace-items" class="grid-2col"></div>
+            </div>
+            <!-- LEARNING -->
+            <div id="learning-section" class="content-section">
+                <h2>📚 Learning</h2>
+                <button id="create-course-btn" class="vibe-button" style="width:auto;">Create Course</button>
+                <div id="courses-list" class="grid-2col"></div>
+            </div>
+            <!-- GAMING -->
+            <div id="gaming-section" class="content-section">
+                <h2>🎮 Games</h2>
+                <button id="create-game-session-btn" class="vibe-button" style="width:auto;">Create Session</button>
+                <div id="game-sessions-list" class="grid-2col"></div>
+            </div>
+            <!-- SETTINGS -->
+            <div id="settings-section" class="content-section">
+                <h2>⚙️ Settings</h2>
+                <button id="export-data-btn" class="vibe-button" style="width:auto;">Export Data</button>
+            </div>
+            <!-- AR -->
+            <div id="ar-section" class="content-section">
+                <h2>🕶️ AR Experiences</h2>
+                <button id="create-ar-btn" class="vibe-button" style="width:auto;">Create AR</button>
+                <div id="ar-list" class="grid-2col"></div>
+            </div>
+            <!-- Q&A -->
+            <div id="qa-section" class="content-section">
+                <h2>❓ Q&A</h2>
+                <button id="ask-question-btn" class="vibe-button" style="width:auto;">Ask Question</button>
+                <div id="qa-list" class="grid-2col"></div>
+            </div>
+            <!-- EVENTS -->
+            <div id="events-section" class="content-section">
+                <h2>📅 Events</h2>
+                <button id="create-event-btn" class="vibe-button" style="width:auto;">Create Event</button>
+                <div id="events-list" class="grid-2col"></div>
+            </div>
+            <!-- COMMUNITIES -->
+            <div id="communities-section" class="content-section">
+                <h2>👥 Communities</h2>
+                <button id="create-community-btn" class="vibe-button" style="width:auto;">Create Community</button>
+                <div id="communities-grid" class="grid-2col"></div>
+            </div>
+            <!-- DISCOVERY -->
+            <div id="discovery-section" class="content-section">
+                <h2>🔍 Discovery</h2>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="search-input" placeholder="Search..." style="flex:1; padding:12px; border-radius:30px; border:1px solid var(--royal-purple); background:rgba(0,0,0,0.4); color:white;">
+                    <button id="search-btn" class="vibe-button" style="width:auto;">Search</button>
+                </div>
+                <div id="recommendations-grid" class="grid-2col"></div>
+                <div id="challenges-list" class="grid-2col"></div>
+            </div>
+        </main>
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item" data-section="home"><i class="fas fa-home"></i><span>Home</span></div>
+            <div class="nav-item" data-section="discovery"><i class="fas fa-compass"></i><span>Discover</span></div>
+            <div class="nav-item-create"><div class="create-button" id="floating-create-btn"><i class="fas fa-plus"></i></div></div>
+            <div class="nav-item" data-section="chat"><i class="fas fa-comment"></i><span>Chat</span></div>
+            <div class="nav-item" data-section="profile"><i class="fas fa-user"></i><span>Profile</span></div>
+        </div>
+    </div>
+
+    <!-- Notification & Modal -->
+    <div id="notification" class="notification"></div>
+    <div id="modal-container" class="modal-overlay"><div class="modal-content" id="modal-content"></div></div>
+
+    <script>
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  VibeLink 0372® — ALL 102 FILES IN ONE HTML
+        //  Includes every client‑side service, encryption, offline queue,
+        //  real‑time subscriptions, and full UI.
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        // -------------------- Parse Init --------------------
+        Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU");
+        Parse.serverURL = 'https://vibelink0372.b4a.io';
+
+        // -------------------- Helpers --------------------
+        function showNotification(msg, type = 'success') {
+            const n = document.getElementById('notification');
+            n.textContent = msg;
+            n.style.background = type === 'error' ? '#FF5A1F' : '#009966';
+            n.style.display = 'block';
+            clearTimeout(n._timeout);
+            n._timeout = setTimeout(() => n.style.display = 'none', 3000);
+        }
+        function sanitize(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        function formatTime(date) { return new Date(date).toLocaleString(); }
+        function openModal(html) {
+            document.getElementById('modal-content').innerHTML = html;
+            document.getElementById('modal-container').classList.add('active');
+        }
+        function closeModal() {
+            document.getElementById('modal-container').classList.remove('active');
+        }
+        document.getElementById('modal-container').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+
+        // -------------------- Encryption Service --------------------
+        class EncryptionService {
+            constructor() {
+                this.masterKey = null;
+                this.initialized = false;
+                this.ready = new Promise(resolve => { this._resolveReady = resolve; });
+            }
+            async initialize() {
+                if (!window.crypto?.subtle) throw new Error('Web Crypto not supported');
+                await this.loadOrGenerateMasterKey();
+                this.initialized = true;
+                this._resolveReady();
+            }
+            async loadOrGenerateMasterKey() {
+                const stored = localStorage.getItem('vibe_master_key');
+                if (stored) {
+                    this.masterKey = await crypto.subtle.importKey('raw', this.base64ToArrayBuffer(stored), { name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+                } else {
+                    this.masterKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+                    const exported = await crypto.subtle.exportKey('raw', this.masterKey);
+                    localStorage.setItem('vibe_master_key', this.arrayBufferToBase64(exported));
+                }
+            }
+            async encrypt(data) {
+                await this.ready;
+                const enc = new TextEncoder().encode(JSON.stringify(data));
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, this.masterKey, enc);
+                return { iv: this.arrayBufferToBase64(iv), data: this.arrayBufferToBase64(encrypted) };
+            }
+            async decrypt(payload) {
+                await this.ready;
+                const iv = this.base64ToArrayBuffer(payload.iv);
+                const data = this.base64ToArrayBuffer(payload.data);
+                const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, this.masterKey, data);
+                return JSON.parse(new TextDecoder().decode(decrypted));
+            }
+            arrayBufferToBase64(buffer) {
+                const bytes = new Uint8Array(buffer);
+                let bin = '';
+                for (let i = 0; i < bytes.byteLength; i++) bin += String.fromCharCode(bytes[i]);
+                return btoa(bin);
+            }
+            base64ToArrayBuffer(base64) {
+                const bin = atob(base64);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                return bytes.buffer;
+            }
+        }
+        const encryption = new EncryptionService();
+        encryption.initialize();
+
+        // -------------------- Offline Queue --------------------
+        class OfflineQueue {
+            constructor() {
+                this.queue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+                this.syncing = false;
+                window.addEventListener('online', () => this.sync());
+            }
+            add(action) {
+                action.id = Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                action.timestamp = Date.now();
+                this.queue.push(action);
+                localStorage.setItem('offlineQueue', JSON.stringify(this.queue));
+                if (navigator.onLine) this.sync();
+            }
+            async sync() {
+                if (this.syncing || this.queue.length === 0 || !navigator.onLine) return;
+                this.syncing = true;
+                showNotification(`Syncing ${this.queue.length} offline actions...`, 'warning');
+                const failed = [];
+                for (const action of this.queue) {
+                    try {
+                        switch (action.type) {
+                            case 'post':
+                                await Parse.Cloud.run('createPost', { content: action.data.content, userId: Parse.User.current().id });
+                                break;
+                            case 'like':
+                                await Parse.Cloud.run('toggleLike', { postId: action.data.postId, userId: Parse.User.current().id });
+                                break;
+                            case 'comment':
+                                await Parse.Cloud.run('addComment', { postId: action.data.postId, text: action.data.text, userId: Parse.User.current().id });
+                                break;
+                            case 'message':
+                                await Parse.Cloud.run('sendMessage', { roomId: action.data.roomId, text: action.data.text, userId: Parse.User.current().id });
+                                break;
+                            case 'addFunds':
+                                await Parse.Cloud.run('addFunds', { amount: action.data.amount, userId: Parse.User.current().id });
+                                break;
+                            case 'sendMoney':
+                                await Parse.Cloud.run('sendMoney', { toUserId: action.data.toUserId, amount: action.data.amount, userId: Parse.User.current().id });
+                                break;
+                            default: throw new Error('Unknown action');
+                        }
+                    } catch (e) { failed.push(action); }
+                }
+                this.queue = failed;
+                localStorage.setItem('offlineQueue', JSON.stringify(this.queue));
+                this.syncing = false;
+                if (failed.length === 0) showNotification('All offline actions synced ✅');
+                else showNotification(`${failed.length} actions failed to sync.`, 'error');
+            }
+        }
+        const offlineQueue = new OfflineQueue();
+
+        // -------------------- Realtime Manager --------------------
+        class RealtimeManager {
+            constructor(app) {
+                this.app = app;
+                this.subscriptions = new Map();
+                this.pollIntervals = new Map();
+            }
+            async initialize() {
+                try {
+                    const Post = Parse.Object.extend('Post');
+                    const postSub = await new Parse.Query(Post).subscribe();
+                    postSub.on('create', () => this.app.services.posts?.loadFeed());
+                    this.subscriptions.set('posts', postSub);
+                    const Message = Parse.Object.extend('Message');
+                    const msgSub = await new Parse.Query(Message).subscribe();
+                    msgSub.on('create', () => this.app.services.chat?.loadMessages());
+                    this.subscriptions.set('messages', msgSub);
+                    console.log('✅ LiveQuery active');
+                } catch (e) {
+                    console.warn('LiveQuery failed, using polling', e);
+                    const interval = setInterval(() => this.app.services.posts?.loadFeed(), 10000);
+                    this.pollIntervals.set('posts', interval);
+                    const msgInterval = setInterval(() => this.app.services.chat?.loadMessages(), 5000);
+                    this.pollIntervals.set('messages', msgInterval);
+                }
+            }
+            unsubscribeAll() {
+                this.subscriptions.forEach(sub => sub.unsubscribe());
+                this.subscriptions.clear();
+                this.pollIntervals.forEach(interval => clearInterval(interval));
+                this.pollIntervals.clear();
+            }
+        }
+
+        // -------------------- All Services --------------------
+        // (Each class is the exact implementation from your 102 files,
+        //  adapted to use Parse.Cloud.run where appropriate.)
+
+        // AIService
+        class AIService {
+            constructor(app) { this.app = app; }
+            async trackUserBehavior(action, data) {
+                try { await Parse.Cloud.run('trackBehavior', { action, data, userId: this.app.currentUser.id }); } catch(e){}
+            }
+            async getAISuggestions(context) {
+                try { return await Parse.Cloud.run('getAISuggestions', { context, userId: this.app.currentUser.id }); } catch(e){ return {}; }
+            }
+        }
+
+        // ARService
+        class ARService {
+            constructor(app) { this.app = app; }
+            async createExperience(type, interactiveObjects = [], filters = []) {
+                try {
+                    await Parse.Cloud.run('createARExperience', { type, interactiveObjects, filters, userId: this.app.currentUser.id });
+                    showNotification('AR experience created');
+                    await this.loadExperiences();
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async loadExperiences() {
+                try {
+                    const exps = await Parse.Cloud.run('getARExperiences', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('ar-list');
+                    if (container) {
+                        container.innerHTML = exps.map(e => `<div class="card"><h4>${sanitize(e.experienceType)}</h4><p>By ${sanitize(e.creator.displayName||e.creator.username)}</p><button onclick="alert('AR viewer coming')">View</button></div>`).join('');
+                    }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+        }
+
+        // AuthService
+        class AuthService {
+            constructor(app) { this.app = app; }
+            async checkAuthentication() {
+                try {
+                    this.app.currentUser = Parse.User.current();
+                    if (this.app.currentUser) {
+                        this.app.showMainSection();
+                        this.app.hideAuthSection();
+                        await this.app.loadInitialData();
+                    } else {
+                        this.app.showAuthSection();
+                        this.app.hideMainSection();
+                    }
+                    return this.app.currentUser;
+                } catch (e) { this.app.showAuthSection(); return null; }
+            }
+            async handleLogin(e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail')?.value;
+                const password = document.getElementById('loginPassword')?.value;
+                if (!email || !password) return showNotification('Enter email and password', 'error');
+                try {
+                    const user = await Parse.User.logIn(email.trim().toLowerCase(), password);
+                    this.app.currentUser = user;
+                    this.app.showMainSection();
+                    this.app.hideAuthSection();
+                    await this.app.services.wallet?.ensureWalletExists();
+                    await this.app.services.profile?.ensureProfileExists();
+                    await this.app.loadInitialData();
+                    showNotification('Welcome back!');
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async handleSignup(e) {
+                e.preventDefault();
+                const username = document.getElementById('signupUsername')?.value;
+                const email = document.getElementById('signupEmail')?.value;
+                const password = document.getElementById('signupPassword')?.value;
+                if (!username || !email || !password) return showNotification('Fill all fields', 'error');
+                try {
+                    const user = new Parse.User();
+                    user.set('username', email.trim().toLowerCase());
+                    user.set('email', email.trim().toLowerCase());
+                    user.set('password', password);
+                    user.set('displayName', username);
+                    await user.signUp();
+                    this.app.currentUser = user;
+                    this.app.showMainSection();
+                    this.app.hideAuthSection();
+                    await this.app.services.wallet?.ensureWalletExists();
+                    await this.app.services.profile?.ensureProfileExists();
+                    await this.app.loadInitialData();
+                    showNotification('Account created!');
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async handleLogout() {
+                await Parse.User.logOut();
+                this.app.currentUser = null;
+                this.app.showAuthSection();
+                this.app.hideMainSection();
+                showNotification('Logged out');
+            }
+        }
+
+        // ChatService
+        class ChatService {
+            constructor(app) { this.app = app; this.activeRoom = null; this.subscription = null; this.pollIntervals = new Map(); }
+            async loadChatRooms() {
+                const q = new Parse.Query('VibeChatRoom').containedIn('members', [this.app.currentUser]);
+                const rooms = await q.find();
+                const container = document.getElementById('chat-rooms-list');
+                if (!container) return;
+                if (rooms.length === 0) { container.innerHTML = '<p>No chat rooms yet.</p>'; return; }
+                container.innerHTML = rooms.map(r => `<div class="chat-room" data-id="${r.id}"><strong>${sanitize(r.get('name'))}</strong> <small>${r.get('isGroup') ? 'Group' : 'Direct'}</small></div>`).join('');
+                container.querySelectorAll('.chat-room').forEach(el => { el.onclick = () => this.openRoom(el.dataset.id); });
+            }
+            async openRoom(roomId) {
+                this.activeRoom = roomId;
+                document.getElementById('chat-window')?.classList.remove('hidden');
+                const titleEl = document.getElementById('chat-title');
+                if (titleEl) { const room = await new Parse.Query('VibeChatRoom').get(roomId); titleEl.textContent = room.get('name'); }
+                await this.loadMessages(roomId);
+                if (this.subscription) { this.subscription.unsubscribe(); this.subscription = null; }
+                const query = new Parse.Query('Message').equalTo('chatRoom', { __type:'Pointer', className:'VibeChatRoom', objectId:roomId });
+                try {
+                    this.subscription = await query.subscribe();
+                    this.subscription.on('create', (msg) => {
+                        if (msg.get('sender').id !== this.app.currentUser.id) { this.appendMessage(msg); this.markAsRead(msg); }
+                    });
+                } catch (e) {
+                    console.warn('LiveQuery failed, polling fallback', e);
+                    const interval = setInterval(() => this.loadMessages(roomId), 3000);
+                    this.pollIntervals.set(roomId, interval);
+                }
+            }
+            async loadMessages(roomId) {
+                const q = new Parse.Query('Message')
+                    .equalTo('chatRoom', { __type:'Pointer', className:'VibeChatRoom', objectId:roomId })
+                    .include('sender')
+                    .ascending('createdAt');
+                const msgs = await q.find();
+                const container = document.getElementById('chat-messages');
+                if (!container) return;
+                const currentIds = Array.from(container.querySelectorAll('.message')).map(el => el.dataset.id);
+                const newIds = msgs.map(m => m.id);
+                if (currentIds.join(',') === newIds.join(',')) return;
+                container.innerHTML = msgs.map(m => {
+                    const sender = m.get('sender');
+                    const isSent = sender && sender.id === this.app.currentUser.id;
+                    let decrypted = m.get('text');
+                    if (m.get('encrypted')) {
+                        try {
+                            const enc = JSON.parse(m.get('text'));
+                            encryption.decrypt(enc).then(d => { decrypted = d; this.updateMessageText(m.id, d); });
+                            decrypted = '[Decrypting...]';
+                        } catch (e) { decrypted = '[Encrypted]'; }
+                    }
+                    return `<div class="message ${isSent ? 'sent' : 'received'}" data-id="${m.id}"><strong>${sanitize(displayNameOf(sender))}</strong>: ${sanitize(decrypted)} <span class="message-time">${formatTime(m.createdAt)}</span></div>`;
+                }).join('');
+                container.scrollTop = container.scrollHeight;
+            }
+            updateMessageText(msgId, text) {
+                const el = document.querySelector(`.message[data-id="${msgId}"]`);
+                if (el) {
+                    const parts = el.innerHTML.split('</strong>: ');
+                    if (parts.length === 2) {
+                        el.innerHTML = parts[0] + '</strong>: ' + sanitize(text) + ' <span class="message-time">' + parts[1].split('<span')[1];
+                    }
+                }
+            }
+            appendMessage(msg) {
+                const container = document.getElementById('chat-messages');
+                if (!container) return;
+                const sender = msg.get('sender');
+                const isSent = sender && sender.id === this.app.currentUser.id;
+                let decrypted = msg.get('text');
+                if (msg.get('encrypted')) {
+                    try {
+                        const enc = JSON.parse(msg.get('text'));
+                        encryption.decrypt(enc).then(d => { decrypted = d; this.updateMessageText(msg.id, d); });
+                        decrypted = '[Decrypting...]';
+                    } catch (e) { decrypted = '[Encrypted]'; }
+                }
+                const div = document.createElement('div');
+                div.className = `message ${isSent ? 'sent' : 'received'}`;
+                div.dataset.id = msg.id;
+                div.innerHTML = `<strong>${sanitize(displayNameOf(sender))}</strong>: ${sanitize(decrypted)} <span class="message-time">${formatTime(msg.createdAt)}</span>`;
+                container.appendChild(div);
+                container.scrollTop = container.scrollHeight;
+            }
+            async markAsRead(msg) {
+                if (msg.get('sender').id === this.app.currentUser.id) return;
+                try { await Parse.Cloud.run('markMessageRead', { messageId: msg.id, userId: this.app.currentUser.id }); } catch(e){}
+            }
+            async sendMessage(text) {
+                if (!this.activeRoom || !text.trim()) return;
+                if (!navigator.onLine) { offlineQueue.add({ type:'message', data:{ roomId:this.activeRoom, text } }); return showNotification('Message queued', 'warning'); }
+                try {
+                    await Parse.Cloud.run('sendMessage', { roomId:this.activeRoom, text, userId:this.app.currentUser.id });
+                    document.getElementById('message-input').value = '';
+                    await this.loadMessages(this.activeRoom);
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async createRoom(name, members = []) {
+                try {
+                    await Parse.Cloud.run('createChatRoom', { name, memberIds: members.map(m => m.id), userId:this.app.currentUser.id });
+                    showNotification('Room created');
+                    await this.loadChatRooms();
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async createAudioRoom(name) {
+                try { await Parse.Cloud.run('createAudioRoom', { name, userId:this.app.currentUser.id }); showNotification('Audio room created'); } catch(err){ showNotification(err.message, 'error'); }
+            }
+            async createSecureChat(receiverId) {
+                try { await Parse.Cloud.run('createSecureChat', { receiverId, userId:this.app.currentUser.id }); showNotification('Secure chat initiated'); } catch(err){ showNotification(err.message, 'error'); }
+            }
+        }
+
+        // CommunityService
+        class CommunityService {
+            constructor(app) { this.app = app; }
+            async createCommunity(data) {
+                try {
+                    await Parse.Cloud.run('createCommunity', { name:data.name, description:data.description, privacy:data.privacy||'public', userId:this.app.currentUser.id });
+                    showNotification('Community created');
+                    await this.loadCommunities();
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async loadCommunities() {
+                try {
+                    const comms = await Parse.Cloud.run('getCommunities', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('communities-grid');
+                    if (container) {
+                        container.innerHTML = comms.map(c => `<div class="card"><h4>${sanitize(c.name)}</h4><p>${sanitize(c.description||'')}</p><button data-id="${c.id}" class="view-community-btn">View</button></div>`).join('');
+                        container.querySelectorAll('.view-community-btn').forEach(b => b.onclick = () => this.viewCommunity(b.dataset.id));
+                    }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async viewCommunity(id) {
+                try {
+                    const c = await Parse.Cloud.run('getCommunity', { communityId:id, userId:this.app.currentUser.id });
+                    document.getElementById('communities-grid').classList.add('hidden');
+                    document.getElementById('selected-community-view').classList.remove('hidden');
+                    document.getElementById('community-name').textContent = c.name;
+                    const posts = await Parse.Cloud.run('getCommunityPosts', { communityId:id, userId:this.app.currentUser.id });
+                    let html = `<p><strong>Description:</strong> ${sanitize(c.description||'')}</p><p><strong>Members:</strong> ${c.memberCount}</p>`;
+                    html += `<button id="post-in-community-btn" class="vibe-button" style="margin:10px 0;">Post in Community</button>`;
+                    html += `<div id="community-posts-container">`;
+                    if (posts.length) { html += posts.map(p => `<div class="post"><strong>${sanitize(p.author.displayName||p.author.username)}</strong>: ${sanitize(p.content)}</div>`).join(''); } else { html += '<p>No posts yet.</p>'; }
+                    html += `</div>`;
+                    document.getElementById('community-posts').innerHTML = html;
+                    document.getElementById('post-in-community-btn').onclick = async () => {
+                        const content = prompt('Share something:');
+                        if (content) { await this.app.services.posts.createPost(content, { id }); await this.viewCommunity(id); }
+                    };
+                    document.getElementById('back-to-communities').onclick = () => {
+                        document.getElementById('selected-community-view').classList.add('hidden');
+                        document.getElementById('communities-grid').classList.remove('hidden');
+                    };
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async joinCommunity(id) {
+                try { await Parse.Cloud.run('joinCommunity', { communityId:id, userId:this.app.currentUser.id }); showNotification('Joined community'); } catch(err){ showNotification(err.message, 'error'); }
+            }
+        }
+
+        // DiscoveryService
+        class DiscoveryService {
+            constructor(app) { this.app = app; }
+            async loadRecommendations() {
+                try {
+                    const posts = await Parse.Cloud.run('getRecommendations', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('recommendations-grid');
+                    if (container) {
+                        container.innerHTML = posts.map(p => `<div class="card"><h4>${sanitize(p.author.displayName||p.author.username)}</h4><p>${sanitize(p.content)}</p></div>`).join('');
+                    }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async search(query) {
+                try { return await Parse.Cloud.run('searchContent', { query, userId: this.app.currentUser.id }); } catch(err){ showNotification('Search failed', 'error'); return []; }
+            }
+            async loadTrendingTags() {
+                const container = document.getElementById('trending-tags');
+                if (container) container.innerHTML = '<span>#VibeLink</span> <span>#Africa</span> <span>#Tech</span>';
+            }
+            async loadChallenges() {
+                try {
+                    const challenges = await Parse.Cloud.run('getChallenges', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('challenges-list');
+                    if (container) {
+                        container.innerHTML = challenges.map(c => `<div class="card"><h4>${sanitize(c.title)}</h4><button onclick="this.app.services.discovery.joinChallenge('${c.id}')">Join</button></div>`).join('');
+                    }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async joinChallenge(id) {
+                try { await Parse.Cloud.run('joinChallenge', { challengeId:id, userId:this.app.currentUser.id }); showNotification('Joined challenge'); } catch(err){ showNotification(err.message, 'error'); }
+            }
+        }
+
+        // EventService
+        class EventService {
+            constructor(app) { this.app = app; }
+            async createEvent(data) {
+                try {
+                    await Parse.Cloud.run('createEvent', { title:data.title, description:data.description, date:data.date, location:data.location||'Online', tickets:data.tickets||100, price:data.price||0, userId:this.app.currentUser.id });
+                    showNotification('Event created');
+                    await this.loadEvents();
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async loadEvents() {
+                try {
+                    const events = await Parse.Cloud.run('getEvents', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('events-list');
+                    if (container) {
+                        container.innerHTML = events.map(e => `<div class="card"><h4>${sanitize(e.title)}</h4><p>${sanitize(e.description)}</p><button data-id="${e.id}" class="rsvp-btn">RSVP</button></div>`).join('');
+                        container.querySelectorAll('.rsvp-btn').forEach(b => b.onclick = () => this.rsvp(b.dataset.id));
+                    }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async rsvp(eventId) {
+                try { await Parse.Cloud.run('rsvpEvent', { eventId, userId:this.app.currentUser.id }); showNotification('RSVP confirmed'); } catch(err){ showNotification(err.message, 'error'); }
+            }
+            async startLiveStream(title) {
+                try { await Parse.Cloud.run('startStream', { title, userId:this.app.currentUser.id }); showNotification('Live stream started'); await this.loadLiveStreams(); } catch(err){ showNotification(err.message, 'error'); }
+            }
+            async loadLiveStreams() {
+                try {
+                    const streams = await Parse.Cloud.run('getLiveStreams', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('live-streams-list');
+                    if (container) {
+                        container.innerHTML = streams.map(s => `<div class="card"><h4>${sanitize(s.title)}</h4><button onclick="alert('Watch stream ${s.id}')">Watch</button></div>`).join('');
+                    }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+        }
+
+        // GamingService
+        class GamingService {
+            constructor(app) { this.app = app; }
+            async createSession(data) {
+                try {
+                    await Parse.Cloud.run('createGameSession', { title:data.title, gameType:data.gameType, maxPlayers:data.maxPlayers||4, userId:this.app.currentUser.id });
+                    showNotification('Game session created');
+                    await this.loadSessions();
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async loadSessions() {
+                try {
+                    const sessions = await Parse.Cloud.run('getGameSessions', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('game-sessions-list');
+                    if (container) {
+                        container.innerHTML = sessions.map(s => `<div class="card"><h4>${sanitize(s.title)}</h4><p>${s.currentPlayers}/${s.maxPlayers}</p><button data-id="${s.id}" class="join-session-btn">Join</button></div>`).join('');
+                        container.querySelectorAll('.join-session-btn').forEach(b => b.onclick = () => this.joinSession(b.dataset.id));
+                    }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async joinSession(sessionId) {
+                try { await Parse.Cloud.run('joinGameSession', { sessionId, userId:this.app.currentUser.id }); showNotification('Joined game'); await this.loadSessions(); } catch(err){ showNotification(err.message, 'error'); }
+            }
+            async createTournament(data) {
+                try { await Parse.Cloud.run('createTournament', { title:data.title, gameType:data.gameType, maxParticipants:data.max, userId:this.app.currentUser.id }); showNotification('Tournament created'); } catch(err){ showNotification(err.message, 'error'); }
+            }
+        }
+
+        // LearningService
+        class LearningService {
+            constructor(app) { this.app = app; }
+            async createCourse(data) {
+                try {
+                    await Parse.Cloud.run('createCourse', { title:data.title, description:data.description, price:data.price||0, userId:this.app.currentUser.id });
+                    showNotification('Course created');
+                    await this.loadCourses();
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async loadCourses() {
+                try {
+                    const courses = await Parse.Cloud.run('getCourses', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('courses-list');
+                    if (container) {
+                        container.innerHTML = courses.map(c => `<div class="card"><h4>${sanitize(c.title)}</h4><p>${c.price} VIBE</p><button data-id="${c.id}" class="enroll-btn">Enroll</button></div>`).join('');
+                        container.querySelectorAll('.enroll-btn').forEach(b => b.onclick = () => this.enroll(b.dataset.id));
+                    }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async enroll(courseId) {
+                try { await Parse.Cloud.run('enrollCourse', { courseId, userId:this.app.currentUser.id }); showNotification('Enrolled'); } catch(err){ showNotification(err.message, 'error'); }
+            }
+            async createQuiz(data) {
+                try { await Parse.Cloud.run('createQuiz', { title:data.title, questions:data.questions, courseId:data.courseId, userId:this.app.currentUser.id }); showNotification('Quiz created'); } catch(err){ showNotification(err.message, 'error'); }
+            }
+        }
+
+        // MarketplaceService
+        class MarketplaceService {
+            constructor(app) { this.app = app; }
+            async createItem(data) {
+                try {
+                    await Parse.Cloud.run('createItem', { title:data.title, description:data.description, price:data.price, userId:this.app.currentUser.id });
+                    showNotification('Item listed');
+                    await this.loadItems();
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async loadItems() {
+                try {
+                    const items = await Parse.Cloud.run('getItems', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('marketplace-items');
+                    if (container) {
+                        container.innerHTML = items.map(i => `<div class="card"><h4>${sanitize(i.title)}</h4><p>${i.price} VIBE</p><button onclick="this.app.services.marketplace.addToCart('${i.id}')">Add to Cart</button></div>`).join('');
+                    }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async addToCart(itemId) {
+                try { await Parse.Cloud.run('addToCart', { itemId, userId:this.app.currentUser.id }); showNotification('Added to cart'); } catch(err){ showNotification(err.message, 'error'); }
+            }
+            async createGig(data) {
+                try {
+                    await Parse.Cloud.run('createGig', { skill:data.skill, description:data.desc, payment:data.payment, userId:this.app.currentUser.id });
+                    showNotification('Gig posted');
+                    await this.loadGigs();
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async loadGigs() {
+                try {
+                    const gigs = await Parse.Cloud.run('getGigs', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('vibe-gigs');
+                    if (container) {
+                        container.innerHTML = gigs.map(g => `<div class="card"><h4>${sanitize(g.skillNeeded)}</h4><p>${g.payment} VIBE</p><button onclick="this.app.services.marketplace.applyToGig('${g.id}')">Apply</button></div>`).join('');
+                    }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async applyToGig(gigId) {
+                try { await Parse.Cloud.run('applyToGig', { gigId, userId:this.app.currentUser.id }); showNotification('Applied'); } catch(err){ showNotification(err.message, 'error'); }
+            }
+        }
+
+        // NotificationService
+        class NotificationService {
+            constructor(app) { this.app = app; }
+            async createNotification(userId, type, message) {
+                try { await Parse.Cloud.run('createNotification', { userId, type, message, senderId:this.app.currentUser.id }); } catch(err){}
+            }
+            async markAsRead(notificationId) {
+                try { await Parse.Cloud.run('markNotificationRead', { notificationId, userId:this.app.currentUser.id }); } catch(err){}
+            }
+            async getUserNotifications(limit=20) {
+                try { return await Parse.Cloud.run('getNotifications', { limit, userId:this.app.currentUser.id }); } catch(err){ return []; }
+            }
+        }
+
+        // PostService
+        class PostService {
+            constructor(app) { this.app = app; this.skip=0; this.limit=10; this.loadingMore=false; }
+            async createPost(content, community = null) {
+                if (!content.trim()) return showNotification('Content cannot be empty', 'error');
+                if (!navigator.onLine) { offlineQueue.add({ type:'post', data:{ content, community: community ? community.id : null } }); return showNotification('Post queued for offline sync', 'warning'); }
+                try {
+                    await Parse.Cloud.run('createPost', { content, communityId: community ? community.id : null, userId: this.app.currentUser.id });
+                    showNotification('Post created!');
+                    this.skip = 0;
+                    await this.loadFeed();
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async loadFeed(append = false) {
+                if (this.loadingMore) return;
+                this.loadingMore = true;
+                try {
+                    const q = new Parse.Query('Post').include('author').descending('createdAt').skip(append ? this.skip : 0).limit(this.limit);
+                    const posts = await q.find();
+                    for (let p of posts) {
+                        const raw = p.get('content');
+                        if (typeof raw === 'string' && raw.startsWith('{') && raw.includes('"iv"')) {
+                            try {
+                                const dec = await encryption.decrypt(JSON.parse(raw));
+                                p.set('decryptedContent', dec);
+                            } catch (e) { p.set('decryptedContent', '[Encrypted]'); }
+                        } else {
+                            p.set('decryptedContent', raw || '');
+                        }
+                    }
+                    this.displayPosts(posts, append);
+                    this.skip += posts.length;
+                    this.loadingMore = false;
+                    return posts;
+                } catch (err) { this.loadingMore = false; showNotification('Failed to load feed', 'error'); return []; }
+            }
+            async loadFeedPosts() { this.skip = 0; await this.loadFeed(); }
+            async likePost(postId) {
+                if (!navigator.onLine) { offlineQueue.add({ type:'like', data:{ postId } }); return showNotification('Like queued', 'warning'); }
+                try { await Parse.Cloud.run('toggleLike', { postId, userId: this.app.currentUser.id }); await this.loadFeed(); } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async commentOnPost(postId, text) {
+                if (!text.trim()) return showNotification('Comment cannot be empty', 'error');
+                if (!navigator.onLine) { offlineQueue.add({ type:'comment', data:{ postId, text } }); return showNotification('Comment queued', 'warning'); }
+                try { await Parse.Cloud.run('addComment', { postId, text, userId: this.app.currentUser.id }); showNotification('Comment added'); await this.loadFeed(); } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async deletePost(postId) {
+                if (!confirm('Delete this post?')) return;
+                try { await Parse.Cloud.run('deletePost', { postId, userId: this.app.currentUser.id }); showNotification('Deleted'); this.skip=0; await this.loadFeed(); } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async sharePost(postId) {
+                try { await Parse.Cloud.run('sharePost', { postId, userId: this.app.currentUser.id }); showNotification('Shared'); await this.loadFeed(); } catch (err) { showNotification(err.message, 'error'); }
+            }
+            displayPosts(posts, append = false) {
+                const container = document.getElementById('home-feed');
+                if (!container) return;
+                const html = posts.map(p => {
+                    const author = p.get('author');
+                    const avatar = author.get('avatar');
+                    let avatarSrc = 'assets/default-avatar.png';
+                    if (avatar) { if (typeof avatar === 'string') avatarSrc = avatar; else if (avatar.url) avatarSrc = avatar.url(); }
+                    const name = author.get('displayName') || author.get('username') || 'User';
+                    const content = p.get('decryptedContent') || '';
+                    const likes = p.get('likesCount') || 0;
+                    const comments = p.get('commentCount') || 0;
+                    const isOwn = author.id === this.app.currentUser.id;
+                    return `<div class="post">
+                        <div class="post-header">
+                            <img src="${avatarSrc}" class="post-avatar">
+                            <span class="post-author">${sanitize(name)}</span>
+                            <span class="post-time">${formatTime(p.createdAt)}</span>
+                        </div>
+                        <div class="post-content">${sanitize(content)}</div>
+                        <div class="post-actions">
+                            <button class="post-action like-btn" data-id="${p.id}"><i class="far fa-heart"></i> ${likes}</button>
+                            <button class="post-action comment-btn" data-id="${p.id}"><i class="far fa-comment"></i> ${comments}</button>
+                            <button class="post-action share-btn" data-id="${p.id}"><i class="fas fa-share"></i></button>
+                            ${isOwn ? `<button class="post-action delete-btn" data-id="${p.id}"><i class="fas fa-trash"></i></button>` : ''}
+                        </div>
+                    </div>`;
+                }).join('');
+                container.innerHTML = append ? container.innerHTML + html : html;
+                container.querySelectorAll('.like-btn').forEach(b => b.onclick = () => this.likePost(b.dataset.id));
+                container.querySelectorAll('.comment-btn').forEach(b => b.onclick = () => { const txt = prompt('Your comment:'); if (txt) this.commentOnPost(b.dataset.id, txt); });
+                container.querySelectorAll('.delete-btn').forEach(b => b.onclick = () => this.deletePost(b.dataset.id));
+                container.querySelectorAll('.share-btn').forEach(b => b.onclick = () => this.sharePost(b.dataset.id));
+                if (posts.length === this.limit) {
+                    const more = document.createElement('button');
+                    more.textContent = 'Load More';
+                    more.className = 'vibe-button';
+                    more.style.margin = '1rem auto';
+                    more.onclick = () => this.loadFeed(true);
+                    container.appendChild(more);
+                }
+            }
+        }
+
+        // ProfileService
+        class ProfileService {
+            constructor(app) { this.app = app; }
+            async ensureProfileExists() {
+                const Profile = Parse.Object.extend('Profile');
+                let p = await new Parse.Query(Profile).equalTo('user', this.app.currentUser).first();
+                if (!p) {
+                    p = new Profile();
+                    p.set('user', this.app.currentUser);
+                    p.set('avatar', 'assets/default-avatar.png');
+                    p.set('bio', this.app.currentUser.get('bio') || 'Welcome!');
+                    p.set('verified', false);
+                    await p.save();
+                }
+                return p;
+            }
+            async loadProfileData() {
+                if (!this.app.currentUser) return;
+                const user = this.app.currentUser;
+                document.getElementById('profile-username-display').textContent = user.get('displayName') || user.get('username');
+                document.getElementById('profile-bio-display').textContent = user.get('bio') || 'No bio';
+                const stats = await this.getUserStats();
+                document.getElementById('profile-posts-count').textContent = `${stats.posts} posts`;
+                document.getElementById('profile-followers-count').textContent = `${stats.followers} followers`;
+                document.getElementById('profile-following-count').textContent = `${stats.following} following`;
+                await this.loadUserPosts();
+                await this.loadUserStories();
+            }
+            async getUserStats(userId = null) {
+                const target = userId ? { __type:'Pointer', className:'_User', objectId:userId } : this.app.currentUser;
+                const posts = await new Parse.Query('Post').equalTo('author', target).count();
+                const followers = await new Parse.Query('VibeFollow').equalTo('following', target).count();
+                const following = await new Parse.Query('VibeFollow').equalTo('follower', target).count();
+                return { posts, followers, following };
+            }
+            async loadUserPosts() {
+                const posts = await new Parse.Query('Post').equalTo('author', this.app.currentUser).descending('createdAt').find();
+                const container = document.getElementById('profile-posts');
+                if (container) {
+                    container.innerHTML = posts.map(p => `<div class="card"><p>${sanitize(p.get('content'))}</p><small>${formatTime(p.createdAt)}</small></div>`).join('');
+                }
+            }
+            async loadUserStories() {
+                const stories = await new Parse.Query('VibeStory').equalTo('author', this.app.currentUser).greaterThan('expiresAt', new Date()).find();
+                const container = document.getElementById('stories-container');
+                if (container) {
+                    container.innerHTML = stories.map(s => `<div class="story-item" onclick="this.app.services.profile.viewStory('${s.id}')"><div class="story-avatar"><img src="${s.get('media')?.url() || 'assets/default-avatar.png'}"></div><span>${sanitize(s.get('content'))}</span></div>`).join('');
+                }
+            }
+            async viewStory(storyId) {
+                const story = await new Parse.Query('VibeStory').get(storyId);
+                document.getElementById('story-viewer').classList.remove('hidden');
+                document.getElementById('story-username').textContent = story.get('author').get('displayName') || story.get('author').get('username');
+                document.getElementById('story-content').innerHTML = story.get('media') ? `<img src="${story.get('media').url()}" style="max-width:100%">` : `<p>${sanitize(story.get('content'))}</p>`;
+            }
+        }
+
+        // QAService
+        class QAService {
+            constructor(app) { this.app = app; }
+            async askQuestion(data) {
+                try { await Parse.Cloud.run('askQuestion', { question:data.question, topic:data.topic||'General', userId:this.app.currentUser.id }); showNotification('Question asked'); await this.loadQuestions(); } catch(err){ showNotification(err.message, 'error'); }
+            }
+            async loadQuestions() {
+                try {
+                    const questions = await Parse.Cloud.run('getQuestions', { userId: this.app.currentUser.id });
+                    const container = document.getElementById('qa-list');
+                    if (container) { container.innerHTML = questions.map(q => `<div class="card"><h4>${sanitize(q.title)}</h4><p>${sanitize(q.description)}</p></div>`).join(''); }
+                } catch (err) { showNotification(err.message, 'error'); }
+            }
+        }
+
+        // SettingsService
+        class SettingsService {
+            constructor(app) { this.app = app; }
+            async getUserSettings() {
+                try { return await Parse.Cloud.run('getUserSettings', { userId: this.app.currentUser.id }); } catch(err){ return {}; }
+            }
+            async displaySettings() {
+                const s = await this.getUserSettings();
+                const container = document.getElementById('user-settings-container');
+                if (container) { container.innerHTML = `<div class="card"><h4>Settings</h4><pre>${JSON.stringify(s, null, 2)}</pre></div>`; }
+            }
+            async exportUserData() {
+                showNotification('Exporting data...');
+                try {
+                    const data = await Parse.Cloud.run('exportUserData', { userId: this.app.currentUser.id });
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a'); a.href = url; a.download = 'vibelink-export.json'; a.click();
+                    showNotification('Data exported');
+                } catch (err) { showNotification('Export failed', 'error'); }
+            }
+        }
+
+        // WalletService
+        class WalletService {
+            constructor(app) { this.app = app; }
+            async ensureWalletExists() {
+                try { return await Parse.Cloud.run('ensureWallet', { userId: this.app.currentUser.id }); } catch(e){ console.warn(e); return null; }
+            }
+            async ensureLoyaltyProgramExists() {
+                try { return await Parse.Cloud.run('ensureLoyalty', { userId: this.app.currentUser.id }); } catch(e){ console.warn(e); return null; }
+            }
+            async getBalance() {
+                try { const res = await Parse.Cloud.run('getBalance', { userId: this.app.currentUser.id }); return res.balance; } catch(e){ return 0; }
+            }
+            async addFunds(amount) {
+                if (!navigator.onLine) { offlineQueue.add({ type:'addFunds', data:{ amount } }); return showNotification('Funds request queued', 'warning'); }
+                try { await Parse.Cloud.run('addFunds', { amount, userId: this.app.currentUser.id }); showNotification(`Added ${amount} VIBE`); await this.displayWalletInfo(); } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async sendMoney(toUserId, amount) {
+                if (!navigator.onLine) { offlineQueue.add({ type:'sendMoney', data:{ toUserId, amount } }); return showNotification('Transfer queued', 'warning'); }
+                try { await Parse.Cloud.run('sendMoney', { toUserId, amount, userId: this.app.currentUser.id }); showNotification(`Sent ${amount} VIBE`); await this.displayWalletInfo(); } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async sendTip(creatorId, amount, message) {
+                if (!navigator.onLine) { offlineQueue.add({ type:'sendTip', data:{ creatorId, amount, message } }); return showNotification('Tip queued', 'warning'); }
+                try { await Parse.Cloud.run('sendTip', { creatorId, amount, message, userId: this.app.currentUser.id }); showNotification('Tip sent'); await this.displayWalletInfo(); } catch (err) { showNotification(err.message, 'error'); }
+            }
+            async addLoyaltyPoints(points) {
+                try { await Parse.Cloud.run('addLoyaltyPoints', { points, userId: this.app.currentUser.id }); } catch(e){}
+            }
+            async getTransactionHistory() {
+                try { return await Parse.Cloud.run('getTransactions', { userId: this.app.currentUser.id }); } catch(e){ return []; }
+            }
+            async displayWalletInfo() {
+                try {
+                    const balance = await this.getBalance();
+                    document.getElementById('wallet-balance-display').textContent = balance;
+                    document.getElementById('wallet-balance').textContent = balance;
+                    const loyalty = await Parse.Cloud.run('getLoyalty', { userId: this.app.currentUser.id });
+                    document.getElementById('loyalty-points-display').textContent = loyalty.points;
+                    document.getElementById('loyalty-level-display').textContent = loyalty.level;
+                    const txns = await this.getTransactionHistory();
+                    const list = document.getElementById('transactions-list');
+                    if (list) list.innerHTML = txns.map(t => `<div>${sanitize(t.description)}: ${t.amount} VIBE</div>`).join('');
+                } catch (err) { showNotification('Failed to load wallet', 'error'); }
+            }
+            async checkoutCart() { showNotification('Checkout coming soon'); }
+        }
+
+        // -------------------- Global App --------------------
+        function displayNameOf(user) {
+            if (!user) return 'Unknown';
+            if (typeof user === 'string') return user;
+            return user.get('displayName') || user.get('username') || 'User';
+        }
+
+        let currentUser = null;
+        const app = {
+            currentUser: null,
+            services: {},
+            showAuthSection() {
+                document.getElementById('auth-section').style.display = 'flex';
+                document.getElementById('main-section').classList.remove('active');
+            },
+            hideAuthSection() {
+                document.getElementById('auth-section').style.display = 'none';
+            },
+            showMainSection() {
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('main-section').classList.add('active');
+            },
+            hideMainSection() {
+                document.getElementById('main-section').classList.remove('active');
+            },
+            async loadInitialData() {
+                await Promise.all([
+                    this.services.posts.loadFeed(),
+                    this.services.chat.loadChatRooms(),
+                    this.services.wallet.displayWalletInfo(),
+                    this.services.profile.loadProfileData(),
+                    this.services.communities.loadCommunities(),
+                    this.services.events.loadEvents(),
+                    this.services.marketplace.loadItems(),
+                    this.services.learning.loadCourses(),
+                    this.services.gaming.loadSessions(),
+                    this.services.discovery.loadRecommendations(),
+                    this.services.settings.displaySettings(),
+                    this.services.ar.loadExperiences(),
+                    this.services.qa.loadQuestions()
+                ]);
+            }
+        };
+
+        // Instantiate all services
+        app.services.auth = new AuthService(app);
+        app.services.ai = new AIService(app);
+        app.services.ar = new ARService(app);
+        app.services.chat = new ChatService(app);
+        app.services.communities = new CommunityService(app);
+        app.services.discovery = new DiscoveryService(app);
+        app.services.events = new EventService(app);
+        app.services.gaming = new GamingService(app);
+        app.services.learning = new LearningService(app);
+        app.services.marketplace = new MarketplaceService(app);
+        app.services.notifications = new NotificationService(app);
+        app.services.posts = new PostService(app);
+        app.services.profile = new ProfileService(app);
+        app.services.qa = new QAService(app);
+        app.services.settings = new SettingsService(app);
+        app.services.wallet = new WalletService(app);
+        app.services.realtime = new RealtimeManager(app);
+
+        // -------------------- Auth Form Handlers --------------------
+        document.getElementById('loginForm').addEventListener('submit', (e) => app.services.auth.handleLogin(e));
+        document.getElementById('signupForm').addEventListener('submit', (e) => app.services.auth.handleSignup(e));
+        document.getElementById('logout-btn').addEventListener('click', () => app.services.auth.handleLogout());
+        document.getElementById('show-signup').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('login-form').classList.remove('active');
+            document.getElementById('signup-form').classList.add('active');
+        });
+        document.getElementById('show-login').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('signup-form').classList.remove('active');
+            document.getElementById('login-form').classList.add('active');
+        });
+
+        // -------------------- Navigation --------------------
+        function switchSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(sectionId + '-section');
+            if (target) target.classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelector(`.nav-link[data-section="${sectionId}"]`)?.classList.add('active');
+
+            const loaders = {
+                home: () => { app.services.posts.loadFeed(); app.services.profile.loadUserStories(); },
+                profile: app.services.profile.loadProfileData,
+                chat: app.services.chat.loadChatRooms,
+                wallet: app.services.wallet.displayWalletInfo,
+                marketplace: () => { app.services.marketplace.loadItems(); app.services.marketplace.loadGigs(); },
+                learning: app.services.learning.loadCourses,
+                gaming: app.services.gaming.loadSessions,
+                settings: app.services.settings.displaySettings,
+                ar: app.services.ar.loadExperiences,
+                qa: app.services.qa.loadQuestions,
+                events: app.services.events.loadEvents,
+                communities: app.services.communities.loadCommunities,
+                discovery: () => { app.services.discovery.loadRecommendations(); app.services.discovery.loadChallenges(); }
+            };
+            if (loaders[sectionId]) loaders[sectionId]();
+        }
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchSection(link.dataset.section);
+            });
+        });
+        document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const section = item.dataset.section;
+                if (section) switchSection(section);
+            });
+        });
+
+        // -------------------- UI Event Listeners --------------------
+        document.getElementById('home-post-btn').addEventListener('click', () => {
+            const inp = document.getElementById('home-post-input');
+            if (inp.value) app.services.posts.createPost(inp.value).then(() => inp.value = '');
+        });
+        document.getElementById('floating-create-btn').addEventListener('click', () => {
+            const txt = prompt("What's on your mind?");
+            if (txt) app.services.posts.createPost(txt);
+        });
+        document.getElementById('send-message').addEventListener('click', () => {
+            const inp = document.getElementById('message-input');
+            if (inp.value) app.services.chat.sendMessage(inp.value).then(() => inp.value = '');
+        });
+        document.getElementById('add-funds-btn').addEventListener('click', () => {
+            const amt = parseFloat(prompt('Amount:'));
+            if (amt) app.services.wallet.addFunds(amt);
+        });
+        document.getElementById('send-money-btn').addEventListener('click', () => {
+            const id = prompt('Recipient ID:');
+            const amt = parseFloat(prompt('Amount:'));
+            if (id && amt) app.services.wallet.sendMoney(id, amt);
+        });
+        document.getElementById('send-tip-btn').addEventListener('click', () => {
+            const id = prompt('Creator ID:');
+            const amt = parseFloat(prompt('Amount:'));
+            const msg = prompt('Message:');
+            if (id && amt) app.services.wallet.sendTip(id, amt, msg);
+        });
+        document.getElementById('create-listing-btn').addEventListener('click', () => {
+            const title = prompt('Title:');
+            const desc = prompt('Description:');
+            const price = parseFloat(prompt('Price:'));
+            if (title && price) app.services.marketplace.createItem({ title, description: desc, price });
+        });
+        document.getElementById('create-course-btn').addEventListener('click', () => {
+            const title = prompt('Course title:');
+            const desc = prompt('Description:');
+            const price = parseFloat(prompt('Price:'));
+            if (title) app.services.learning.createCourse({ title, description: desc, price });
+        });
+        document.getElementById('create-game-session-btn').addEventListener('click', () => {
+            const title = prompt('Session title:');
+            const type = prompt('Game type:');
+            if (title && type) app.services.gaming.createSession({ title, gameType: type });
+        });
+        document.getElementById('export-data-btn').addEventListener('click', app.services.settings.exportUserData);
+        document.getElementById('create-ar-btn').addEventListener('click', () => {
+            const type = prompt('AR experience type:');
+            if (type) app.services.ar.createExperience(type);
+        });
+        document.getElementById('ask-question-btn').addEventListener('click', () => {
+            const question = prompt('Your question:');
+            const topic = prompt('Topic:');
+            if (question && topic) app.services.qa.askQuestion({ question, topic });
+        });
+        document.getElementById('create-event-btn').addEventListener('click', () => {
+            const title = prompt('Event title:');
+            const desc = prompt('Description:');
+            const date = prompt('Date (YYYY-MM-DD HH:MM):');
+            const tickets = parseInt(prompt('Tickets:')) || 100;
+            if (title && date) app.services.events.createEvent({ title, description: desc, date, tickets });
+        });
+        document.getElementById('create-community-btn').addEventListener('click', () => {
+            const name = prompt('Community name:');
+            const desc = prompt('Description:');
+            if (name) app.services.communities.createCommunity({ name, description: desc });
+        });
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const query = document.getElementById('search-input').value;
+            if (query) app.services.discovery.search(query).then(posts => alert(`Found ${posts.length} posts`));
+        });
+
+        // -------------------- Start App --------------------
+        async function start() {
+            await app.services.auth.checkAuthentication();
+            await app.services.realtime.initialize();
+            console.log('✅ VibeLink 0372 ready');
+        }
+        window.addEventListener('DOMContentLoaded', start);
+    </script>
+</body>
 </html>
