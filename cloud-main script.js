@@ -104,8 +104,19 @@ Parse.Cloud.define('sendVerificationEmail', async (request) => {
     await user.save(null, { useMasterKey: true });
     
     const link = `https://thabang0372.github.io/VibeLink-0372/verify?token=${token}`;
-    console.log(`📧 Verification link for ${user.get('email')}: ${link}`);
-    return { success: true, link };
+    
+    // Real email via SendGrid (replace with your API key)
+    const sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey('YOUR_SENDGRID_API_KEY'); // ← REPLACE
+    const msg = {
+        to: user.get('email'),
+        from: 'noreply@vibelink0372.com',
+        subject: 'Verify your VibeLink account',
+        text: `Click here to verify: ${link}`,
+        html: `<a href="${link}">Verify your account</a>`
+    };
+    await sgMail.send(msg);
+    return { success: true };
 });
 
 Parse.Cloud.define('verifyEmail', async (request) => {
@@ -1216,3 +1227,31 @@ Parse.Cloud.define('logError', async (request) => {
     await log.save(null, { useMasterKey: true });
     return { success: true };
 });
+
+// ============================================================
+// NEW ADDITIONS – Email & Push Notifications (Parse Push)
+// ============================================================
+
+Parse.Cloud.define('sendPushNotification', async (request) => {
+    const { userId, title, body, data } = request.params;
+    const user = await new Parse.Query(Parse.User).get(userId, { useMasterKey: true });
+    if (!user) throw new Error('User not found');
+
+    // Use Parse Push to send a notification to this user's installations
+    const query = new Parse.Query(Parse.Installation);
+    query.equalTo('user', user);
+
+    await Parse.Push.send({
+        where: query,
+        data: {
+            alert: body,
+            title: title,
+            badge: 'Increment',
+            sound: 'default',
+            payload: data || {}
+        }
+    }, { useMasterKey: true });
+    return { success: true };
+});
+
+// (The sendVerificationEmail function is already defined above with SendGrid)
