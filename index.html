@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/6.1.1/parse.min.js"></script>
     <style>
-        /* ── Full CSS from your style.css ── */
+        /* ── Full CSS ── */
         :root {
             --vibe-black: #0D0D0D;
             --solar-flame-orange: #FF5A1F;
@@ -31,7 +31,7 @@
         }
         .hidden { display:none !important; }
 
-        /* ── Auth Page (exact branding) ── */
+        /* ── Auth ── */
         .auth-container {
             min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
             background:linear-gradient(135deg, var(--electric-cyan), var(--royal-purple), var(--vibe-black));
@@ -66,6 +66,7 @@
             max-width:400px; width:100%; line-height:1.6; color:var(--cloud-white);
         }
         .auth-footer p { margin:0; }
+        .auth-footer a { color:var(--electric-cyan); cursor:pointer; text-decoration:underline; }
 
         /* ── Main App ── */
         .main-section { display:none; flex-direction:column; min-height:100vh; }
@@ -132,6 +133,9 @@
         .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:10000; }
         .modal-overlay.active { display:flex; }
         .modal-content { background:var(--vibe-black); border-radius:24px; padding:2rem; max-width:500px; width:100%; border:1px solid var(--electric-cyan); }
+        .legal-modal { max-width:600px; max-height:80vh; overflow-y:auto; }
+        .legal-modal h2 { margin-bottom:1rem; color:var(--sunrise-yellow); }
+        .legal-modal p { margin-bottom:0.8rem; line-height:1.6; }
     </style>
 </head>
 <body>
@@ -165,7 +169,8 @@
         <div class="auth-footer">
             <p>© 2025 VibeLink 0372® — Built by Thabang Agondo<br>
             Created by: Kasi Vibe Foundation &amp; Projects NPC 🧠<br>
-            Powered by Unity. ✊ Driven by You.</p>
+            Powered by Unity. ✊ Driven by You.<br>
+            <a href="#" onclick="openLegal('terms')">Terms of Service</a> | <a href="#" onclick="openLegal('privacy')">Privacy Policy</a></p>
         </div>
     </div>
 
@@ -193,8 +198,9 @@
             <!-- HOME -->
             <div id="home-section" class="content-section active">
                 <div class="stories-container" id="stories-container"></div>
-                <div style="display:flex; gap:10px; margin-bottom:16px;">
-                    <input type="text" id="home-post-input" placeholder="What's vibing today? 🎵" style="flex:1; padding:12px; border-radius:30px; border:1px solid var(--royal-purple); background:rgba(0,0,0,0.4); color:white;">
+                <div style="display:flex; gap:10px; margin-bottom:16px; align-items:center; flex-wrap:wrap;">
+                    <input type="text" id="home-post-input" placeholder="What's vibing today? 🎵" style="flex:2; padding:12px; border-radius:30px; border:1px solid var(--royal-purple); background:rgba(0,0,0,0.4); color:white;">
+                    <input type="file" id="home-post-media" accept="image/*,video/*" style="flex:1; padding:8px; color:var(--cloud-white);">
                     <button id="home-post-btn" class="vibe-button" style="width:auto; padding:10px 24px;">Post</button>
                 </div>
                 <div id="home-feed"></div>
@@ -297,18 +303,47 @@
     <div id="notification" class="notification"></div>
     <div id="modal-container" class="modal-overlay"><div class="modal-content" id="modal-content"></div></div>
 
+    <!-- ==================== LEGAL CONTENT (Embedded) ==================== -->
+    <div id="legal-terms" class="hidden" style="display:none;">
+        <div class="legal-modal">
+            <h2>Terms of Service</h2>
+            <p><strong>Last updated:</strong> 2025</p>
+            <p>By using VibeLink 0372®, you agree to these terms.</p>
+            <p><strong>1. Acceptance of Terms</strong><br>By creating an account, you accept these Terms of Service.</p>
+            <p><strong>2. User Conduct</strong><br>You may not post illegal, abusive, or harmful content. We reserve the right to remove any content at our discretion.</p>
+            <p><strong>3. Intellectual Property</strong><br>You retain rights to your content, but grant VibeLink a license to display it within the platform.</p>
+            <p><strong>4. Privacy</strong><br>Your data is handled according to our Privacy Policy.</p>
+            <p><strong>5. Termination</strong><br>We may terminate your account for violation of these terms.</p>
+            <p><strong>6. Disclaimer</strong><br>VibeLink is provided "as is" without warranties.</p>
+        </div>
+    </div>
+    <div id="legal-privacy" class="hidden" style="display:none;">
+        <div class="legal-modal">
+            <h2>Privacy Policy</h2>
+            <p><strong>Last updated:</strong> 2025</p>
+            <p><strong>1. Data Collection</strong><br>We collect your email, username, and activity data to provide the service.</p>
+            <p><strong>2. Data Usage</strong><br>We use your data to personalize your feed, connect you with others, and improve our AI.</p>
+            <p><strong>3. Data Storage</strong><br>Your data is stored securely on Back4App servers with AES-GCM encryption.</p>
+            <p><strong>4. Data Sharing</strong><br>We do not sell your data. We may share aggregated statistics.</p>
+            <p><strong>5. User Rights</strong><br>You may export or delete your data at any time via the Settings page.</p>
+            <p><strong>6. Cookies</strong><br>We use essential cookies for authentication.</p>
+            <p><strong>7. GDPR/CCPA Compliance</strong><br>We comply with GDPR and CCPA. Contact support@kasivibe.org for inquiries.</p>
+        </div>
+    </div>
+
     <script>
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  VibeLink 0372® — ALL 102 FILES IN ONE HTML
-        //  Includes every client‑side service, encryption, offline queue,
-        //  real‑time subscriptions, and full UI.
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // ============================================================
+        //  VibeLink 0372® — COMPLETE SINGLE FILE (ALL 102 FILES)
+        //  Includes ALL services: AI, AR, Auth, Chat, Communities,
+        //  Discovery, Events, Gaming, Learning, Marketplace,
+        //  Notifications, Posts, Profile, QA, Settings, Wallet.
+        // ============================================================
 
-        // -------------------- Parse Init --------------------
+        // --- Parse Init ---
         Parse.initialize("HbzqSUpPcWR5fJttXz0f2KMrjKWndkTimYZrixCA", "ZdoLxgHVvjHTpc0MdAlL5y3idTdbHdmpQ556bDSU");
-        Parse.serverURL = 'https://parseapi.back4app.com/';   // ✅ CORRECT URL
+        Parse.serverURL = 'https://parseapi.back4app.com/';
 
-        // -------------------- Helpers --------------------
+        // --- Helpers ---
         function showNotification(msg, type = 'success') {
             const n = document.getElementById('notification');
             n.textContent = msg;
@@ -323,6 +358,11 @@
             return div.innerHTML;
         }
         function formatTime(date) { return new Date(date).toLocaleString(); }
+        function displayNameOf(user) {
+            if (!user) return 'Unknown';
+            if (typeof user === 'string') return user;
+            return user.get('displayName') || user.get('username') || 'User';
+        }
         function openModal(html) {
             document.getElementById('modal-content').innerHTML = html;
             document.getElementById('modal-container').classList.add('active');
@@ -333,8 +373,12 @@
         document.getElementById('modal-container').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) closeModal();
         });
+        function openLegal(type) {
+            const content = document.getElementById('legal-' + type);
+            if (content) openModal(content.innerHTML);
+        }
 
-        // -------------------- Encryption Service --------------------
+        // --- Encryption Service (AES-GCM) ---
         class EncryptionService {
             constructor() {
                 this.masterKey = null;
@@ -387,7 +431,7 @@
         const encryption = new EncryptionService();
         encryption.initialize();
 
-        // -------------------- Offline Queue --------------------
+        // --- Offline Queue ---
         class OfflineQueue {
             constructor() {
                 this.queue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
@@ -409,24 +453,12 @@
                 for (const action of this.queue) {
                     try {
                         switch (action.type) {
-                            case 'post':
-                                await Parse.Cloud.run('createPost', { content: action.data.content, userId: Parse.User.current().id });
-                                break;
-                            case 'like':
-                                await Parse.Cloud.run('toggleLike', { postId: action.data.postId, userId: Parse.User.current().id });
-                                break;
-                            case 'comment':
-                                await Parse.Cloud.run('addComment', { postId: action.data.postId, text: action.data.text, userId: Parse.User.current().id });
-                                break;
-                            case 'message':
-                                await Parse.Cloud.run('sendMessage', { roomId: action.data.roomId, text: action.data.text, userId: Parse.User.current().id });
-                                break;
-                            case 'addFunds':
-                                await Parse.Cloud.run('addFunds', { amount: action.data.amount, userId: Parse.User.current().id });
-                                break;
-                            case 'sendMoney':
-                                await Parse.Cloud.run('sendMoney', { toUserId: action.data.toUserId, amount: action.data.amount, userId: Parse.User.current().id });
-                                break;
+                            case 'post': await Parse.Cloud.run('createPost', { content: action.data.content, media: action.data.media, userId: Parse.User.current().id }); break;
+                            case 'like': await Parse.Cloud.run('toggleLike', { postId: action.data.postId, userId: Parse.User.current().id }); break;
+                            case 'comment': await Parse.Cloud.run('addComment', { postId: action.data.postId, text: action.data.text, userId: Parse.User.current().id }); break;
+                            case 'message': await Parse.Cloud.run('sendMessage', { roomId: action.data.roomId, text: action.data.text, userId: Parse.User.current().id }); break;
+                            case 'addFunds': await Parse.Cloud.run('addFunds', { amount: action.data.amount, userId: Parse.User.current().id }); break;
+                            case 'sendMoney': await Parse.Cloud.run('sendMoney', { toUserId: action.data.toUserId, amount: action.data.amount, userId: Parse.User.current().id }); break;
                             default: throw new Error('Unknown action');
                         }
                     } catch (e) { failed.push(action); }
@@ -440,7 +472,7 @@
         }
         const offlineQueue = new OfflineQueue();
 
-        // -------------------- Realtime Manager --------------------
+        // --- Realtime Manager (LiveQuery) ---
         class RealtimeManager {
             constructor(app) {
                 this.app = app;
@@ -474,9 +506,7 @@
             }
         }
 
-        // -------------------- All Services --------------------
-        // (Each class is the exact implementation from your 102 files,
-        //  adapted to use Parse.Cloud.run where appropriate.)
+        // --- All Services ---
 
         // AIService
         class AIService {
@@ -486,6 +516,9 @@
             }
             async getAISuggestions(context) {
                 try { return await Parse.Cloud.run('getAISuggestions', { context, userId: this.app.currentUser.id }); } catch(e){ return {}; }
+            }
+            async getRankedFeed(limit = 20) {
+                try { return await Parse.Cloud.run('getPersonalizedFeed', { limit, userId: this.app.currentUser.id }); } catch(e){ return []; }
             }
         }
 
@@ -504,7 +537,7 @@
                     const exps = await Parse.Cloud.run('getARExperiences', { userId: this.app.currentUser.id });
                     const container = document.getElementById('ar-list');
                     if (container) {
-                        container.innerHTML = exps.map(e => `<div class="card"><h4>${sanitize(e.experienceType)}</h4><p>By ${sanitize(e.creator.displayName||e.creator.username)}</p><button onclick="alert('AR viewer coming')">View</button></div>`).join('');
+                        container.innerHTML = exps.map(e => `<div class="card"><h4>${sanitize(e.experienceType)}</h4><p>By ${sanitize(e.creator.displayName||e.creator.username)}</p></div>`).join('');
                     }
                 } catch (err) { showNotification(err.message, 'error'); }
             }
@@ -520,6 +553,8 @@
                         this.app.showMainSection();
                         this.app.hideAuthSection();
                         await this.app.loadInitialData();
+                        // Request push notification permission
+                        this.app.requestPushPermission();
                     } else {
                         this.app.showAuthSection();
                         this.app.hideMainSection();
@@ -533,7 +568,6 @@
                 const password = document.getElementById('loginPassword')?.value;
                 if (!email || !password) return showNotification('Enter email and password', 'error');
                 try {
-                    // Log in with email as username (we set username = email on signup)
                     const user = await Parse.User.logIn(email.trim().toLowerCase(), password);
                     this.app.currentUser = user;
                     this.app.showMainSection();
@@ -541,6 +575,7 @@
                     await this.app.services.wallet?.ensureWalletExists();
                     await this.app.services.profile?.ensureProfileExists();
                     await this.app.loadInitialData();
+                    this.app.requestPushPermission();
                     showNotification('Welcome back!');
                 } catch (err) { showNotification(err.message, 'error'); }
             }
@@ -552,19 +587,21 @@
                 if (!username || !email || !password) return showNotification('Fill all fields', 'error');
                 try {
                     const user = new Parse.User();
-                    // Use email as username to simplify login
                     user.set('username', email.trim().toLowerCase());
                     user.set('email', email.trim().toLowerCase());
                     user.set('password', password);
                     user.set('displayName', username);
                     await user.signUp();
+                    // Trigger verification email
+                    await Parse.Cloud.run('sendVerificationEmail', { userId: user.id });
                     this.app.currentUser = user;
                     this.app.showMainSection();
                     this.app.hideAuthSection();
                     await this.app.services.wallet?.ensureWalletExists();
                     await this.app.services.profile?.ensureProfileExists();
                     await this.app.loadInitialData();
-                    showNotification('Account created!');
+                    this.app.requestPushPermission();
+                    showNotification('Account created! Check your email to verify.');
                 } catch (err) { showNotification(err.message, 'error'); }
             }
             async handleLogout() {
@@ -921,14 +958,20 @@
             }
         }
 
-        // PostService
+        // PostService (with AI Ranking and Media Upload)
         class PostService {
             constructor(app) { this.app = app; this.skip=0; this.limit=10; this.loadingMore=false; }
-            async createPost(content, community = null) {
+            async createPost(content, community = null, mediaFile = null) {
                 if (!content.trim()) return showNotification('Content cannot be empty', 'error');
-                if (!navigator.onLine) { offlineQueue.add({ type:'post', data:{ content, community: community ? community.id : null } }); return showNotification('Post queued for offline sync', 'warning'); }
+                if (!navigator.onLine) { offlineQueue.add({ type:'post', data:{ content, community: community ? community.id : null, media: mediaFile } }); return showNotification('Post queued for offline sync', 'warning'); }
                 try {
-                    await Parse.Cloud.run('createPost', { content, communityId: community ? community.id : null, userId: this.app.currentUser.id });
+                    let mediaUrl = null;
+                    if (mediaFile) {
+                        const pf = new Parse.File('post_media.' + mediaFile.name.split('.').pop(), mediaFile);
+                        await pf.save();
+                        mediaUrl = pf.url();
+                    }
+                    await Parse.Cloud.run('createPost', { content, media: mediaUrl, communityId: community ? community.id : null, userId: this.app.currentUser.id });
                     showNotification('Post created!');
                     this.skip = 0;
                     await this.loadFeed();
@@ -938,8 +981,13 @@
                 if (this.loadingMore) return;
                 this.loadingMore = true;
                 try {
-                    const q = new Parse.Query('Post').include('author').descending('createdAt').skip(append ? this.skip : 0).limit(this.limit);
-                    const posts = await q.find();
+                    let posts = [];
+                    try {
+                        posts = await this.app.services.ai.getRankedFeed(this.limit);
+                    } catch (e) {
+                        const q = new Parse.Query('Post').include('author').descending('createdAt').skip(append ? this.skip : 0).limit(this.limit);
+                        posts = await q.find();
+                    }
                     for (let p of posts) {
                         const raw = p.get('content');
                         if (typeof raw === 'string' && raw.startsWith('{') && raw.includes('"iv"')) {
@@ -987,6 +1035,15 @@
                     const likes = p.get('likesCount') || 0;
                     const comments = p.get('commentCount') || 0;
                     const isOwn = author.id === this.app.currentUser.id;
+                    const mediaUrl = p.get('media');
+                    let mediaHtml = '';
+                    if (mediaUrl) {
+                        if (mediaUrl.endsWith('.mp4') || mediaUrl.endsWith('.mov') || mediaUrl.endsWith('.webm')) {
+                            mediaHtml = `<video src="${mediaUrl}" controls style="width:100%; border-radius:12px; margin-top:10px;"></video>`;
+                        } else {
+                            mediaHtml = `<img src="${mediaUrl}" style="width:100%; border-radius:12px; margin-top:10px;">`;
+                        }
+                    }
                     return `<div class="post">
                         <div class="post-header">
                             <img src="${avatarSrc}" class="post-avatar">
@@ -994,6 +1051,7 @@
                             <span class="post-time">${formatTime(p.createdAt)}</span>
                         </div>
                         <div class="post-content">${sanitize(content)}</div>
+                        ${mediaHtml}
                         <div class="post-actions">
                             <button class="post-action like-btn" data-id="${p.id}"><i class="far fa-heart"></i> ${likes}</button>
                             <button class="post-action comment-btn" data-id="${p.id}"><i class="far fa-comment"></i> ${comments}</button>
@@ -1027,8 +1085,6 @@
                 if (!p) {
                     p = new Profile();
                     p.set('user', this.app.currentUser);
-                    // FIXED: Do NOT set avatar to a string. Let it be null so the schema accepts it.
-                    // The frontend will automatically display 'assets/default-avatar.png' as fallback.
                     p.set('bio', this.app.currentUser.get('bio') || 'Welcome!');
                     p.set('verified', false);
                     await p.save();
@@ -1073,6 +1129,21 @@
                 document.getElementById('story-viewer').classList.remove('hidden');
                 document.getElementById('story-username').textContent = story.get('author').get('displayName') || story.get('author').get('username');
                 document.getElementById('story-content').innerHTML = story.get('media') ? `<img src="${story.get('media').url()}" style="max-width:100%">` : `<p>${sanitize(story.get('content'))}</p>`;
+            }
+            async followUser(userId) {
+                const Follow = Parse.Object.extend('VibeFollow');
+                const f = new Follow();
+                f.set('follower', this.app.currentUser);
+                f.set('following', { __type:'Pointer', className:'_User', objectId:userId });
+                f.set('followedAt', new Date());
+                await f.save();
+                showNotification('Followed user');
+            }
+            async unfollowUser(userId) {
+                const q = new Parse.Query('VibeFollow').equalTo('follower', this.app.currentUser).equalTo('following', { __type:'Pointer', className:'_User', objectId:userId });
+                const f = await q.first();
+                if (f) await f.destroy();
+                showNotification('Unfollowed');
             }
         }
 
@@ -1160,13 +1231,7 @@
             async checkoutCart() { showNotification('Checkout coming soon'); }
         }
 
-        // -------------------- Global App --------------------
-        function displayNameOf(user) {
-            if (!user) return 'Unknown';
-            if (typeof user === 'string') return user;
-            return user.get('displayName') || user.get('username') || 'User';
-        }
-
+        // --- Global App Orchestrator ---
         let currentUser = null;
         const app = {
             currentUser: null,
@@ -1201,6 +1266,15 @@
                     this.services.ar.loadExperiences(),
                     this.services.qa.loadQuestions()
                 ]);
+            },
+            async requestPushPermission() {
+                if ('Notification' in window && Notification.permission === 'default') {
+                    const perm = await Notification.requestPermission();
+                    if (perm === 'granted') {
+                        // Register push token (simplified – in production, send to server)
+                        console.log('Push notifications enabled');
+                    }
+                }
             }
         };
 
@@ -1223,7 +1297,7 @@
         app.services.wallet = new WalletService(app);
         app.services.realtime = new RealtimeManager(app);
 
-        // -------------------- Auth Form Handlers --------------------
+        // --- Auth Form Handlers ---
         document.getElementById('loginForm').addEventListener('submit', (e) => app.services.auth.handleLogin(e));
         document.getElementById('signupForm').addEventListener('submit', (e) => app.services.auth.handleSignup(e));
         document.getElementById('logout-btn').addEventListener('click', () => app.services.auth.handleLogout());
@@ -1238,7 +1312,7 @@
             document.getElementById('login-form').classList.add('active');
         });
 
-        // -------------------- Navigation --------------------
+        // --- Navigation ---
         function switchSection(sectionId) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(sectionId + '-section');
@@ -1277,10 +1351,17 @@
             });
         });
 
-        // -------------------- UI Event Listeners --------------------
+        // --- UI Event Listeners ---
         document.getElementById('home-post-btn').addEventListener('click', () => {
             const inp = document.getElementById('home-post-input');
-            if (inp.value) app.services.posts.createPost(inp.value).then(() => inp.value = '');
+            const fileInput = document.getElementById('home-post-media');
+            const file = fileInput.files[0];
+            if (inp.value) {
+                app.services.posts.createPost(inp.value, null, file).then(() => {
+                    inp.value = '';
+                    fileInput.value = '';
+                });
+            }
         });
         document.getElementById('floating-create-btn').addEventListener('click', () => {
             const txt = prompt("What's on your mind?");
@@ -1349,7 +1430,7 @@
             if (query) app.services.discovery.search(query).then(posts => alert(`Found ${posts.length} posts`));
         });
 
-        // -------------------- Start App --------------------
+        // --- Start App ---
         async function start() {
             await app.services.auth.checkAuthentication();
             await app.services.realtime.initialize();
