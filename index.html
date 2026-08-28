@@ -7,231 +7,366 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/parse/6.1.1/parse.min.js"></script>
     <style>
-        /* ── Design Tokens ── */
+        /* ---- Design Tokens (Intentional & Minimal) ---- */
         :root {
-            --vibe-black: #0D0D0D;
-            --solar-flame-orange: #FF5A1F;
-            --electric-cyan: #00E6E6;
-            --earth-green: #009966;
-            --sunrise-yellow: #FFD733;
-            --royal-purple: #8E3AFF;
-            --cloud-white: #F9F9F9;
-            --solar-gradient: linear-gradient(135deg, #FF5A1F, #FFD733);
-            --glass-bg: rgba(20,20,30,0.7);
-            --glass-border: rgba(255,255,255,0.1);
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            --color-bg: #0D0D0D;
+            --color-surface: #1A1A1A;
+            --color-surface-hover: #222222;
+            --color-border: #333333;
+            --color-text: #F9F9F9;
+            --color-text-secondary: #B0B0B0;
+            --color-primary: #FF5A1F;
+            --color-primary-hover: #FF7A47;
+            --color-accent: #00E6E6;
+            --color-success: #009966;
+            --color-error: #FF3344;
+            --radius-card: 12px;
+            --radius-btn: 8px;
+            --radius-input: 8px;
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: radial-gradient(circle at top left, #1a1a2e, var(--vibe-black));
-            color: var(--cloud-white);
-            min-height: 100vh;
+            font-family: var(--font-main);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
             padding-bottom: 80px;
-        }
-
-        /* Emoji font fallback (iOS style) */
-        body, .post-content, .story-name, .logo, .message, .nav-item span, button, input {
-            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
         }
 
         .hidden { display: none !important; }
 
-        /* ── Auth Section ── */
+        /* ---- Auth Section ---- */
         .auth-container {
-            min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, var(--electric-cyan), var(--royal-purple), var(--vibe-black));
-            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-lg);
+            background: var(--color-bg);
         }
-        .logo-header { text-align: center; margin-bottom: 2rem; }
+
+        .logo-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+
         .logo-header h1 {
-            font-size: 2.8rem; font-weight: 900;
-            background: var(--solar-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            letter-spacing: -1px;
         }
-        .logo-header .slogan { font-size: 1.3rem; color: var(--cloud-white); opacity: 0.9; margin-top: 0.3rem; }
+
+        .logo-header .slogan {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            margin-top: var(--space-xs);
+        }
+
         .auth-forms {
-            background: rgba(13,13,13,0.95); padding: 2.5rem 2rem; border-radius: 24px;
-            border: 1px solid var(--electric-cyan); max-width: 400px; width: 100%; box-shadow: 0 10px 40px rgba(0,230,230,0.15);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-card);
+            padding: var(--space-xl);
+            max-width: 400px;
+            width: 100%;
         }
+
         .auth-form { display: none; }
         .auth-form.active { display: block; }
-        .auth-form h2 { margin-bottom: 1.2rem; font-size: 1.5rem; }
-        .auth-form input {
-            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--royal-purple); border-radius: 16px;
-            background: rgba(255,255,255,0.08); color: white; font-size: 1rem;
-        }
-        .vibe-button {
-            background: var(--solar-gradient); border: none; padding: 14px 24px; border-radius: 30px;
-            font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; color: var(--vibe-black); font-size: 1.1rem;
-        }
-        .vibe-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,90,31,0.4); }
-        .auth-switch { margin-top: 1rem; font-size: 0.9rem; color: #ccc; }
-        .auth-switch a { color: var(--electric-cyan); cursor: pointer; text-decoration: underline; }
-        .auth-footer {
-            margin-top: 2.5rem; text-align: center; font-size: 8px; opacity: 0.7;
-            max-width: 400px; width: 100%; line-height: 1.6; color: var(--cloud-white);
-        }
-        .auth-footer p { margin: 0; }
-        .auth-footer a { color: var(--electric-cyan); cursor: pointer; text-decoration: underline; }
 
-        /* ── Main App ── */
+        .auth-form h2 {
+            font-size: 1.4rem;
+            margin-bottom: var(--space-md);
+            color: var(--color-text);
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 12px 14px;
+            margin: var(--space-sm) 0;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-input);
+            color: var(--color-text);
+            font-size: 1rem;
+        }
+
+        .auth-form input::placeholder {
+            color: var(--color-text-secondary);
+        }
+
+        .vibe-button {
+            background: var(--color-primary);
+            color: #0D0D0D;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--radius-btn);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .vibe-button:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .auth-switch {
+            margin-top: var(--space-md);
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+        }
+
+        .auth-switch a {
+            color: var(--color-accent);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .auth-footer {
+            margin-top: var(--space-lg);
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .auth-footer p { margin: 0; }
+        .auth-footer a { color: var(--color-accent); cursor: pointer; text-decoration: underline; }
+
+        /* ---- Main App ---- */
         .main-section { display: none; flex-direction: column; min-height: 100vh; }
         .main-section.active { display: flex; }
 
-        /* ── Top Navigation (integrated with new design) ── */
+        /* Top Navigation */
         .main-nav {
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.85); padding: 12px 20px; backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.95);
+            padding: 0 var(--space-md);
             height: 56px;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            border-bottom: 1px solid var(--color-border);
         }
+
         .logo {
-            font-size: 1.2rem; font-weight: 900;
-            background: var(--solar-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
             letter-spacing: -0.5px;
         }
-        .nav-links { display: flex; flex-wrap: wrap; gap: 8px; }
-        .nav-link { color: white; text-decoration: none; padding: 6px 14px; border-radius: 20px; font-size: 0.9rem; }
-        .nav-link.active { background: var(--solar-flame-orange); font-weight: 600; }
-        .nav-right { display: flex; align-items: center; gap: 12px; }
-        .bell-btn { background: none; border: none; color: var(--cloud-white); font-size: 1.3rem; cursor: pointer; }
-        .logout-btn { background: var(--solar-flame-orange); border: none; padding: 8px 20px; border-radius: 30px; font-weight: bold; cursor: pointer; color: var(--vibe-black); }
 
-        /* ── Bottom Navigation ── */
+        .nav-links { display: flex; gap: var(--space-sm); }
+        .nav-link {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: var(--radius-btn);
+            font-size: 0.85rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav-link:hover { background: var(--color-surface-hover); color: var(--color-text); }
+        .nav-link.active { background: var(--color-surface); color: var(--color-accent); }
+
+        .nav-right { display: flex; align-items: center; gap: var(--space-sm); }
+        .bell-btn { background: none; border: none; color: var(--color-text-secondary); font-size: 1.2rem; cursor: pointer; padding: 4px; }
+        .bell-btn:hover { color: var(--color-text); }
+        .logout-btn {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+            padding: 6px 14px;
+            border-radius: var(--radius-btn);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .logout-btn:hover { background: var(--color-surface-hover); }
+
+        /* Bottom Navigation */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
-            background: var(--glass-bg); backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border);
-            display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 70px;
+            background: rgba(0,0,0,0.95);
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
             padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #ccc; opacity: 0.7; cursor: pointer; transition: 0.2s; }
-        .nav-item.active { opacity: 1; color: var(--electric-cyan); }
-        .nav-item i { font-size: 24px; }
-        .nav-item span { font-size: 11px; margin-top: 4px; }
-        .create-button {
-            width: 55px; height: 55px; background: var(--solar-gradient); border-radius: 30px;
-            display: flex; align-items: center; justify-content: center; margin-top: -25px;
-            box-shadow: 0 4px 20px rgba(255,90,31,0.5); border: 3px solid var(--vibe-black); cursor: pointer;
-            color: var(--vibe-black); font-size: 1.5rem;
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--color-text-secondary); cursor: pointer; transition: color 0.2s; }
+        .nav-item.active { color: var(--color-accent); }
+        .nav-item i { font-size: 22px; }
+        .nav-item span { font-size: 0.7rem; margin-top: 2px; }
+        .create-btn {
+            width: 48px; height: 48px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #0D0D0D; font-size: 1.4rem;
+            margin-top: -20px; border: 3px solid var(--color-bg);
+            cursor: pointer;
         }
+        .create-btn:hover { background: var(--color-primary-hover); }
 
-        /* ── Content Sections ── */
-        .content-section { display: none; padding: 20px; max-width: 1100px; margin: 0 auto; }
+        /* Content Sections */
+        .content-section { display: none; padding: var(--space-md); max-width: 700px; margin: 0 auto; }
         .content-section.active { display: block; }
 
-        /* ── Home (Feed) ── */
-        .home-wrapper { max-width: 600px; margin: 0 auto; }
-        .stories-row {
-            display: flex; gap: 16px; overflow-x: auto; padding: 8px 0; margin-bottom: 16px;
-            scrollbar-width: none;
-        }
-        .stories-row::-webkit-scrollbar { display: none; }
-        .story-item { flex-shrink: 0; text-align: center; width: 70px; }
-        .story-avatar {
-            width: 64px; height: 64px; border-radius: 50%; padding: 3px;
-            background: linear-gradient(45deg, #FF5A1F, #FFD733, #8E3AFF);
-        }
-        .story-avatar img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--vibe-black); object-fit: cover; }
-        .story-name { font-size: 0.7rem; color: var(--cloud-white); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-        .post-composer {
-            display: flex; gap: 12px; align-items: center; margin-bottom: 20px;
-        }
-        .post-composer input {
-            flex: 1; padding: 12px 20px; border-radius: 30px; border: 1px solid var(--royal-purple);
-            background: rgba(255,255,255,0.1); color: white; font-size: 1rem; outline: none;
-        }
-        .post-composer input::placeholder { color: rgba(255,255,255,0.6); }
-        .post-btn {
-            padding: 10px 24px; border-radius: 30px; background: var(--solar-gradient); color: var(--vibe-black);
-            font-weight: bold; border: none; cursor: pointer; white-space: nowrap;
-        }
-
-        .feed { display: flex; flex-direction: column; gap: 16px; }
-        .post-card {
-            background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border);
-            border-radius: 24px; padding: 16px; box-shadow: var(--card-shadow);
-        }
-        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-        .post-avatar { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--electric-cyan); object-fit: cover; }
-        .post-username { font-weight: 700; color: var(--sunrise-yellow); font-size: 0.95rem; }
-        .post-time { font-size: 0.8rem; opacity: 0.7; margin-left: auto; }
-        .post-content { color: var(--cloud-white); font-size: 0.95rem; margin: 8px 0; word-break: break-word; }
-        .post-actions { display: flex; gap: 24px; border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 8px; }
-        .post-actions button { background: transparent; border: none; color: var(--cloud-white); font-size: 0.95rem; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-        .post-actions button:hover { color: var(--electric-cyan); }
-
-        /* ── Other Sections (unchanged) ── */
+        /* Cards */
         .card {
-            background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); border-radius: 16px;
-            padding: 16px; margin-bottom: 16px;
-        }
-        .chat-messages { height: 300px; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-        .message { max-width: 80%; padding: 10px 16px; border-radius: 20px; }
-        .message.sent { align-self: flex-end; background: var(--solar-gradient); color: var(--vibe-black); }
-        .message.received { align-self: flex-start; background: rgba(255,255,255,0.12); }
-        .chat-input-container { display: flex; gap: 10px; padding: 12px 0; }
-        .chat-input-container input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid var(--royal-purple); background: rgba(0,0,0,0.4); color: white; }
-        .wallet-balance { font-size: 2.5rem; color: var(--earth-green); margin: 20px 0; }
-        .grid-2col { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 16px; }
-
-        /* ── Responsive ── */
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .nav-right { gap: 8px; }
-        }
-        @media (min-width: 769px) {
-            .bottom-nav { display: none; }
-            .nav-links { display: flex; }
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-card);
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
         }
 
+        /* Post Card */
+        .post-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-card);
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+        .post-header { display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm); }
+        .post-avatar { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--color-border); object-fit: cover; }
+        .post-username { font-weight: 700; color: var(--color-text); font-size: 0.95rem; }
+        .post-time { font-size: 0.8rem; color: var(--color-text-secondary); margin-left: auto; }
+        .post-content { color: var(--color-text); font-size: 0.95rem; margin: var(--space-sm) 0; line-height: 1.7; word-break: break-word; }
+        .post-actions { display: flex; gap: var(--space-lg); border-top: 1px solid var(--color-border); padding-top: var(--space-sm); margin-top: var(--space-sm); }
+        .post-actions button { background: none; border: none; color: var(--color-text-secondary); font-size: 0.9rem; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .post-actions button:hover { color: var(--color-text); }
+
+        /* Chat */
+        .chat-messages {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-card);
+            height: 350px;
+            overflow-y: auto;
+            padding: var(--space-md);
+            display: flex; flex-direction: column; gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        .message { max-width: 75%; padding: 10px 14px; border-radius: var(--radius-card); font-size: 0.95rem; line-height: 1.5; }
+        .message.sent { align-self: flex-end; background: var(--color-primary); color: #0D0D0D; }
+        .message.received { align-self: flex-start; background: #2A2A2A; color: var(--color-text); }
+        .chat-input-container { display: flex; gap: var(--space-sm); }
+        .chat-input-container input { flex: 1; padding: 12px 14px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-input); color: var(--color-text); }
+
+        /* Wallet */
+        .wallet-balance { font-size: 2.2rem; font-weight: 800; color: var(--color-success); margin: var(--space-md) 0; }
+        .wallet-actions { display: flex; gap: var(--space-sm); margin-bottom: var(--space-md); }
+
+        /* Grid */
+        .grid-2col { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--space-md); }
+
+        /* Stories */
+        .stories-row { display: flex; gap: var(--space-md); overflow-x: auto; padding-bottom: var(--space-sm); margin-bottom: var(--space-md); }
+        .story-item { text-align: center; min-width: 60px; cursor: pointer; }
+        .story-avatar { width: 56px; height: 56px; border-radius: 50%; border: 2px solid var(--color-border); object-fit: cover; margin: 0 auto; }
+        .story-name { font-size: 0.7rem; color: var(--color-text-secondary); margin-top: var(--space-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* Composer */
+        .post-composer { display: flex; gap: var(--space-sm); margin-bottom: var(--space-md); }
+        .post-composer input { flex: 1; padding: 12px 14px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-input); color: var(--color-text); }
+        .post-composer input::placeholder { color: var(--color-text-secondary); }
+        .post-btn { background: var(--color-primary); color: #0D0D0D; border: none; padding: 12px 24px; border-radius: var(--radius-btn); font-weight: 700; cursor: pointer; }
+        .post-btn:hover { background: var(--color-primary-hover); }
+
+        /* Buttons inside sections */
+        .vibe-button { background: var(--color-primary); color: #0D0D0D; border: none; padding: 10px 18px; border-radius: var(--radius-btn); font-weight: 600; font-size: 0.9rem; cursor: pointer; margin-bottom: var(--space-md); }
+        .vibe-button.secondary { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); }
+
+        /* Empty state */
+        .empty-state { text-align: center; padding: var(--space-xl); color: var(--color-text-secondary); }
+        .empty-state i { font-size: 2.5rem; margin-bottom: var(--space-sm); }
+
+        /* Toast notification */
         .notification {
-            position: fixed; bottom: 20px; left: 20px; right: 20px;
-            background: var(--earth-green); color: white; padding: 12px; border-radius: 30px;
-            text-align: center; z-index: 9999; display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-card);
+            padding: 12px 20px;
+            color: var(--color-text);
+            font-size: 0.9rem;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 10000; }
+        .notification.success { border-left: 4px solid var(--color-success); }
+        .notification.error { border-left: 4px solid var(--color-error); }
+
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 10000; }
         .modal-overlay.active { display: flex; }
-        .modal-content { background: var(--vibe-black); border-radius: 24px; padding: 2rem; max-width: 500px; width: 100%; border: 1px solid var(--electric-cyan); }
-        .legal-modal { max-width: 600px; max-height: 80vh; overflow-y: auto; }
-        .legal-modal h2 { margin-bottom: 1rem; color: var(--sunrise-yellow); }
-        .legal-modal p { margin-bottom: 0.8rem; line-height: 1.6; }
+        .modal-content { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card); padding: var(--space-lg); max-width: 500px; width: 90%; }
+
+        /* Legal */
+        .legal-modal { max-height: 80vh; overflow-y: auto; }
+
+        /* Utility */
+        .text-secondary { color: var(--color-text-secondary); }
+        .mt-8 { margin-top: var(--space-sm); }
+        .mt-16 { margin-top: var(--space-md); }
+        .mb-8 { margin-bottom: var(--space-sm); }
+        .mb-16 { margin-bottom: var(--space-md); }
+
+        /* Responsive */
+        @media (max-width: 768px) { .nav-links { display: none; } .bottom-nav { display: flex; } .main-nav { justify-content: space-between; } }
+        @media (min-width: 769px) { .bottom-nav { display: none; } .nav-links { display: flex; } }
     </style>
 </head>
 <body>
-    <!-- ==================== AUTH SECTION ==================== -->
+    <!-- Auth Section -->
     <div id="auth-section" class="auth-container">
         <div class="logo-header">
             <h1>VibeLink 0372®</h1>
-            <p class="slogan">Where the World Vibe Starts 🌍🔥</p>
+            <p class="slogan">Where the World Vibe Starts</p>
         </div>
         <div class="auth-forms">
             <div id="login-form" class="auth-form active">
                 <h2>Sign In</h2>
                 <form id="loginForm">
-                    <input type="email" id="loginEmail" placeholder="📧 Email" required>
-                    <input type="password" id="loginPassword" placeholder="🔒 Password" required>
-                    <button type="submit" class="vibe-button">🚀 Sign In</button>
+                    <input type="email" id="loginEmail" placeholder="Email" autocomplete="email" required>
+                    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required>
+                    <button type="submit" class="vibe-button">Sign In</button>
                 </form>
-                <p class="auth-switch">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+                <p class="auth-switch">No account? <a href="#" id="show-signup">Create one</a></p>
             </div>
             <div id="signup-form" class="auth-form">
                 <h2>Create Account</h2>
                 <form id="signupForm">
-                    <input type="text" id="signupUsername" placeholder="👤 Username" required>
-                    <input type="email" id="signupEmail" placeholder="📧 Email" required>
-                    <input type="password" id="signupPassword" placeholder="🔒 Password" required>
-                    <button type="submit" class="vibe-button">🌟 Create Account</button>
+                    <input type="text" id="signupUsername" placeholder="Username" autocomplete="username" required>
+                    <input type="email" id="signupEmail" placeholder="Email" autocomplete="email" required>
+                    <input type="password" id="signupPassword" placeholder="Password" autocomplete="new-password" required>
+                    <button type="submit" class="vibe-button">Create Account</button>
                 </form>
-                <p class="auth-switch">Already have an account? <a href="#" id="show-login">Sign In</a></p>
+                <p class="auth-switch">Already have an account? <a href="#" id="show-login">Sign in</a></p>
             </div>
         </div>
+        <!-- Brand Footer (restored) -->
         <div class="auth-footer">
             <p>© 2025 VibeLink 0372® — Built by Thabang Agondo<br>
             Created by: Kasi Vibe Foundation &amp; Projects NPC 🧠<br>
@@ -239,155 +374,156 @@
         </div>
     </div>
 
-    <!-- ==================== MAIN APP ==================== -->
+    <!-- Main App -->
     <div id="main-section" class="main-section">
-        <!-- Top Navigation Bar -->
         <nav class="main-nav">
             <div class="logo">VibeLink 0372®</div>
-            <div class="nav-links">
-                <a href="#" class="nav-link active" data-section="home">🏠 Home</a>
-                <a href="#" class="nav-link" data-section="profile">👤 Profile</a>
-                <a href="#" class="nav-link" data-section="chat">💬 Chat</a>
-                <a href="#" class="nav-link" data-section="wallet">💰 Wallet</a>
-                <a href="#" class="nav-link" data-section="marketplace">🛒 Market</a>
-                <a href="#" class="nav-link" data-section="learning">📚 Learn</a>
-                <a href="#" class="nav-link" data-section="gaming">🎮 Games</a>
-                <a href="#" class="nav-link" data-section="events">📅 Events</a>
-                <a href="#" class="nav-link" data-section="discovery">🔍 Discover</a>
-                <a href="#" class="nav-link" data-section="qa">❓ Q&A</a>
-                <a href="#" class="nav-link" data-section="settings">⚙️ Settings</a>
+            <div class="nav-links" id="desktop-nav">
+                <a href="#" class="nav-link active" data-section="home">Home</a>
+                <a href="#" class="nav-link" data-section="profile">Profile</a>
+                <a href="#" class="nav-link" data-section="chat">Chat</a>
+                <a href="#" class="nav-link" data-section="wallet">Wallet</a>
+                <a href="#" class="nav-link" data-section="marketplace">Market</a>
+                <a href="#" class="nav-link" data-section="learning">Learn</a>
+                <a href="#" class="nav-link" data-section="gaming">Games</a>
+                <a href="#" class="nav-link" data-section="events">Events</a>
+                <a href="#" class="nav-link" data-section="discovery">Discover</a>
+                <a href="#" class="nav-link" data-section="qa">Q&A</a>
+                <a href="#" class="nav-link" data-section="settings">Settings</a>
             </div>
             <div class="nav-right">
-                <button class="bell-btn" id="notification-bell"><i class="fas fa-bell"></i></button>
-                <button id="logout-btn" class="logout-btn">🚪 Logout</button>
+                <button class="bell-btn" aria-label="Notifications"><i class="fas fa-bell"></i></button>
+                <button id="logout-btn" class="logout-btn">Logout</button>
             </div>
         </nav>
 
         <main>
-            <!-- HOME SECTION (new design) -->
-            <div id="home-section" class="content-section active">
-                <div class="home-wrapper">
-                    <div class="stories-row" id="stories-container"></div>
-                    <div class="post-composer">
-                        <input type="text" id="home-post-input" placeholder="What's vibing today? 🎵">
-                        <input type="file" id="home-post-media" accept="image/*,video/*" style="display: none;">
-                        <button id="home-post-btn" class="post-btn">Post</button>
-                    </div>
-                    <div class="feed" id="home-feed"></div>
-                    <div id="ai-suggestions" class="grid-2col"></div>
+            <!-- Home -->
+            <section id="home-section" class="content-section active">
+                <div class="stories-row" id="stories-container"></div>
+                <div class="post-composer">
+                    <input type="text" id="home-post-input" placeholder="Share your vibe...">
+                    <input type="file" id="home-post-media" accept="image/*,video/*" style="display:none;">
+                    <button id="home-post-btn" class="post-btn">Post</button>
                 </div>
-            </div>
+                <div id="home-feed"></div>
+                <div id="ai-suggestions" class="grid-2col"></div>
+            </section>
 
-            <!-- PROFILE SECTION -->
-            <div id="profile-section" class="content-section">
-                <h2>👤 Profile</h2>
+            <!-- Profile -->
+            <section id="profile-section" class="content-section">
+                <h2>Profile</h2>
                 <div id="profile-info"></div>
                 <div id="profile-posts"></div>
-            </div>
+            </section>
 
-            <!-- CHAT SECTION -->
-            <div id="chat-section" class="content-section">
-                <h2>💬 Chat</h2>
+            <!-- Chat -->
+            <section id="chat-section" class="content-section">
+                <h2>Chat</h2>
                 <div id="chat-rooms-list"></div>
                 <div id="chat-messages" class="chat-messages"></div>
                 <div class="chat-input-container">
-                    <input type="text" id="message-input" placeholder="Type a message...">
-                    <button id="send-message" class="vibe-button" style="width: auto; padding: 10px 24px;">Send</button>
+                    <input type="text" id="message-input" placeholder="Type a message..." aria-label="Message input">
+                    <button id="send-message" class="vibe-button">Send</button>
                 </div>
-            </div>
+            </section>
 
-            <!-- WALLET SECTION -->
-            <div id="wallet-section" class="content-section">
-                <h2>💰 Wallet</h2>
+            <!-- Wallet -->
+            <section id="wallet-section" class="content-section">
+                <h2>Wallet</h2>
                 <div class="wallet-balance">Balance: <span id="wallet-balance">0</span> VIBE</div>
-                <button id="add-funds-btn" class="vibe-button" style="width: auto;">Add Funds</button>
-                <button id="send-money-btn" class="vibe-button" style="width: auto;">Send</button>
-                <button id="send-tip-btn" class="vibe-button" style="width: auto;">Send Tip</button>
+                <div class="wallet-actions">
+                    <button id="add-funds-btn" class="vibe-button">Add Funds</button>
+                    <button id="send-money-btn" class="vibe-button secondary">Send</button>
+                    <button id="send-tip-btn" class="vibe-button secondary">Send Tip</button>
+                </div>
                 <div id="transactions-list"></div>
-            </div>
+            </section>
 
-            <!-- MARKETPLACE SECTION -->
-            <div id="marketplace-section" class="content-section">
-                <h2>🛒 Marketplace</h2>
-                <button id="create-listing-btn" class="vibe-button" style="width: auto;">List Item</button>
+            <!-- Marketplace -->
+            <section id="marketplace-section" class="content-section">
+                <h2>Marketplace</h2>
+                <button id="create-listing-btn" class="vibe-button">List Item</button>
                 <div id="marketplace-items" class="grid-2col"></div>
-            </div>
+            </section>
 
-            <!-- LEARNING SECTION -->
-            <div id="learning-section" class="content-section">
-                <h2>📚 Learning</h2>
-                <button id="create-course-btn" class="vibe-button" style="width: auto;">Create Course</button>
+            <!-- Learning -->
+            <section id="learning-section" class="content-section">
+                <h2>Learning</h2>
+                <button id="create-course-btn" class="vibe-button">Create Course</button>
                 <div id="courses-list" class="grid-2col"></div>
-            </div>
+            </section>
 
-            <!-- GAMING SECTION -->
-            <div id="gaming-section" class="content-section">
-                <h2>🎮 Games</h2>
-                <button id="create-game-session-btn" class="vibe-button" style="width: auto;">Create Session</button>
+            <!-- Gaming -->
+            <section id="gaming-section" class="content-section">
+                <h2>Gaming</h2>
+                <button id="create-game-session-btn" class="vibe-button">Create Session</button>
                 <div id="game-sessions-list" class="grid-2col"></div>
-            </div>
+            </section>
 
-            <!-- EVENTS SECTION -->
-            <div id="events-section" class="content-section">
-                <h2>📅 Events</h2>
-                <button id="create-event-btn" class="vibe-button" style="width: auto;">Create Event</button>
+            <!-- Events -->
+            <section id="events-section" class="content-section">
+                <h2>Events</h2>
+                <button id="create-event-btn" class="vibe-button">Create Event</button>
                 <div id="events-list" class="grid-2col"></div>
-            </div>
+            </section>
 
-            <!-- DISCOVERY SECTION -->
-            <div id="discovery-section" class="content-section">
-                <h2>🔍 Discovery</h2>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="search-input" placeholder="Search..." style="flex:1; padding:12px; border-radius:30px; border:1px solid var(--royal-purple); background:rgba(0,0,0,0.4); color:white;">
-                    <button id="search-btn" class="vibe-button" style="width: auto;">Search</button>
+            <!-- Discovery -->
+            <section id="discovery-section" class="content-section">
+                <h2>Discovery</h2>
+                <div style="display:flex; gap: 8px; margin-bottom: var(--space-md);">
+                    <input type="text" id="search-input" placeholder="Search..." aria-label="Search" style="flex:1; padding:12px; border-radius: var(--radius-input); border:1px solid var(--color-border); background: var(--color-surface); color: var(--color-text);">
+                    <button id="search-btn" class="vibe-button">Search</button>
                 </div>
                 <div id="recommendations-grid" class="grid-2col"></div>
                 <div id="challenges-list" class="grid-2col"></div>
-            </div>
+            </section>
 
-            <!-- Q&A SECTION -->
-            <div id="qa-section" class="content-section">
-                <h2>❓ Q&A</h2>
-                <button id="ask-question-btn" class="vibe-button" style="width: auto;">Ask Question</button>
+            <!-- Q&A -->
+            <section id="qa-section" class="content-section">
+                <h2>Q&A</h2>
+                <button id="ask-question-btn" class="vibe-button">Ask Question</button>
                 <div id="qa-list" class="grid-2col"></div>
-            </div>
+            </section>
 
-            <!-- SETTINGS SECTION -->
-            <div id="settings-section" class="content-section">
-                <h2>⚙️ Settings</h2>
-                <button id="export-data-btn" class="vibe-button" style="width: auto;">Export Data</button>
-            </div>
+            <!-- Settings -->
+            <section id="settings-section" class="content-section">
+                <h2>Settings</h2>
+                <button id="export-data-btn" class="vibe-button">Export Data</button>
+            </section>
         </main>
 
         <!-- Bottom Navigation -->
-        <div class="bottom-nav">
+        <nav class="bottom-nav">
             <div class="nav-item active" data-section="home"><i class="fas fa-home"></i><span>Home</span></div>
             <div class="nav-item" data-section="discovery"><i class="fas fa-compass"></i><span>Discover</span></div>
-            <div class="create-button" id="floating-create-btn"><i class="fas fa-plus"></i></div>
+            <div class="create-btn" id="floating-create-btn" aria-label="Create post"><i class="fas fa-plus"></i></div>
             <div class="nav-item" data-section="chat"><i class="fas fa-comment"></i><span>Chat</span></div>
             <div class="nav-item" data-section="profile"><i class="fas fa-user"></i><span>Profile</span></div>
-        </div>
+        </nav>
     </div>
 
-    <!-- Notification & Modal -->
-    <div id="notification" class="notification"></div>
+    <!-- Toast Notification -->
+    <div id="notification" class="notification hidden"></div>
+
+    <!-- Modal -->
     <div id="modal-container" class="modal-overlay"><div class="modal-content" id="modal-content"></div></div>
 
-    <!-- LEGAL MODALS -->
-    <div id="legal-terms" class="hidden" style="display:none;"><div class="legal-modal"><h2>Terms of Service</h2><p>Use this app at your own risk.</p></div></div>
-    <div id="legal-privacy" class="hidden" style="display:none;"><div class="legal-modal"><h2>Privacy Policy</h2><p>We respect your privacy.</p></div></div>
+    <!-- Legal content (simple placeholders) -->
+    <div id="legal-terms" class="hidden"><div class="legal-modal"><h2>Terms of Service</h2><p>Placeholder terms.</p></div></div>
+    <div id="legal-privacy" class="hidden"><div class="legal-modal"><h2>Privacy Policy</h2><p>Placeholder privacy.</p></div></div>
 
     <script>
-        // ============================================================
-        // VibeLink 0372® — Full Frontend (Merged with new Home UI)
-        // ============================================================
+        // ================================
+        // VibeLink 0372® — Script
+        // ================================
 
-        // Safe notification fallback
+        // Notification fallback
         if (!document.getElementById('notification')) {
-            const notifDiv = document.createElement('div');
-            notifDiv.id = 'notification';
-            notifDiv.className = 'notification';
-            document.body.appendChild(notifDiv);
+            const div = document.createElement('div');
+            div.id = 'notification';
+            div.className = 'notification hidden';
+            document.body.appendChild(div);
         }
 
         // Parse Init
@@ -398,36 +534,38 @@
         function showNotification(msg, type = 'success') {
             const n = document.getElementById('notification');
             n.textContent = msg;
-            n.style.background = type === 'error' ? '#FF5A1F' : '#009966';
+            n.className = `notification ${type}`;
             n.style.display = 'block';
-            clearTimeout(n._timeout);
-            n._timeout = setTimeout(() => n.style.display = 'none', 3000);
+            setTimeout(() => { n.style.display = 'none'; }, 3000);
         }
+
         function sanitize(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-        function formatTime(date) { return new Date(date).toLocaleString(); }
+
+        function formatTime(date) {
+            return new Date(date).toLocaleString();
+        }
+
         function displayNameOf(user) {
             if (!user) return 'Unknown';
             if (typeof user === 'string') return user;
             return user.get('displayName') || user.get('username') || 'User';
         }
+
         function openModal(html) {
             document.getElementById('modal-content').innerHTML = html;
             document.getElementById('modal-container').classList.add('active');
         }
+
         function closeModal() {
             document.getElementById('modal-container').classList.remove('active');
         }
         document.getElementById('modal-container').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) closeModal();
         });
-        function openLegal(type) {
-            const content = document.getElementById('legal-' + type);
-            if (content) openModal(content.innerHTML);
-        }
 
         // Encryption (AES-GCM)
         class EncryptionService {
@@ -499,7 +637,6 @@
             async sync() {
                 if (this.syncing || this.queue.length === 0 || !navigator.onLine) return;
                 this.syncing = true;
-                showNotification(`Syncing ${this.queue.length} offline actions...`, 'warning');
                 const failed = [];
                 for (const action of this.queue) {
                     try {
@@ -517,8 +654,8 @@
                 this.queue = failed;
                 localStorage.setItem('offlineQueue', JSON.stringify(this.queue));
                 this.syncing = false;
-                if (failed.length === 0) showNotification('All offline actions synced ✅');
-                else showNotification(`${failed.length} actions failed to sync.`, 'error');
+                if (failed.length === 0) showNotification('All offline actions synced', 'success');
+                else showNotification(`${failed.length} actions failed to sync`, 'error');
             }
         }
         const offlineQueue = new OfflineQueue();
@@ -557,7 +694,7 @@
             }
         }
 
-        // Service Classes
+        // Services
         class AuthService {
             constructor(app) { this.app = app; }
             async checkAuthentication() {
@@ -585,7 +722,7 @@
                     this.app.showMainSection();
                     this.app.hideAuthSection();
                     await this.app.loadInitialData();
-                    showNotification('Welcome back!');
+                    showNotification('Welcome back!', 'success');
                 } catch (err) { showNotification(err.message, 'error'); }
             }
             async handleSignup(e) {
@@ -605,7 +742,7 @@
                     this.app.showMainSection();
                     this.app.hideAuthSection();
                     await this.app.loadInitialData();
-                    showNotification('Account created!');
+                    showNotification('Account created!', 'success');
                 } catch (err) { showNotification(err.message, 'error'); }
             }
             async handleLogout() {
@@ -613,7 +750,7 @@
                 this.app.currentUser = null;
                 this.app.showAuthSection();
                 this.app.hideMainSection();
-                showNotification('Logged out');
+                showNotification('Logged out', 'success');
             }
         }
 
@@ -630,7 +767,7 @@
                         mediaUrl = pf.url();
                     }
                     await Parse.Cloud.run('createPost', { content, userId: this.app.currentUser.id, media: mediaUrl });
-                    showNotification('Post created!');
+                    showNotification('Post created!', 'success');
                     this.skip = 0;
                     await this.loadFeed();
                 } catch (err) { showNotification(err.message, 'error'); }
@@ -649,13 +786,9 @@
                     for (let p of posts) {
                         const raw = p.get('content');
                         if (typeof raw === 'string' && raw.startsWith('{') && raw.includes('"iv"')) {
-                            try {
-                                const dec = await encryption.decrypt(JSON.parse(raw));
-                                p.set('decryptedContent', dec);
-                            } catch (e) { p.set('decryptedContent', '[Encrypted]'); }
-                        } else {
-                            p.set('decryptedContent', raw || '');
-                        }
+                            try { const dec = await encryption.decrypt(JSON.parse(raw)); p.set('decryptedContent', dec); }
+                            catch (e) { p.set('decryptedContent', '[Encrypted]'); }
+                        } else { p.set('decryptedContent', raw || ''); }
                     }
                     this.displayPosts(posts, append);
                     this.skip += posts.length;
@@ -665,20 +798,27 @@
             }
             async likePost(postId) {
                 if (!navigator.onLine) { offlineQueue.add({ type:'like', data:{ postId } }); return showNotification('Like queued', 'warning'); }
-                try { await Parse.Cloud.run('toggleLike', { postId, userId: this.app.currentUser.id }); await this.loadFeed(); } catch (err) { showNotification(err.message, 'error'); }
+                try { await Parse.Cloud.run('toggleLike', { postId, userId: this.app.currentUser.id }); await this.loadFeed(); }
+                catch (err) { showNotification(err.message, 'error'); }
             }
             async commentOnPost(postId, text) {
                 if (!text.trim()) return showNotification('Comment cannot be empty', 'error');
                 if (!navigator.onLine) { offlineQueue.add({ type:'comment', data:{ postId, text } }); return showNotification('Comment queued', 'warning'); }
-                try { await Parse.Cloud.run('addComment', { postId, text, userId: this.app.currentUser.id }); showNotification('Comment added'); await this.loadFeed(); } catch (err) { showNotification(err.message, 'error'); }
+                try { await Parse.Cloud.run('addComment', { postId, text, userId: this.app.currentUser.id }); showNotification('Comment added', 'success'); await this.loadFeed(); }
+                catch (err) { showNotification(err.message, 'error'); }
             }
             async deletePost(postId) {
                 if (!confirm('Delete this post?')) return;
-                try { await Parse.Cloud.run('deletePost', { postId, userId: this.app.currentUser.id }); showNotification('Deleted'); this.skip=0; await this.loadFeed(); } catch (err) { showNotification(err.message, 'error'); }
+                try { await Parse.Cloud.run('deletePost', { postId, userId: this.app.currentUser.id }); showNotification('Deleted', 'success'); this.skip=0; await this.loadFeed(); }
+                catch (err) { showNotification(err.message, 'error'); }
             }
             displayPosts(posts, append = false) {
                 const container = document.getElementById('home-feed');
                 if (!container) return;
+                if (posts.length === 0 && !append) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-globe"></i><p>No posts yet.</p></div>';
+                    return;
+                }
                 const html = posts.map(p => {
                     const author = p.get('author');
                     const avatar = author.get('avatar');
@@ -693,23 +833,23 @@
                     let mediaHtml = '';
                     if (mediaUrl) {
                         if (mediaUrl.endsWith('.mp4') || mediaUrl.endsWith('.mov') || mediaUrl.endsWith('.webm')) {
-                            mediaHtml = `<video src="${mediaUrl}" controls style="width:100%; border-radius:12px; margin-top:10px;"></video>`;
+                            mediaHtml = `<video src="${mediaUrl}" controls style="width:100%; border-radius:8px; margin-top:8px;"></video>`;
                         } else {
-                            mediaHtml = `<img src="${mediaUrl}" style="width:100%; border-radius:12px; margin-top:10px;">`;
+                            mediaHtml = `<img src="${mediaUrl}" style="width:100%; border-radius:8px; margin-top:8px;">`;
                         }
                     }
                     return `<div class="post-card">
                         <div class="post-header">
-                            <img src="${avatarSrc}" class="post-avatar">
+                            <img src="${avatarSrc}" class="post-avatar" alt="${sanitize(name)}">
                             <span class="post-username">${sanitize(name)}</span>
                             <span class="post-time">${formatTime(p.createdAt)}</span>
                         </div>
                         <div class="post-content">${sanitize(content)}</div>
                         ${mediaHtml}
                         <div class="post-actions">
-                            <button class="post-action like-btn" data-id="${p.id}"><i class="far fa-heart"></i> ${likes}</button>
-                            <button class="post-action comment-btn" data-id="${p.id}"><i class="far fa-comment"></i> ${comments}</button>
-                            ${isOwn ? `<button class="post-action delete-btn" data-id="${p.id}"><i class="fas fa-trash"></i></button>` : ''}
+                            <button class="like-btn" data-id="${p.id}"><i class="far fa-heart"></i> ${likes}</button>
+                            <button class="comment-btn" data-id="${p.id}"><i class="far fa-comment"></i> ${comments}</button>
+                            ${isOwn ? `<button class="delete-btn" data-id="${p.id}"><i class="fas fa-trash"></i></button>` : ''}
                         </div>
                     </div>`;
                 }).join('');
@@ -720,8 +860,8 @@
                 if (posts.length === this.limit) {
                     const more = document.createElement('button');
                     more.textContent = 'Load More';
-                    more.className = 'vibe-button';
-                    more.style.margin = '1rem auto';
+                    more.className = 'vibe-button secondary';
+                    more.style.margin = 'auto';
                     more.onclick = () => this.loadFeed(true);
                     container.appendChild(more);
                 }
@@ -735,8 +875,8 @@
                 const rooms = await q.find();
                 const container = document.getElementById('chat-rooms-list');
                 if (!container) return;
-                if (rooms.length === 0) { container.innerHTML = '<p>No chat rooms yet.</p>'; return; }
-                container.innerHTML = rooms.map(r => `<div class="chat-room" data-id="${r.id}" onclick="app.services.chat.openRoom('${r.id}')"><strong>${sanitize(r.get('name'))}</strong></div>`).join('');
+                if (rooms.length === 0) { container.innerHTML = '<p class="text-secondary">No chat rooms yet.</p>'; return; }
+                container.innerHTML = rooms.map(r => `<div class="card" data-id="${r.id}" onclick="app.services.chat.openRoom('${r.id}')"><strong>${sanitize(r.get('name'))}</strong></div>`).join('');
             }
             async openRoom(roomId) {
                 this.activeRoom = roomId;
@@ -750,16 +890,14 @@
                 const msgs = await q.find();
                 const container = document.getElementById('chat-messages');
                 if (!container) return;
+                if (msgs.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i><p>No messages yet.</p></div>'; return; }
                 container.innerHTML = msgs.map(m => {
                     const sender = m.get('sender');
                     const isSent = sender && sender.id === this.app.currentUser.id;
                     let decrypted = m.get('text');
                     if (m.get('encrypted')) {
-                        try {
-                            const enc = JSON.parse(m.get('text'));
-                            encryption.decrypt(enc).then(d => { decrypted = d; });
-                            decrypted = '[Decrypting...]';
-                        } catch (e) { decrypted = '[Encrypted]'; }
+                        try { const enc = JSON.parse(m.get('text')); encryption.decrypt(enc).then(d => { decrypted = d; }); decrypted = '[Decrypting...]'; }
+                        catch (e) { decrypted = '[Encrypted]'; }
                     }
                     return `<div class="message ${isSent ? 'sent' : 'received'}"><strong>${sanitize(displayNameOf(sender))}</strong>: ${sanitize(decrypted)}</div>`;
                 }).join('');
@@ -775,11 +913,8 @@
                 } catch (err) { showNotification(err.message, 'error'); }
             }
             async createRoom(name) {
-                try {
-                    await Parse.Cloud.run('createChatRoom', { name, userId:this.app.currentUser.id });
-                    showNotification('Room created');
-                    await this.loadChatRooms();
-                } catch (err) { showNotification(err.message, 'error'); }
+                try { await Parse.Cloud.run('createChatRoom', { name, userId:this.app.currentUser.id }); showNotification('Room created', 'success'); await this.loadChatRooms(); }
+                catch (err) { showNotification(err.message, 'error'); }
             }
         }
 
@@ -790,16 +925,22 @@
             }
             async addFunds(amount) {
                 if (!navigator.onLine) { offlineQueue.add({ type:'addFunds', data:{ amount } }); return showNotification('Funds request queued', 'warning'); }
-                try { await Parse.Cloud.run('addFunds', { amount, userId: this.app.currentUser.id }); showNotification(`Added ${amount} VIBE`); await this.displayWalletInfo(); } catch (err) { showNotification(err.message, 'error'); }
+                try { await Parse.Cloud.run('addFunds', { amount, userId: this.app.currentUser.id }); showNotification(`Added ${amount} VIBE`, 'success'); await this.displayWalletInfo(); }
+                catch (err) { showNotification(err.message, 'error'); }
             }
             async sendMoney(toUserId, amount) {
                 if (!navigator.onLine) { offlineQueue.add({ type:'sendMoney', data:{ toUserId, amount } }); return showNotification('Transfer queued', 'warning'); }
-                try { await Parse.Cloud.run('sendMoney', { toUserId, amount, userId: this.app.currentUser.id }); showNotification(`Sent ${amount} VIBE`); await this.displayWalletInfo(); } catch (err) { showNotification(err.message, 'error'); }
+                try { await Parse.Cloud.run('sendMoney', { toUserId, amount, userId: this.app.currentUser.id }); showNotification(`Sent ${amount} VIBE`, 'success'); await this.displayWalletInfo(); }
+                catch (err) { showNotification(err.message, 'error'); }
             }
             async displayWalletInfo() {
                 try {
                     const balance = await this.getBalance();
                     document.getElementById('wallet-balance').textContent = balance;
+                    const txns = await Parse.Cloud.run('getTransactions', { userId: this.app.currentUser.id });
+                    const list = document.getElementById('transactions-list');
+                    if (txns.length === 0) { list.innerHTML = '<div class="empty-state"><i class="fas fa-wallet"></i><p>No transactions yet.</p></div>'; return; }
+                    list.innerHTML = txns.map(t => `<div class="card" style="padding:12px;">${sanitize(t.description)}: ${t.amount} VIBE</div>`).join('');
                 } catch (err) { showNotification('Failed to load wallet', 'error'); }
             }
         }
@@ -810,78 +951,60 @@
                 if (!this.app.currentUser) return;
                 const user = this.app.currentUser;
                 document.getElementById('profile-info').innerHTML = `
-                    <div class="card"><h3>${sanitize(user.get('displayName') || user.get('username'))}</h3><p>${sanitize(user.get('email'))}</p><p>Bio: ${sanitize(user.get('bio') || 'No bio yet')}</p></div>
+                    <div class="card">
+                        <h3>${sanitize(user.get('displayName') || user.get('username'))}</h3>
+                        <p class="text-secondary">${sanitize(user.get('email'))}</p>
+                        <p>${sanitize(user.get('bio') || 'No bio yet')}</p>
+                    </div>
                 `;
                 const posts = await new Parse.Query('Post').equalTo('author', this.app.currentUser).descending('createdAt').find();
-                document.getElementById('profile-posts').innerHTML = posts.map(p => `<div class="post-card"><div class="post-content">${sanitize(p.get('content'))}</div><small>${formatTime(p.createdAt)}</small></div>`).join('');
+                const container = document.getElementById('profile-posts');
+                if (posts.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-file-alt"></i><p>No posts yet.</p></div>'; return; }
+                container.innerHTML = posts.map(p => `<div class="card"><p>${sanitize(p.get('content'))}</p><small class="text-secondary">${formatTime(p.createdAt)}</small></div>`).join('');
             }
         }
 
+        // Marketplace, Learning, Gaming, Events, Discovery, QA, Settings (simplified)
         class MarketplaceService {
             constructor(app) { this.app = app; }
-            async createItem(data) {
-                try { await Parse.Cloud.run('createItem', { title:data.title, description:data.description, price:data.price, userId:this.app.currentUser.id }); showNotification('Item listed'); await this.loadItems(); } catch (err) { showNotification(err.message, 'error'); }
-            }
-            async loadItems() {
-                try { const items = await Parse.Cloud.run('getItems', { userId:this.app.currentUser.id }); document.getElementById('marketplace-items').innerHTML = items.map(i => `<div class="card"><h4>${sanitize(i.title)}</h4><p>${i.price} VIBE</p></div>`).join(''); } catch (err) { showNotification(err.message, 'error'); }
-            }
+            async createItem(data) { try { await Parse.Cloud.run('createItem', { title:data.title, description:data.description, price:data.price, userId:this.app.currentUser.id }); showNotification('Item listed', 'success'); await this.loadItems(); } catch (err) { showNotification(err.message, 'error'); } }
+            async loadItems() { try { const items = await Parse.Cloud.run('getItems', { userId:this.app.currentUser.id }); document.getElementById('marketplace-items').innerHTML = items.length ? items.map(i => `<div class="card"><h4>${sanitize(i.title)}</h4><p>${i.price} VIBE</p></div>`).join('') : '<div class="empty-state"><i class="fas fa-shopping-cart"></i><p>No items listed.</p></div>'; } catch (err) { showNotification(err.message, 'error'); } }
         }
 
         class LearningService {
             constructor(app) { this.app = app; }
-            async createCourse(data) {
-                try { await Parse.Cloud.run('createCourse', { title:data.title, description:data.description, price:data.price||0, userId:this.app.currentUser.id }); showNotification('Course created'); await this.loadCourses(); } catch (err) { showNotification(err.message, 'error'); }
-            }
-            async loadCourses() {
-                try { const courses = await Parse.Cloud.run('getCourses', { userId:this.app.currentUser.id }); document.getElementById('courses-list').innerHTML = courses.map(c => `<div class="card"><h4>${sanitize(c.title)}</h4><p>${c.price} VIBE</p></div>`).join(''); } catch (err) { showNotification(err.message, 'error'); }
-            }
+            async createCourse(data) { try { await Parse.Cloud.run('createCourse', { title:data.title, description:data.description, price:data.price||0, userId:this.app.currentUser.id }); showNotification('Course created', 'success'); await this.loadCourses(); } catch (err) { showNotification(err.message, 'error'); } }
+            async loadCourses() { try { const courses = await Parse.Cloud.run('getCourses', { userId:this.app.currentUser.id }); document.getElementById('courses-list').innerHTML = courses.length ? courses.map(c => `<div class="card"><h4>${sanitize(c.title)}</h4><p>${c.price} VIBE</p></div>`).join('') : '<div class="empty-state"><i class="fas fa-book"></i><p>No courses yet.</p></div>'; } catch (err) { showNotification(err.message, 'error'); } }
         }
 
         class GamingService {
             constructor(app) { this.app = app; }
-            async createSession(data) {
-                try { await Parse.Cloud.run('createGameSession', { title:data.title, gameType:data.gameType, maxPlayers:data.maxPlayers||4, userId:this.app.currentUser.id }); showNotification('Session created'); await this.loadSessions(); } catch (err) { showNotification(err.message, 'error'); }
-            }
-            async loadSessions() {
-                try { const sessions = await Parse.Cloud.run('getGameSessions', { userId:this.app.currentUser.id }); document.getElementById('game-sessions-list').innerHTML = sessions.map(s => `<div class="card"><h4>${sanitize(s.title)}</h4><p>${s.currentPlayers}/${s.maxPlayers}</p></div>`).join(''); } catch (err) { showNotification(err.message, 'error'); }
-            }
+            async createSession(data) { try { await Parse.Cloud.run('createGameSession', { title:data.title, gameType:data.gameType, maxPlayers:data.maxPlayers||4, userId:this.app.currentUser.id }); showNotification('Session created', 'success'); await this.loadSessions(); } catch (err) { showNotification(err.message, 'error'); } }
+            async loadSessions() { try { const sessions = await Parse.Cloud.run('getGameSessions', { userId:this.app.currentUser.id }); document.getElementById('game-sessions-list').innerHTML = sessions.length ? sessions.map(s => `<div class="card"><h4>${sanitize(s.title)}</h4><p>${s.currentPlayers}/${s.maxPlayers}</p></div>`).join('') : '<div class="empty-state"><i class="fas fa-gamepad"></i><p>No game sessions.</p></div>'; } catch (err) { showNotification(err.message, 'error'); } }
         }
 
         class EventService {
             constructor(app) { this.app = app; }
-            async createEvent(data) {
-                try { await Parse.Cloud.run('createEvent', { title:data.title, description:data.description, date:data.date, location:data.location||'Online', tickets:data.tickets||100, price:data.price||0, userId:this.app.currentUser.id }); showNotification('Event created'); await this.loadEvents(); } catch (err) { showNotification(err.message, 'error'); }
-            }
-            async loadEvents() {
-                try { const events = await Parse.Cloud.run('getEvents', { userId:this.app.currentUser.id }); document.getElementById('events-list').innerHTML = events.map(e => `<div class="card"><h4>${sanitize(e.title)}</h4><p>${sanitize(e.description)}</p></div>`).join(''); } catch (err) { showNotification(err.message, 'error'); }
-            }
+            async createEvent(data) { try { await Parse.Cloud.run('createEvent', { title:data.title, description:data.description, date:data.date, location:data.location||'Online', tickets:data.tickets||100, price:data.price||0, userId:this.app.currentUser.id }); showNotification('Event created', 'success'); await this.loadEvents(); } catch (err) { showNotification(err.message, 'error'); } }
+            async loadEvents() { try { const events = await Parse.Cloud.run('getEvents', { userId:this.app.currentUser.id }); document.getElementById('events-list').innerHTML = events.length ? events.map(e => `<div class="card"><h4>${sanitize(e.title)}</h4><p>${sanitize(e.description)}</p></div>`).join('') : '<div class="empty-state"><i class="fas fa-calendar"></i><p>No events.</p></div>'; } catch (err) { showNotification(err.message, 'error'); } }
         }
 
         class DiscoveryService {
             constructor(app) { this.app = app; }
-            async loadRecommendations() {
-                try { const recs = await Parse.Cloud.run('getRecommendations', { userId:this.app.currentUser.id }); document.getElementById('recommendations-grid').innerHTML = recs.map(r => `<div class="card"><h4>${sanitize(r.author.displayName||r.author.username)}</h4><p>${sanitize(r.content)}</p></div>`).join(''); } catch (err) { showNotification(err.message, 'error'); }
-            }
-            async loadChallenges() {
-                try { const chals = await Parse.Cloud.run('getChallenges', { userId:this.app.currentUser.id }); document.getElementById('challenges-list').innerHTML = chals.map(c => `<div class="card"><h4>${sanitize(c.title)}</h4></div>`).join(''); } catch (err) { showNotification(err.message, 'error'); }
-            }
+            async loadRecommendations() { try { const recs = await Parse.Cloud.run('getRecommendations', { userId:this.app.currentUser.id }); document.getElementById('recommendations-grid').innerHTML = recs.length ? recs.map(r => `<div class="card"><h4>${sanitize(r.author.displayName||r.author.username)}</h4><p>${sanitize(r.content)}</p></div>`).join('') : '<div class="empty-state"><i class="fas fa-compass"></i><p>No recommendations yet.</p></div>'; } catch (err) { showNotification(err.message, 'error'); } }
+            async loadChallenges() { try { const chals = await Parse.Cloud.run('getChallenges', { userId:this.app.currentUser.id }); document.getElementById('challenges-list').innerHTML = chals.length ? chals.map(c => `<div class="card"><h4>${sanitize(c.title)}</h4></div>`).join('') : '<div class="empty-state"><i class="fas fa-trophy"></i><p>No challenges.</p></div>'; } catch (err) { showNotification(err.message, 'error'); } }
+            async search(query) { try { const results = await Parse.Cloud.run('searchContent', { query, userId:this.app.currentUser.id }); alert(`Found ${results.length} posts`); } catch (err) { showNotification(err.message, 'error'); } }
         }
 
         class QAService {
             constructor(app) { this.app = app; }
-            async askQuestion(data) {
-                try { await Parse.Cloud.run('askQuestion', { question:data.question, topic:data.topic||'General', userId:this.app.currentUser.id }); showNotification('Question asked'); await this.loadQuestions(); } catch (err) { showNotification(err.message, 'error'); }
-            }
-            async loadQuestions() {
-                try { const questions = await Parse.Cloud.run('getQuestions', { userId:this.app.currentUser.id }); document.getElementById('qa-list').innerHTML = questions.map(q => `<div class="card"><h4>${sanitize(q.title)}</h4><p>${sanitize(q.description)}</p></div>`).join(''); } catch (err) { showNotification(err.message, 'error'); }
-            }
+            async askQuestion(data) { try { await Parse.Cloud.run('askQuestion', { question:data.question, topic:data.topic||'General', userId:this.app.currentUser.id }); showNotification('Question asked', 'success'); await this.loadQuestions(); } catch (err) { showNotification(err.message, 'error'); } }
+            async loadQuestions() { try { const questions = await Parse.Cloud.run('getQuestions', { userId:this.app.currentUser.id }); document.getElementById('qa-list').innerHTML = questions.length ? questions.map(q => `<div class="card"><h4>${sanitize(q.title)}</h4><p>${sanitize(q.description)}</p></div>`).join('') : '<div class="empty-state"><i class="fas fa-question"></i><p>No questions yet.</p></div>'; } catch (err) { showNotification(err.message, 'error'); } }
         }
 
         class SettingsService {
             constructor(app) { this.app = app; }
-            async exportData() {
-                try { const data = await Parse.Cloud.run('exportUserData', { userId:this.app.currentUser.id }); const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'vibelink-export.json'; a.click(); showNotification('Data exported'); } catch (err) { showNotification(err.message, 'error'); }
-            }
+            async exportData() { try { const data = await Parse.Cloud.run('exportUserData', { userId:this.app.currentUser.id }); const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'vibelink-export.json'; a.click(); showNotification('Data exported', 'success'); } catch (err) { showNotification(err.message, 'error'); } }
         }
 
         // Global App
@@ -909,7 +1032,7 @@
             }
         };
 
-        // Instantiate services
+        // Instantiate
         app.services.auth = new AuthService(app);
         app.services.posts = new PostService(app);
         app.services.chat = new ChatService(app);
