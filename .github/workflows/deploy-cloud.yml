@@ -7,15 +7,73 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install Parse CLI
+
+      - name: Check secrets exist
         run: |
-          npm cache clean --force
-          npm install -g parse-cli@latest --registry=https://registry.npmjs.org
-          parse --version
-      - name: Configure Back4App
-        run: parse configure --appId ${{ secrets.PARSE_APP_ID }} --masterKey ${{ secrets.PARSE_MASTER_KEY }}
-      - name: Deploy Cloud Code
-        run: parse deploy --cloud "main.js"
+          if [ -z "${{ secrets.PARSE_APP_ID }}" ]; then
+            echo "::error::Missing PARSE_APP_ID secret"
+            exit 1
+          fi
+          if [ -z "${{ secrets.PARSE_MASTER_KEY }}" ]; then
+            echo "::error::Missing PARSE_MASTER_KEY secret"
+            exit 1
+          fi
+
+      - name: Check main.js exists
+        run: |
+          if [ ! -f "main.js" ]; then
+            echo "::error::main.js not found in repository root"
+            exit 1
+          fi
+
+      - name: Deploy to Back4App
+        run: |
+          node - <<'EOF'
+          const fs = require('fs');
+          const https = require('https');
+
+          const appId = process.env.PARSE_APP_ID;
+          const masterKey = process.env.PARSE_MASTER_KEY;
+          const fileContent = fs.readFileSync('main.js', 'utf8');
+          const fileBase64 = Buffer.from(fileContent).toString('base64');
+
+          const payload = JSON.stringify({ file: fileBase64 });
+
+          const options = {
+            hostname: 'parseapi.back4app.com',
+            path: '/functions/deployCloudCode',
+            method: 'POST',
+            headers: {
+              'X-Parse-Application-Id': appId,
+              'X-Parse-Master-Key': masterKey,
+              'Content-Type': 'application/json',
+              'Content-Length': Buffer.byteLength(payload)
+            }
+          };
+
+          const req = https.request(options, (res) => {
+            let data = '';
+            res.on('data', (chunk) => { data += chunk; });
+            res.on('end', () => {
+              if (res.statusCode >= 200 && res.statusCode < 300) {
+                console.log('✅ Deployment successful');
+                console.log(data);
+              } else {
+                console.error('❌ Deployment failed with status:', res.statusCode);
+                console.error(data);
+                process.exit(1);
+              }
+            });
+          });
+
+          req.on('error', (err) => {
+            console.error('❌ Request error:', err.message);
+            process.exit(1);
+          });
+
+          req.write(payload);
+          req.end();
+          EOF
+        env:
+          PARSE_APP_ID: ${{ secrets.PARSE_APP_ID }}
+          PARSE_MASTER_KEY: ${{ secrets.PARSE_MASTER_KEY }}
