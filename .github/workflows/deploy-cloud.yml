@@ -12,4 +12,4 @@ jobs:
           node-version: '18'
       - run: npm install -g parse-cli
       - run: parse configure --appId ${{ secrets.PARSE_APP_ID }} --masterKey ${{ secrets.PARSE_MASTER_KEY }}
-      - run: parse deploy --cloud "cloud-main script.js"
+      - run: parse deploy --cloud "main.js"
