@@ -7,11 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy to Back4App
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Parse CLI
         run: |
-          curl -X POST \
-          -H "X-Parse-Application-Id: ${{ secrets.PARSE_APP_ID }}" \
-          -H "X-Parse-Master-Key: ${{ secrets.PARSE_MASTER_KEY }}" \
-          -H "Content-Type: application/json" \
-          -d '{"file":"'$(cat main.js | base64)'"}' \
-          "https://parseapi.back4app.com/functions/deployCloudCode"
+          npm cache clean --force
+          npm install -g parse-cli@latest --registry=https://registry.npmjs.org
+          parse --version
+      - name: Configure Back4App
+        run: parse configure --appId ${{ secrets.PARSE_APP_ID }} --masterKey ${{ secrets.PARSE_MASTER_KEY }}
+      - name: Deploy Cloud Code
+        run: parse deploy --cloud "main.js"
