@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check secrets exist
+      - name: Check secrets
         run: |
           if [ -z "${{ secrets.PARSE_APP_ID }}" ]; then
             echo "::error::Missing PARSE_APP_ID secret"
@@ -19,10 +19,10 @@ jobs:
             exit 1
           fi
 
-      - name: Check main.js exists
+      - name: Check main.js
         run: |
           if [ ! -f "main.js" ]; then
-            echo "::error::main.js not found in repository root"
+            echo "::error::main.js not found in repo root"
             exit 1
           fi
 
@@ -41,7 +41,7 @@ jobs:
 
           const options = {
             hostname: 'parseapi.back4app.com',
-            path: '/functions/deployCloudCode',
+            path: '/parse/cloud_code',
             method: 'POST',
             headers: {
               'X-Parse-Application-Id': appId,
