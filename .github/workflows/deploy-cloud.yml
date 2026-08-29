@@ -2,6 +2,7 @@ name: Deploy Cloud Code
 on:
   push:
     branches: [ main ]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -19,60 +20,53 @@ jobs:
             exit 1
           fi
 
-      - name: Check main.js
+      - name: Check main.js exists
         run: |
           if [ ! -f "main.js" ]; then
-            echo "::error::main.js not found in repo root"
+            echo "::error::main.js not found in repository root"
             exit 1
           fi
 
       - name: Deploy to Back4App
         run: |
-          node - <<'EOF'
-          const fs = require('fs');
-          const https = require('https');
+          python3 <<'EOF'
+          import base64
+          import json
+          import os
+          import ssl
+          import urllib.request
 
-          const appId = process.env.PARSE_APP_ID;
-          const masterKey = process.env.PARSE_MASTER_KEY;
-          const fileContent = fs.readFileSync('main.js', 'utf8');
-          const fileBase64 = Buffer.from(fileContent).toString('base64');
+          app_id = os.environ['PARSE_APP_ID']
+          master_key = os.environ['PARSE_MASTER_KEY']
 
-          const payload = JSON.stringify({ file: fileBase64 });
+          with open('main.js', 'rb') as f:
+              file_content = f.read()
 
-          const options = {
-            hostname: 'parseapi.back4app.com',
-            path: '/parse/cloud_code',
-            method: 'POST',
-            headers: {
-              'X-Parse-Application-Id': appId,
-              'X-Parse-Master-Key': masterKey,
-              'Content-Type': 'application/json',
-              'Content-Length': Buffer.byteLength(payload)
-            }
-          };
+          file_base64 = base64.b64encode(file_content).decode('utf-8')
+          payload = json.dumps({"file": file_base64}).encode('utf-8')
 
-          const req = https.request(options, (res) => {
-            let data = '';
-            res.on('data', (chunk) => { data += chunk; });
-            res.on('end', () => {
-              if (res.statusCode >= 200 && res.statusCode < 300) {
-                console.log('✅ Deployment successful');
-                console.log(data);
-              } else {
-                console.error('❌ Deployment failed with status:', res.statusCode);
-                console.error(data);
-                process.exit(1);
+          req = urllib.request.Request(
+              'https://parseapi.back4app.com/parse/cloud_code',
+              data=payload,
+              method='POST',
+              headers={
+                  'X-Parse-Application-Id': app_id,
+                  'X-Parse-Master-Key': master_key,
+                  'Content-Type': 'application/json'
               }
-            });
-          });
+          )
 
-          req.on('error', (err) => {
-            console.error('❌ Request error:', err.message);
-            process.exit(1);
-          });
-
-          req.write(payload);
-          req.end();
+          try:
+              with urllib.request.urlopen(req, context=ssl.create_default_context()) as resp:
+                  print(f"✅ Deployment successful (HTTP {resp.status})")
+                  print(resp.read().decode('utf-8'))
+          except urllib.error.HTTPError as e:
+              print(f"❌ Deployment failed (HTTP {e.code})")
+              print(e.read().decode('utf-8'))
+              exit(1)
+          except Exception as e:
+              print(f"❌ Request error: {e}")
+              exit(1)
           EOF
         env:
           PARSE_APP_ID: ${{ secrets.PARSE_APP_ID }}
