@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, follow">
+  <meta name="theme-color" content="#0D0D0D">
+  <title>Redirecting · VibeLink 0372®</title>
+  <link rel="icon" type="image/svg+xml" href="/VibeLink-0372/assets/logo.svg">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0D0D0D;
+      color: #F9F9F9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .wrap { max-width: 420px; }
+    .logo {
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      filter: drop-shadow(0 0 20px rgba(94, 169, 232, 0.5));
+      animation: pulse 2s ease-in-out infinite alternate;
+    }
+    @keyframes pulse {
+      from { filter: drop-shadow(0 0 15px rgba(94, 169, 232, 0.4)); }
+      to   { filter: drop-shadow(0 0 30px rgba(139, 95, 212, 0.6)); }
+    }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #FF5A1F;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+    }
+    p {
+      color: #B0B0B0;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    a {
+      display: inline-block;
+      background: linear-gradient(135deg, #FF5A1F, #FFD733);
+      color: #0D0D0D;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    a:hover { transform: translateY(-2px); }
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 90, 31, 0.3);
+      border-top-color: #FF5A1F;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+  <script>
+    (function () {
+      var base = '/VibeLink-0372/';
+      var path = window.location.pathname;
+      var search = window.location.search || '';
+      var hash = window.location.hash || '';
+
+      // If the requested path is inside our app, stash it and redirect to base
+      if (path.indexOf(base) === 0) {
+        try {
+          sessionStorage.setItem('spa_redirect', path + search + hash);
+        } catch (e) { /* storage disabled */ }
+      }
+
+      // Redirect to the app root — the SPA will restore the path
+      window.location.replace(base);
+    })();
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <img class="logo" src="/VibeLink-0372/assets/logo.svg" alt="VibeLink 0372">
+    <h1>Redirecting</h1>
+    <p>Taking you back to VibeLink 0372<span class="spinner"></span></p>
+    <a href="/VibeLink-0372/">Continue to app</a>
+  </div>
+
+  <noscript>
+    <div style="margin-top:2rem;">
+      <p>JavaScript is required to redirect automatically.</p>
+      <a href="/VibeLink-0372/">Click here to enter</a>
+    </div>
+  </noscript>
+</body>
+</html>
